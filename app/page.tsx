@@ -18,9 +18,21 @@ export default function Home() {
             discretion, and clarity.
           </p>
 
-          <div className="pt-6">
-            <span className="inline-block rounded-full border border-gray-600 px-4 py-2 text-sm text-gray-300">
-              Private beta — launching soon
+          {/* Primary CTA */}
+          <div className="pt-8 flex flex-col items-center gap-4">
+            <a
+              href="/upload"
+              className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-base font-medium text-black hover:bg-gray-200 transition"
+            >
+              Upload audio or video
+            </a>
+
+            <p className="text-sm text-gray-400">
+              No account required • Secure • Time-limited retention
+            </p>
+
+            <span className="mt-2 inline-block rounded-full border border-gray-600 px-4 py-1.5 text-xs text-gray-400">
+              Private beta
             </span>
           </div>
         </section>
