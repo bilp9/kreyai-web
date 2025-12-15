@@ -24,11 +24,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body>
+  {children}
+
+  <footer
+    style={{
+      marginTop: "6rem",
+      padding: "2rem 1.5rem",
+      borderTop: "1px solid #e5e7eb",
+      fontSize: "0.9rem",
+      color: "#555",
+    }}
+  >
+    <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+      <p>
+        © {new Date().getFullYear()} Kreyai Technologies LLC
+      </p>
+
+      <nav style={{ marginTop: "0.75rem" }}>
+        <a href="/pricing" style={{ marginRight: "1rem" }}>Pricing</a>
+        <a href="/faq" style={{ marginRight: "1rem" }}>FAQ</a>
+        <a href="/privacy" style={{ marginRight: "1rem" }}>Privacy</a>
+        <a href="/terms" style={{ marginRight: "1rem" }}>Terms</a>
+        <a href="mailto:support@kreyai.com">Contact</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+
     </html>
   );
 }
