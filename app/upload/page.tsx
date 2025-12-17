@@ -1,117 +1,103 @@
-export default function UploadPage() {
-    return (
-      <main
-        style={{
-          maxWidth: "700px",
-          margin: "0 auto",
-          padding: "4rem 1.5rem",
-        }}
-      >
-        <h1>Upload audio or video</h1>
-  
-        <p style={{ marginTop: "1rem", color: "#444" }}>
-          Upload your audio or video file to receive a clean, readable transcript.
-          No account required.
-        </p>
-  
-        {/* Upload box (non-functional for now) */}
-        <div
-          style={{
-            marginTop: "2.5rem",
-            padding: "2rem",
-            border: "2px dashed #d1d5db",
-            borderRadius: "8px",
-            textAlign: "center",
-            color: "#555",
-          }}
-        >
-          <p style={{ fontWeight: 500 }}>
-            Drag & drop your file here
+export default function Upload() {
+  return (
+    <main className="min-h-screen bg-black text-white px-6 py-24">
+      <div className="mx-auto max-w-3xl space-y-16">
+
+        {/* Header */}
+        <section className="space-y-4">
+          <h1 className="text-4xl font-semibold">
+            Upload your audio or video
+          </h1>
+
+          <p className="text-gray-300">
+            Secure transcription for Haitian Creole and multilingual speech.
+            Built for accuracy, context, and professional use.
           </p>
-          <p style={{ marginTop: "0.5rem" }}>
-            or click to select a file
-          </p>
-  
-          <p style={{ marginTop: "1rem", fontSize: "0.9rem", color: "#777" }}>
-            Supported formats: MP3, WAV, M4A, MP4
-          </p>
-        </div>
-  
-        {/* Options */}
-        <section style={{ marginTop: "3rem" }}>
-          <h2>Options</h2>
-  
-          <div style={{ marginTop: "1rem" }}>
-            <label>
-              <strong>Quality</strong>
-            </label>
-            <select
-              disabled
-              style={{
-                display: "block",
-                marginTop: "0.5rem",
-                padding: "0.5rem",
-                width: "100%",
-              }}
-            >
-              <option>Balanced (recommended)</option>
-              <option>Fast</option>
-              <option>Best</option>
-            </select>
-            <p style={{ fontSize: "0.85rem", color: "#777", marginTop: "0.25rem" }}>
-              Quality selection will affect accuracy and processing time.
-            </p>
-          </div>
-  
-          <div style={{ marginTop: "1.5rem" }}>
-            <label>
-              <strong>Language</strong>
-            </label>
-            <select
-              disabled
-              style={{
-                display: "block",
-                marginTop: "0.5rem",
-                padding: "0.5rem",
-                width: "100%",
-              }}
-            >
-              <option>Auto-detect (recommended)</option>
-              <option>Haitian Creole</option>
-            </select>
-          </div>
         </section>
-  
-        {/* Next step */}
-        <div style={{ marginTop: "3rem" }}>
-          <button
-            disabled
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              backgroundColor: "#111",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              fontSize: "1rem",
-              cursor: "not-allowed",
-              opacity: 0.7,
-            }}
-          >
-            Continue to pricing
-          </button>
-  
-          <p style={{ marginTop: "0.75rem", fontSize: "0.85rem", color: "#777" }}>
-            File processing and checkout will be enabled soon.
+
+        {/* Flow */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-semibold">
+            What happens next
+          </h2>
+
+          <ol className="space-y-4 text-gray-300 list-decimal list-inside">
+            <li>
+              You upload an audio or video file.
+            </li>
+            <li>
+              The file is securely processed and transcribed.
+            </li>
+            <li>
+              You receive a downloadable transcript.
+            </li>
+            <li>
+              Files are retained for up to <strong>7 days</strong> for support purposes,
+              then automatically deleted.
+            </li>
+          </ol>
+        </section>
+
+        {/* Retention */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold">
+            Data retention & privacy
+          </h2>
+
+          <p className="text-gray-300">
+            To support delivery verification and limited follow-up requests,
+            uploaded files and transcripts are retained for up to <strong>7 days</strong>.
           </p>
-        </div>
-  
-        {/* Privacy note */}
-        <p style={{ marginTop: "3rem", fontSize: "0.85rem", color: "#666" }}>
-          Files are processed securely and deleted automatically based on your
-          selected retention option. Customer data is never used for training.
-        </p>
-      </main>
-    );
-  }
-  
+
+          <p className="text-gray-300">
+            After that period, all files are permanently deleted.
+            Kreyai does not use customer content for model training.
+          </p>
+        </section>
+
+        {/* Accounts */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold">
+            Guest or account
+          </h2>
+
+          <p className="text-gray-300">
+            You may upload and receive a transcript without creating an account.
+          </p>
+
+          <p className="text-gray-300">
+            Accounts (coming later) will offer faster checkout,
+            job history, and follow-up convenience.
+          </p>
+        </section>
+
+        {/* Formats */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold">
+            Supported formats
+          </h2>
+
+          <p className="text-gray-300">
+            Common audio and video formats are supported, including:
+          </p>
+
+          <p className="text-gray-400">
+            MP3, WAV, M4A, MP4, MOV
+          </p>
+        </section>
+
+        {/* CTA placeholder */}
+        <section className="pt-6 space-y-3">
+          <div className="rounded-lg border border-gray-700 px-6 py-4 text-gray-400">
+            Upload functionality will be available here.
+          </div>
+
+          <p className="text-sm text-gray-500">
+            Save your Job ID for follow-up within the 7-day retention window.
+          </p>
+        </section>
+
+      </div>
+    </main>
+  );
+}
