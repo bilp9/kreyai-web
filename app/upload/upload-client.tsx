@@ -55,9 +55,13 @@ export default function UploadClient() {
         }
       );
 
-      if (!res.ok) throw new Error("Upload failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.detail || "Upload failed");
+      }
 
-      setMessage("File uploaded. Processing started.");
+      setMessage("File uploaded successfully. Processing has started.");
+      setFile(null);
     } catch (err: any) {
       setMessage(err.message);
     }
@@ -81,13 +85,13 @@ export default function UploadClient() {
                 placeholder="Your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-neutral-300 rounded-lg px-4 py-3 text-sm"
+                className="w-full border border-neutral-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black"
               />
 
               <button
                 onClick={startJob}
-                disabled={loading}
-                className="w-full border border-black rounded-lg px-6 py-3 text-sm font-medium hover:bg-neutral-100 transition"
+                disabled={!email || loading}
+                className="w-full border border-black rounded-lg px-6 py-3 text-sm font-medium hover:bg-neutral-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Please wait…" : "Continue"}
               </button>
@@ -105,14 +109,26 @@ export default function UploadClient() {
               <input
                 type="file"
                 accept="audio/*,video/*"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  const selected = e.target.files?.[0];
+                  if (selected) {
+                    setFile(selected);
+                    setMessage(null);
+                  }
+                }}
                 className="w-full text-sm"
               />
 
+              {file && (
+                <p className="text-sm text-neutral-500 text-center">
+                  Selected file: <strong>{file.name}</strong>
+                </p>
+              )}
+
               <button
                 onClick={uploadFile}
-                disabled={loading}
-                className="w-full border border-black rounded-lg px-6 py-3 text-sm font-medium hover:bg-neutral-100 transition"
+                disabled={!file || loading}
+                className="w-full border border-black rounded-lg px-6 py-3 text-sm font-medium hover:bg-neutral-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Uploading…" : "Upload file"}
               </button>
