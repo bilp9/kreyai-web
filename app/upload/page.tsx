@@ -1,102 +1,183 @@
-export default function Upload() {
-  return (
-    <main className="min-h-screen bg-black text-white px-6 py-24">
-      <div className="mx-auto max-w-3xl space-y-16">
+"use client";
 
-        {/* Header */}
-        <section className="space-y-4">
-          <h1 className="text-4xl font-semibold">
-            Upload your audio or video
+import { useState } from "react";
+
+type Stage = "email" | "verify" | "upload";
+
+export default function UploadPage() {
+  const [stage, setStage] = useState<Stage>("email");
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [jobId, setJobId] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "error" | "uploaded"
+  >("idle");
+  const [message, setMessage] = useState<string | null>(null);
+
+  async function createJob() {
+    setStatus("loading");
+    setMessage(null);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/?email=${encodeURIComponent(
+          email
+        )}`,
+        { method: "POST" }
+      );
+
+      if (!res.ok) throw new Error("Failed to create job.");
+
+      const data = await res.json();
+      setJobId(data.job_id);
+      setStage("verify");
+      setStatus("idle");
+    } catch (err: any) {
+      setStatus("error");
+      setMessage(err.message);
+    }
+  }
+
+  async function verifyJob() {
+    setStatus("loading");
+    setMessage(null);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/verify?job_id=${jobId}&code=${code}`,
+        { method: "POST" }
+      );
+
+      if (!res.ok) throw new Error("Verification failed.");
+
+      setStage("upload");
+      setStatus("idle");
+    } catch (err: any) {
+      setStatus("error");
+      setMessage(err.message);
+    }
+  }
+
+  async function uploadFile() {
+    if (!file) {
+      setMessage("Please select a file.");
+      return;
+    }
+
+    setStatus("loading");
+    setMessage(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!res.ok) throw new Error("Upload failed.");
+
+      setStatus("uploaded");
+    } catch (err: any) {
+      setStatus("error");
+      setMessage(err.message);
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-neutral-50">
+      <div className="mx-auto max-w-2xl px-6 py-20">
+        <div className="bg-white border border-neutral-200 rounded-xl p-12 space-y-10">
+
+          <h1 className="text-2xl font-semibold text-center">
+            Secure transcription
           </h1>
 
-          <p className="text-gray-300">
-            Secure transcription for Haitian Creole and multilingual speech.
-            Built for accuracy, context, and professional use.
-          </p>
-        </section>
+          {stage === "email" && (
+            <div className="space-y-6">
+              <input
+                type="email"
+                placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-neutral-300 rounded-lg px-4 py-3 text-sm"
+              />
+              <button
+                onClick={createJob}
+                className="w-full border border-black rounded-lg px-6 py-3 text-sm font-medium hover:bg-neutral-100"
+              >
+                Continue
+              </button>
+            </div>
+          )}
 
-        {/* Flow */}
-        <section className="space-y-6">
-          <h2 className="text-2xl font-semibold">
-            What happens next
-          </h2>
+          {stage === "verify" && (
+            <div className="space-y-6">
+              <p className="text-sm text-neutral-500 text-center">
+                A verification code was sent to {email}.
+              </p>
+              <input
+                type="text"
+                placeholder="Enter verification code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                className="w-full border border-neutral-300 rounded-lg px-4 py-3 text-sm"
+              />
+              <button
+                onClick={verifyJob}
+                className="w-full border border-black rounded-lg px-6 py-3 text-sm font-medium hover:bg-neutral-100"
+              >
+                Verify
+              </button>
+            </div>
+          )}
 
-          <ol className="space-y-4 text-gray-300 list-decimal list-inside">
-            <li>
-              You upload an audio or video file.
-            </li>
-            <li>
-              The file is securely processed and transcribed.
-            </li>
-            <li>
-              You receive a downloadable transcript.
-            </li>
-            <li>
-              Files are retained for up to <strong>7 days</strong> for support purposes,
-              then automatically deleted.
-            </li>
-          </ol>
-        </section>
+          {stage === "upload" && (
+            <div className="space-y-6">
+              <input
+                type="file"
+                accept="audio/*,video/*"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                className="w-full text-sm"
+              />
+              <button
+                onClick={uploadFile}
+                className="w-full border border-black rounded-lg px-6 py-3 text-sm font-medium hover:bg-neutral-100"
+              >
+                Upload file
+              </button>
+            </div>
+          )}
 
-        {/* Retention */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">
-            Data retention & privacy
-          </h2>
+          {status === "loading" && (
+            <p className="text-sm text-neutral-500 text-center">
+              Processing…
+            </p>
+          )}
 
-          <p className="text-gray-300">
-            To support delivery verification and limited follow-up requests,
-            uploaded files and transcripts are retained for up to <strong>7 days</strong>.
-          </p>
+          {status === "uploaded" && (
+            <div className="border border-neutral-200 rounded-lg p-6 text-center">
+              <p className="font-medium">
+                File uploaded successfully.
+              </p>
+              <p className="text-sm text-neutral-500">
+                Job ID: <span className="font-mono">{jobId}</span>
+              </p>
+            </div>
+          )}
 
-          <p className="text-gray-300">
-            After that period, all files are permanently deleted.
-            Kreyai does not use customer content for model training.
-          </p>
-        </section>
+          {message && (
+            <p className="text-sm text-red-500 text-center">
+              {message}
+            </p>
+          )}
 
-        {/* Accounts */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">
-            Guest or account
-          </h2>
-
-          <p className="text-gray-300">
-            You may upload and receive a transcript without creating an account.
-          </p>
-
-          <p className="text-gray-300">
-            Accounts (coming later) will offer faster checkout,
-            job history, and follow-up convenience.
-          </p>
-        </section>
-
-        {/* Formats */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">
-            Supported formats
-          </h2>
-
-          <p className="text-gray-300">
-            Common audio and video formats are supported, including:
-          </p>
-
-          <p className="text-gray-400">
-            MP3, WAV, M4A, MP4, MOV
-          </p>
-        </section>
-
-        {/* CTA placeholder */}
-        <section className="pt-6 space-y-3">
-          <div className="rounded-lg border border-gray-700 px-6 py-4 text-gray-400">
-            Upload functionality will be available here.
-          </div>
-
-          <p className="text-sm text-gray-500">
-            Save your Job ID for follow-up within the 7-day retention window.
-          </p>
-        </section>
-
+        </div>
       </div>
     </main>
   );

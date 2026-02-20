@@ -1,100 +1,103 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function VerifyPage() {
-  const [jobId, setJobId] = useState("");
-  const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const router = useRouter();
+  const params = useSearchParams();
 
-  const handleVerify = async () => {
+  const jobId = params.get("job");
+  const email = params.get("email");
+  const codeFromUrl = params.get("code");
+
+  const [code, setCode] = useState(codeFromUrl || "");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [autoVerifying, setAutoVerifying] = useState(false);
+
+  async function verify(verificationCode?: string) {
+    if (!jobId) return;
+
+    const finalCode = verificationCode || code;
+    if (!finalCode) return;
+
     setLoading(true);
-    setMessage(null);
-    setSuccess(false);
+    setError(null);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/jobs/verify", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          job_id: jobId.trim(),
-          code: code.trim(),
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/verify?job_id=${jobId}&code=${finalCode}`,
+        { method: "POST" }
+      );
 
-      const data = await res.json();
+      if (!res.ok) throw new Error("Verification failed.");
 
-      if (!res.ok) {
-        throw new Error(data.detail || "Verification failed.");
-      }
-
-      setSuccess(true);
-      setMessage("Email verified successfully. You may continue.");
+      // Redirect to upload page
+      router.push(`/upload?job=${jobId}`);
     } catch (err: any) {
-      setMessage(err.message || "An unexpected error occurred.");
-    } finally {
+      setError(err.message);
       setLoading(false);
+      setAutoVerifying(false);
     }
-  };
+  }
+
+  // 🔥 Auto-verify if link includes code
+  useEffect(() => {
+    if (jobId && codeFromUrl) {
+      setAutoVerifying(true);
+      verify(codeFromUrl);
+    }
+  }, []);
 
   return (
-    <main className="min-h-screen bg-black text-white px-6 py-24">
-      <div className="mx-auto max-w-md space-y-8">
+    <main className="min-h-screen bg-neutral-50">
+      <div className="mx-auto max-w-md px-6 py-20">
+        <div className="bg-white border border-neutral-200 rounded-xl p-10 space-y-8">
 
-        <h1 className="text-3xl font-semibold text-center">
-          Verify your email
-        </h1>
+          <h1 className="text-xl font-semibold text-center">
+            Verify your email
+          </h1>
 
-        <p className="text-gray-400 text-center">
-          Enter the job ID and verification code sent to your email.
-        </p>
+          {email && (
+            <p className="text-sm text-neutral-500 text-center">
+              Verification for {email}
+            </p>
+          )}
 
-        <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="Job ID (e.g. KR-123456)"
-            value={jobId}
-            onChange={(e) => setJobId(e.target.value)}
-            className="w-full rounded-md bg-gray-900 border border-gray-700 px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-600"
-          />
+          {autoVerifying && (
+            <p className="text-sm text-neutral-500 text-center">
+              Verifying…
+            </p>
+          )}
 
-          <input
-            type="text"
-            placeholder="6-digit verification code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="w-full rounded-md bg-gray-900 border border-gray-700 px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-600"
-          />
+          {!autoVerifying && (
+            <>
+              <input
+                type="text"
+                placeholder="Enter verification code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                className="w-full border border-neutral-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-black"
+              />
 
-          <button
-            onClick={handleVerify}
-            disabled={loading || !jobId || !code}
-            className="w-full rounded-md bg-white text-black py-3 font-medium hover:bg-gray-200 disabled:opacity-50"
-          >
-            {loading ? "Verifying…" : "Verify"}
-          </button>
+              <button
+                onClick={() => verify()}
+                disabled={loading}
+                className="w-full border border-black rounded-lg px-6 py-3 text-sm font-medium hover:bg-neutral-100 transition"
+              >
+                {loading ? "Verifying…" : "Verify"}
+              </button>
+            </>
+          )}
+
+          {error && (
+            <p className="text-sm text-red-500 text-center">
+              {error}
+            </p>
+          )}
+
         </div>
-
-        {message && (
-          <div
-            className={`text-center text-sm ${
-              success ? "text-green-400" : "text-red-400"
-            }`}
-          >
-            {message}
-          </div>
-        )}
-
-        {success && (
-          <div className="text-center text-gray-400 text-sm">
-            You may now return to your upload page.
-          </div>
-        )}
-
       </div>
     </main>
   );

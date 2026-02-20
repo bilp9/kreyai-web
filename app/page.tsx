@@ -1,15 +1,52 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function startJob() {
+    if (!email) {
+      setError("Please enter your email.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/?email=${encodeURIComponent(email)}`,
+        { method: "POST" }
+      );
+
+      if (!res.ok) throw new Error("Failed to create job.");
+
+      const data = await res.json();
+
+      router.push(`/verify?job=${data.job_id}&email=${encodeURIComponent(email)}`);
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-black text-white px-6 py-24">
       <div className="mx-auto max-w-4xl space-y-20">
 
         {/* Hero */}
         <section className="text-center space-y-6">
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-semibold tracking-tight">
             Language, captured with precision.
           </h1>
 
-          <p className="text-xl text-gray-300">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             Secure transcription and language intelligence for Haitian Creole and multilingual audio.
           </p>
 
@@ -20,18 +57,32 @@ export default function Home() {
 
           {/* Primary CTA */}
           <div className="pt-8 flex flex-col items-center gap-4">
-            <a
-              href="/upload"
+
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full max-w-md rounded-lg bg-gray-900 border border-gray-700 px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-white"
+            />
+
+            <button
+              onClick={startJob}
+              disabled={loading}
               className="inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-base font-medium text-black hover:bg-gray-200 transition"
             >
-              Upload audio or video
-            </a>
+              {loading ? "Starting…" : "Start transcription"}
+            </button>
+
+            {error && (
+              <p className="text-red-400 text-sm">{error}</p>
+            )}
 
             <p className="text-sm text-gray-400">
               No account required • Secure • Time-limited retention
             </p>
 
-            <span className="mt-2 inline-block rounded-full border border-gray-600 px-4 py-1.5 text-xs text-gray-400">
+            <span className="mt-2 inline-block rounded-full border border-gray-700 px-4 py-1.5 text-xs tracking-wide text-gray-400">
               Private beta
             </span>
           </div>
