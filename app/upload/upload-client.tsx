@@ -48,11 +48,20 @@ export default function UploadClient() {
       formData.append("file", file);
 
       const res = await fetch(
-        `${API_BASE}/api/jobs/${jobId}/upload`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}/upload`,
         {
           method: "POST",
           body: formData,
         }
+      );
+      
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.detail || "Upload failed.");
+      }
+      
+      // 🚀 Redirect immediately
+      router.push(`/jobs/${jobId}`);
       );
 
       if (!res.ok) {

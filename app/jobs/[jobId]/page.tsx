@@ -1,157 +1,110 @@
-// app/jobs/[jobId]/page.tsx
+"use client";
 
-import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 
-type JobStatus = "processing" | "completed" | "failed" | "expired";
+type JobStatus = {
+  job_id: string;
+  status: string;
+  progress: number;
+};
 
-interface JobResponse {
-  status: JobStatus;
-  expires_at?: string;
-  transcript_preview?: string;
-  formats?: string[];
-}
+export default function JobPage() {
+  const router = useRouter();
+  const { jobId } = useParams() as { jobId: string };
+  const searchParams = useSearchParams();
+  const token = searchParams.get("t");
 
-async function fetchJob(jobId: string, token: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}?t=${token}`,
-    { cache: "no-store" }
-  );
+  const [job, setJob] = useState<JobStatus | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!res.ok) return null;
-  return res.json();
-}
+  useEffect(() => {
+    if (!token) {
+      setError("Access token missing.");
+      return;
+    }
 
-export default async function JobPage(props: any) {
-  // 🔥 Next.js 16 requires awaiting these
-  const params = await props.params;
-  const searchParams = await props.searchParams;
+    async function fetchStatus() {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}?t=${token}`
+        );
 
-  const jobId = params.jobId;
-  const token = searchParams?.t;
+        if (!res.ok) throw new Error("Access denied or job not found.");
 
-  if (!token) return notFound();
+        const data = await res.json();
+        setJob(data);
+      } catch (err: any) {
+        setError(err.message);
+      }
+    }
 
-  const job = await fetchJob(jobId, token);
-  if (!job) return notFound();
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 3000);
+    return () => clearInterval(interval);
+  }, [jobId, token]);
 
-  const isExpired = job.status === "expired";
-
-  return (
-    <div className="min-h-screen bg-white text-black">
-      {/* Header */}
-      <header className="border-b border-neutral-200 px-8 py-4">
-        <div className="max-w-6xl">
-          <img src="/logo.svg" alt="KreyAI" className="h-10" />
-        </div>
-      </header>
-
-      {/* Main */}
-      <main className="mx-auto max-w-3xl px-8 py-12 space-y-6">
-
-        {/* Job Meta */}
-        <div className="space-y-2">
-          <p className="text-sm text-neutral-500">Job ID</p>
-          <p className="text-base font-medium">{jobId}</p>
-
-          <StatusBadge status={job.status} />
-
-          {job.expires_at && !isExpired && (
-            <p className="text-sm text-neutral-500 mt-2">
-              Available until{" "}
-              {new Date(job.expires_at).toLocaleDateString()}
-            </p>
-          )}
-        </div>
-
-        {/* States */}
-        {job.status === "processing" && (
-          <p className="text-neutral-600">
-            Your transcript is being generated.
-          </p>
-        )}
-
-        {job.status === "failed" && (
-          <p className="text-neutral-600">
-            Processing failed. If this persists, contact support.
-          </p>
-        )}
-
-        {job.status === "completed" && job.transcript_preview && (
-          <>
-            <TranscriptPreview text={job.transcript_preview} />
-            <DownloadButtons
-              jobId={jobId}
-              token={token}
-              formats={job.formats || []}
-            />
-          </>
-        )}
-
-        {isExpired && (
-          <div>
-            <p className="font-medium">Access expired.</p>
-            <p className="text-neutral-600">
-              This transcript is no longer available.
-              Files are retained for 7 days after processing.
-            </p>
-          </div>
-        )}
+  if (error) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <p className="text-red-400">{error}</p>
       </main>
-    </div>
-  );
-}
+    );
+  }
 
-function StatusBadge({ status }: { status: JobStatus }) {
   return (
-    <span className="inline-block border border-black px-3 py-1 text-xs uppercase tracking-wide">
-      {status}
-    </span>
-  );
-}
+    <main className="min-h-screen bg-black text-white px-6 py-24">
+      <div className="mx-auto max-w-xl space-y-10">
 
-function TranscriptPreview({ text }: { text: string }) {
-  return (
-    <div>
-      <h2 className="text-sm uppercase tracking-wide text-neutral-500 mb-4">
-        Transcript
-      </h2>
-      <div className="border border-neutral-200 rounded-lg p-6 whitespace-pre-wrap text-[15px] leading-relaxed">
-        {text}
+        <h1 className="text-3xl font-semibold text-center">
+          Job {jobId}
+        </h1>
+
+        {job ? (
+          <div className="rounded-xl border border-gray-800 bg-gray-900 p-8 space-y-6">
+
+            {/* Status */}
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400 text-sm">Status</span>
+              <span className="font-medium text-white">{job.status}</span>
+            </div>
+
+            {/* Progress */}
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400 text-sm">Progress</span>
+              <span className="text-sm">{job.progress}%</span>
+            </div>
+
+            <div className="w-full bg-gray-800 rounded-full h-3 overflow-hidden">
+              <div
+                className="bg-white h-3 rounded-full transition-all duration-700 ease-out"
+                style={{ width: `${job.progress}%` }}
+              />
+            </div>
+
+            {/* Downloads */}
+            {job.status === "COMPLETED" && (
+              <div className="pt-6 space-y-3">
+
+                {["txt", "srt", "vtt", "docx"].map((ext) => (
+                  <a
+                    key={ext}
+                    href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}/${ext}?t=${token}`}
+                    className="block rounded-lg bg-white text-black px-4 py-2 text-center hover:bg-gray-200 transition"
+                  >
+                    Download {ext.toUpperCase()}
+                  </a>
+                ))}
+
+              </div>
+            )}
+
+          </div>
+        ) : (
+          <p className="text-gray-400 text-center">Loading...</p>
+        )}
+
       </div>
-    </div>
-  );
-}
-
-function DownloadButtons({
-  jobId,
-  token,
-  formats,
-}: {
-  jobId: string;
-  token: string;
-  formats: string[];
-}) {
-  return (
-    <div>
-      <h2 className="text-sm uppercase tracking-wide text-neutral-500 mb-4">
-        Download
-      </h2>
-
-      <div className="flex gap-4 flex-wrap">
-        {formats.map((format) => (
-          <a
-            key={format}
-            href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}/${format}?t=${token}`}
-            className="border border-black px-4 py-2 rounded-md text-sm hover:bg-neutral-100 transition"
-          >
-            {format.toUpperCase()}
-          </a>
-        ))}
-      </div>
-
-      <p className="text-xs text-neutral-500 mt-6">
-        Files are retained for 7 days after processing.
-      </p>
-    </div>
+    </main>
   );
 }
