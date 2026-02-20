@@ -18,15 +18,19 @@ export default function RootLayout({
       <body className="bg-white text-black">
 
         {/* Global Header */}
-        <header className="border-b border-neutral-200">
-          <div className="mx-auto max-w-6xl px-8 py-4">
-            <img
-              src="/logo.svg"
-              alt="KreyAI"
-              className="h-8"
-            />
-          </div>
-        </header>
+        <header className="w-full border-b border-neutral-200 bg-white">
+  <div className="mx-auto max-w-6xl px-6 h-20 flex items-center justify-between">
+
+    <a href="/" className="flex items-center">
+      <img
+        src="/logo.svg"
+        alt="KreyAI"
+        className="h-10 md:h-12 w-auto"
+      />
+    </a>
+
+  </div>
+</header>
 
         {/* Page Content */}
         <main>{children}</main>
