@@ -45,7 +45,6 @@ export default function JobPage() {
         ) {
           clearInterval(interval);
         }
-
       } catch (err: any) {
         setError(err.message);
         clearInterval(interval);
@@ -60,153 +59,102 @@ export default function JobPage() {
 
   if (error) {
     return (
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-red-400 text-lg">{error}</p>
+      <main className="min-h-screen bg-white flex items-center justify-center">
+        <p className="text-red-600">{error}</p>
       </main>
     );
   }
 
-  const isCompleted = job?.status?.toLowerCase() === "completed";
-  const isFailed = job?.status?.toLowerCase() === "failed";
-
   return (
-    <main className="relative min-h-screen bg-black text-white px-6 py-32 overflow-hidden">
+    <main className="relative min-h-screen bg-white text-neutral-900 overflow-hidden">
 
-      {/* Floating Background Glow */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-
-        {/* Base ambient glow */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                     w-[700px] h-[700px] 
-                     bg-white/5 
-                     rounded-full 
-                     blur-3xl 
-                     transition-all duration-1000 ease-out"
-        />
-
-        {/* Expanded glow when completed */}
-        {isCompleted && (
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                       w-[1100px] h-[1100px] 
-                       bg-white/10 
-                       rounded-full 
-                       blur-3xl 
-                       transition-all duration-1000 ease-out"
-          />
-        )}
+      {/* Subtle glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-3xl animate-pulse" />
       </div>
 
-      <div className="mx-auto max-w-2xl space-y-14 text-center">
+      <section className="relative mx-auto max-w-3xl px-6 pt-28 pb-32 space-y-12">
 
-        {/* Success Header */}
-        {isCompleted && (
-          <div className="space-y-6">
-
-            <div className="flex justify-center">
-              <div className="h-20 w-20 rounded-full bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-sm shadow-xl">
-                <svg
-                  className="w-10 h-10 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-            </div>
-
-            <h1 className="text-4xl font-semibold tracking-tight">
-              Transcription Complete
-            </h1>
-
-            <p className="text-gray-400 text-sm">
-              Job {jobId}
-            </p>
-          </div>
-        )}
-
-        {!isCompleted && (
-          <h1 className="text-3xl font-semibold tracking-tight">
+        <div className="space-y-3">
+          <h1 className="text-4xl font-semibold tracking-tight">
             Job {jobId}
           </h1>
-        )}
+          <p className="text-neutral-500 text-sm">
+            Track your transcription progress below.
+          </p>
+        </div>
 
-        {/* Status Card */}
-        {job && (
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 shadow-2xl space-y-10 text-left">
+        {job ? (
+          <div className="space-y-8">
 
-            {/* Status & Progress */}
-            <div className="space-y-6">
+            {/* Status */}
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-neutral-500">Status</span>
+              <span className="capitalize font-medium">
+                {job.status}
+              </span>
+            </div>
 
-              <div className="flex justify-between text-sm text-gray-400">
-                <span>Status</span>
-                <span className="capitalize text-white font-medium">
-                  {job.status}
-                </span>
+            {/* Progress Bar */}
+            <div className="space-y-3">
+              <div className="flex justify-between text-sm text-neutral-500">
+                <span>Progress</span>
+                <span>{job.progress}%</span>
               </div>
 
-              <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+              <div className="w-full h-3 bg-neutral-200 rounded-full overflow-hidden">
                 <div
-                  className="bg-white h-3 rounded-full transition-all duration-700 ease-out"
+                  className="h-3 bg-neutral-900 rounded-full transition-all duration-700 ease-out"
                   style={{ width: `${job.progress}%` }}
                 />
               </div>
-
-              <div className="text-right text-xs text-gray-500">
-                {job.progress}% complete
-              </div>
-
             </div>
 
-            {/* Downloads */}
-            {isCompleted && (
-              <div className="space-y-8 pt-4 text-center">
+            {/* Completed */}
+            {job.status?.toLowerCase() === "completed" && (
+              <div className="space-y-6 pt-6">
 
-                {/* Primary Download */}
-                <a
-                  href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}/txt?t=${token}`}
-                  className="block w-full rounded-xl bg-white text-black px-6 py-4 text-center font-medium hover:bg-gray-200 transition-all duration-200"
-                >
-                  Download Transcript
-                </a>
+                <div className="rounded-xl bg-neutral-50 border border-neutral-200 p-6">
+                  <p className="font-medium">
+                    Your transcript is ready.
+                  </p>
+                  <p className="text-sm text-neutral-500 mt-1">
+                    Download your files below.
+                  </p>
+                </div>
 
-                {/* Secondary Formats */}
                 <div className="grid grid-cols-2 gap-4">
-                  {["docx", "srt", "vtt"].map((ext) => (
+                  {["txt", "srt", "vtt", "docx"].map((ext) => (
                     <a
                       key={ext}
                       href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}/${ext}?t=${token}`}
-                      className="rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm px-4 py-3 text-center hover:bg-white/10 transition-all duration-200"
+                      className="rounded-xl border border-neutral-300 px-4 py-3 text-center text-sm font-medium hover:bg-neutral-100 transition"
                     >
-                      {ext.toUpperCase()}
+                      Download {ext.toUpperCase()}
                     </a>
                   ))}
                 </div>
 
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-neutral-500">
                   Files are retained for 7 days.
                 </p>
 
               </div>
             )}
 
-            {isFailed && (
-              <div className="pt-6 text-center text-red-400 text-sm">
+            {/* Failed */}
+            {job.status?.toLowerCase() === "failed" && (
+              <div className="text-red-600 pt-6">
                 Processing failed. Please upload again.
               </div>
             )}
 
           </div>
+        ) : (
+          <p className="text-neutral-500">Loading...</p>
         )}
 
-        {!job && (
-          <p className="text-gray-400 text-center text-lg">Loading...</p>
-        )}
-
-      </div>
+      </section>
     </main>
   );
 }
