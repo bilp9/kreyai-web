@@ -4,7 +4,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "KreyAI",
+  title: "Kreyai",
   description: "Structured multilingual transcription",
 };
 
@@ -15,24 +15,35 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-white text-black">
+      <body className="bg-white text-neutral-900">
 
-        {/* Global Header */}
-        <header className="w-full border-b border-neutral-200 bg-white">
-  <div className="mx-auto max-w-6xl px-6 h-20 flex items-center justify-between">
+        {/* Minimal Header */}
+        <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl">
+          <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
 
-    <a href="/" className="flex items-center">
-      <img
-        src="/logo.svg"
-        alt="KreyAI"
-        className="h-10 md:h-12 w-auto"
-      />
-    </a>
+            <a href="/" className="flex items-center">
+              <img
+                src="/logo.svg"
+                alt="Kreyai"
+                className="h-12 w-auto"
+              />
+            </a>
 
-  </div>
-</header>
+            <nav className="hidden md:flex gap-8 text-sm font-medium text-neutral-600">
+              <a href="/faq" className="hover:text-neutral-900 transition">
+                FAQ
+              </a>
+              <a href="/privacy" className="hover:text-neutral-900 transition">
+                Privacy
+              </a>
+              <a href="/terms" className="hover:text-neutral-900 transition">
+                Terms
+              </a>
+            </nav>
 
-        {/* Page Content */}
+          </div>
+        </header>
+
         <main>{children}</main>
 
       </body>

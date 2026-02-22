@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Header from "./components/Header";
 
 export default function Home() {
   const router = useRouter();
@@ -37,108 +36,78 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-white text-neutral-900">
-      <Header />
+    <main className="relative min-h-screen bg-white text-neutral-900 overflow-hidden">
 
-      {/* Background energy (Echo/Stripe vibe) */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-indigo-500/10 blur-3xl" />
-        <div className="absolute top-10 right-[-120px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/10 blur-3xl" />
-        <div className="absolute bottom-[-220px] left-1/3 h-[620px] w-[620px] rounded-full bg-sky-500/10 blur-3xl" />
+      {/* Subtle animated background glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-3xl animate-pulse" />
+        <div className="absolute top-10 right-[-150px] h-[500px] w-[500px] rounded-full bg-fuchsia-500/10 blur-3xl animate-pulse" />
       </div>
 
-      <section className="relative mx-auto max-w-6xl px-6 pt-20 pb-24">
-        <div className="grid items-center gap-16 md:grid-cols-2">
-          {/* Left: hero */}
-          <div className="space-y-8">
-            <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-[1.05]">
-              Transcription{" "}
-              <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-                without compromise.
-              </span>
-            </h1>
+      <section className="relative mx-auto max-w-6xl px-6 pt-28 pb-32">
 
-            <p className="text-lg md:text-xl text-neutral-600 leading-relaxed max-w-xl">
-              Accurate, speaker-aware transcripts for multilingual audio.
-              Built for professionals who need precision, not summaries.
-            </p>
+        {/* Hero */}
+        <div className="max-w-3xl space-y-8">
 
-            {/* CTA */}
-            <div className="mt-6 w-full max-w-xl rounded-2xl border border-black/10 bg-white/80 backdrop-blur-xl shadow-[0_10px_40px_-20px_rgba(0,0,0,0.25)] p-2">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <input
-                  type="email"
-                  placeholder="name@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full flex-1 rounded-xl px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none"
-                />
+          <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-[1.05]">
+            Precision transcription,{" "}
+            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
+              built for professionals.
+            </span>
+          </h1>
 
-                <button
-                  onClick={startJob}
-                  disabled={loading}
-                  className="rounded-xl bg-neutral-900 px-6 py-3 text-white font-medium hover:bg-black transition disabled:opacity-60"
-                >
-                  {loading ? "Starting…" : "Get Started"}
-                </button>
-              </div>
-            </div>
+          <p className="text-xl text-neutral-600 leading-relaxed">
+            Accurate multilingual transcripts with speaker structure and clean formatting.
+            Designed for teams that require clarity, not approximation.
+          </p>
 
-            {error && <p className="text-sm text-red-600">{error}</p>}
+          {/* CTA */}
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
 
-            <p className="text-sm text-neutral-500">
-              No account required • Secure file handling • Time-limited retention
-            </p>
+            <input
+              type="email"
+              placeholder="name@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full sm:w-[360px] rounded-xl border border-neutral-300 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+            />
+
+            <button
+              onClick={startJob}
+              disabled={loading}
+              className="rounded-xl bg-neutral-900 px-6 py-3 text-white font-medium hover:bg-black transition disabled:opacity-60"
+            >
+              {loading ? "Starting…" : "Start transcription"}
+            </button>
           </div>
 
-          {/* Right: demo card */}
-          <div className="relative">
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-500/10 via-violet-500/10 to-fuchsia-500/10 blur-2xl" />
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
-            <div className="relative rounded-3xl border border-black/10 bg-white/70 backdrop-blur-xl shadow-[0_20px_60px_-30px_rgba(0,0,0,0.35)] p-8">
-              <div className="flex items-start justify-between">
-                <span className="inline-flex rounded-full bg-indigo-600/10 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-700">
-                  SPEAKER 1
-                </span>
-                <span className="text-xs text-neutral-400">00:00:04</span>
-              </div>
+          <p className="text-sm text-neutral-500 pt-2">
+            No account required • Secure handling • Time-limited retention
+          </p>
 
-              <p className="mt-4 text-neutral-800 leading-relaxed">
-                “We needed a transcript that preserved the original meaning.”
-              </p>
-
-              <div className="my-6 h-px w-full bg-black/5" />
-
-              <div className="flex items-start justify-between">
-                <span className="inline-flex rounded-full bg-fuchsia-600/10 px-3 py-1 text-xs font-semibold tracking-wide text-fuchsia-700">
-                  SPEAKER 2
-                </span>
-                <span className="text-xs text-neutral-400">00:00:12</span>
-              </div>
-
-              <p className="mt-4 text-neutral-800 leading-relaxed">
-                “Exactly. Accuracy matters when language carries nuance.”
-              </p>
-            </div>
-          </div>
         </div>
 
-        {/* Feature row */}
-        <div className="mt-20 grid gap-8 md:grid-cols-3">
+        {/* Subtle Divider */}
+        <div className="mt-24 h-px w-full bg-gradient-to-r from-transparent via-neutral-200 to-transparent" />
+
+        {/* Feature Section */}
+        <div className="mt-20 grid gap-12 md:grid-cols-3">
+
           {[
-            ["Faithful transcription", "No paraphrasing. No forced rewrites. Just what was said."],
-            ["Speaker-aware output", "Structured transcripts for interviews, meetings, and recordings."],
-            ["Professional-ready", "TXT, DOCX, SRT, VTT — built for real workflows."],
+            ["Faithful transcription", "No paraphrasing. Just what was said — clearly formatted."],
+            ["Speaker aware", "Multi-speaker audio structured cleanly for readability."],
+            ["Export ready", "TXT, DOCX, SRT, and VTT formats for professional workflows."],
           ].map(([title, desc]) => (
-            <div
-              key={title}
-              className="rounded-2xl border border-black/10 bg-white/70 backdrop-blur-xl p-6 shadow-[0_10px_40px_-30px_rgba(0,0,0,0.25)]"
-            >
+            <div key={title} className="space-y-4">
               <h3 className="text-lg font-semibold">{title}</h3>
-              <p className="mt-2 text-neutral-600">{desc}</p>
+              <p className="text-neutral-600 leading-relaxed">{desc}</p>
             </div>
           ))}
+
         </div>
+
       </section>
     </main>
   );
