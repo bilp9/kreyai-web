@@ -28,7 +28,6 @@ export default function Home() {
       if (!res.ok) throw new Error("Failed to create job.");
 
       const data = await res.json();
-
       router.push(`/verify?job=${data.job_id}&email=${encodeURIComponent(email)}`);
     } catch (err: any) {
       setError(err.message);
@@ -37,145 +36,122 @@ export default function Home() {
   }
 
   return (
-    <main className="relative min-h-screen bg-black text-white px-6 py-32 overflow-hidden">
+    <main className="relative min-h-screen bg-neutral-950 text-white">
 
-      {/* Ambient Glow Background */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
+      {/* Top soft gradient */}
+      <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
 
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 
-                        w-[900px] h-[900px] 
-                        bg-white/5 
-                        rounded-full 
-                        blur-3xl" />
-
-        <div className="absolute bottom-10 right-10 
-                        w-[400px] h-[400px] 
-                        bg-indigo-500/10 
-                        rounded-full 
-                        blur-3xl" />
-
-      </div>
-
-      <div className="mx-auto max-w-5xl space-y-32">
+      <div className="mx-auto max-w-6xl px-6 py-32 space-y-40">
 
         {/* Hero */}
-        <section className="text-center space-y-10">
+        <section className="grid md:grid-cols-2 gap-16 items-center">
 
-          <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-tight">
-            Language, captured with precision.
-          </h1>
+          <div className="space-y-8">
 
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Secure transcription and language intelligence for Haitian Creole
-            and multilingual audio.
-          </p>
+            <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-tight">
+              AI transcription built for real-world language.
+            </h1>
 
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Designed for professionals, researchers, and organizations that
-            require accuracy, discretion, and clarity.
-          </p>
+            <p className="text-xl text-gray-300">
+              Accurate, speaker-aware transcripts for multilingual audio —
+              designed for professionals who value precision.
+            </p>
 
-          {/* Glass CTA Panel */}
-          <div className="pt-12 flex justify-center">
-            <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-2xl space-y-6">
+            <div className="pt-6 flex gap-4">
 
               <input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl bg-black/40 border border-white/20 px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-white"
+                className="flex-1 rounded-xl bg-neutral-900 border border-neutral-700 px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-white"
               />
 
               <button
                 onClick={startJob}
                 disabled={loading}
-                className="w-full rounded-xl bg-white px-6 py-3 text-base font-medium text-black hover:bg-gray-200 transition-all duration-200"
+                className="rounded-xl bg-white px-6 py-3 text-base font-medium text-black hover:bg-gray-200 transition"
               >
-                {loading ? "Starting…" : "Start transcription"}
+                {loading ? "Starting…" : "Start"}
               </button>
 
-              {error && (
-                <p className="text-red-400 text-sm text-center">
-                  {error}
-                </p>
-              )}
+            </div>
 
-              <p className="text-xs text-gray-400 text-center">
-                No account required • Secure • Time-limited retention
+            {error && (
+              <p className="text-red-400 text-sm">{error}</p>
+            )}
+
+            <p className="text-sm text-gray-400">
+              No account required • Secure file handling • Time-limited retention
+            </p>
+
+          </div>
+
+          {/* Visual Block */}
+          <div className="hidden md:block">
+            <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8 space-y-4 shadow-2xl">
+
+              <div className="flex justify-between text-sm text-gray-400">
+                <span>Speaker 1</span>
+                <span>00:00</span>
+              </div>
+
+              <p className="text-gray-200">
+                We needed a transcript that preserved the original meaning,
+                not something rewritten or summarized.
               </p>
 
-              <div className="flex justify-center">
-                <span className="rounded-full border border-white/20 px-4 py-1.5 text-xs tracking-wide text-gray-400">
-                  Private beta
-                </span>
+              <div className="flex justify-between text-sm text-gray-400 pt-4">
+                <span>Speaker 2</span>
+                <span>00:12</span>
               </div>
+
+              <p className="text-gray-200">
+                Exactly. Accuracy matters when language carries nuance.
+              </p>
 
             </div>
           </div>
 
         </section>
 
-        {/* What */}
-        <section className="space-y-8 max-w-4xl mx-auto">
-          <h2 className="text-4xl font-semibold">
-            Accurate transcription, without compromise.
-          </h2>
+        {/* Features */}
+        <section className="grid md:grid-cols-3 gap-12">
 
-          <p className="text-gray-300 text-lg">
-            Kreyai transforms audio and video into high-quality transcripts,
-            with a focus on Haitian Creole and mixed-language speech. Our system
-            is built to respect how people actually speak — including code-switching,
-            accents, and conversational rhythm.
-          </p>
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Faithful transcription</h3>
+            <p className="text-gray-400">
+              No paraphrasing. No forced rewrites. Just what was actually said.
+            </p>
+          </div>
 
-          <p className="text-gray-300 text-lg">
-            Whether handling interviews, meetings, podcasts, or sensitive recordings,
-            Kreyai prioritizes fidelity over shortcuts.
-          </p>
-        </section>
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Speaker-aware output</h3>
+            <p className="text-gray-400">
+              Structured transcripts for interviews, meetings, and recordings.
+            </p>
+          </div>
 
-        {/* Why */}
-        <section className="space-y-8 max-w-4xl mx-auto">
-          <h2 className="text-4xl font-semibold">
-            Built for real-world language.
-          </h2>
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold">Built for professionals</h3>
+            <p className="text-gray-400">
+              Designed for research, legal, academic, and production workflows.
+            </p>
+          </div>
 
-          <ul className="space-y-4 text-gray-300 text-lg list-disc list-inside">
-            <li>Faithful transcription — not paraphrasing</li>
-            <li>Speaker-aware output for multi-speaker recordings</li>
-            <li>Human-review–friendly by design</li>
-            <li>No forced over-correction of meaning</li>
-          </ul>
-        </section>
-
-        {/* Security */}
-        <section className="space-y-8 max-w-4xl mx-auto">
-          <h2 className="text-4xl font-semibold">
-            Security & responsibility.
-          </h2>
-
-          <p className="text-gray-300 text-lg">
-            Kreyai is built with privacy and responsibility at its core.
-          </p>
-
-          <ul className="space-y-4 text-gray-300 text-lg list-disc list-inside">
-            <li>Secure file handling</li>
-            <li>Time-limited retention options</li>
-            <li>Clear job identifiers for follow-up and support</li>
-            <li>No use of customer content for model training</li>
-          </ul>
         </section>
 
         {/* Closing */}
-        <section className="text-center space-y-6 pt-20">
+        <section className="text-center space-y-6">
+
           <p className="text-2xl text-gray-300">
-            A new standard for Creole-first language technology.
+            Language deserves precision.
           </p>
 
-          <p className="text-gray-500 italic text-lg">
-            Accuracy is not optional. Language deserves care.
+          <p className="text-gray-500">
+            A modern standard for AI transcription.
           </p>
+
         </section>
 
       </div>
