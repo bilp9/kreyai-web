@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Header from "./components/Header";
 
 export default function Home() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,14 +16,18 @@ export default function Home() {
       setError("Please enter your email.");
       return;
     }
+
     setLoading(true);
     setError(null);
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/?email=${encodeURIComponent(email)}`,
         { method: "POST" }
       );
+
       if (!res.ok) throw new Error("Failed to create job.");
+
       const data = await res.json();
       router.push(`/verify?job=${data.job_id}&email=${encodeURIComponent(email)}`);
     } catch (err: any) {
@@ -31,107 +37,109 @@ export default function Home() {
   }
 
   return (
-    <main className="relative min-h-screen bg-white text-slate-900 selection:bg-indigo-100 selection:text-indigo-900 overflow-hidden">
-      
-      {/* Background Gradients */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-[-5%] right-[-5%] w-[60%] h-[40%] 
-                        bg-gradient-to-br from-indigo-100/40 via-purple-50/30 to-transparent 
-                        blur-[100px] rounded-full" />
+    <main className="min-h-screen bg-white text-neutral-900">
+      <Header />
+
+      {/* Background energy (Echo/Stripe vibe) */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-indigo-500/10 blur-3xl" />
+        <div className="absolute top-10 right-[-120px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/10 blur-3xl" />
+        <div className="absolute bottom-[-220px] left-1/3 h-[620px] w-[620px] rounded-full bg-sky-500/10 blur-3xl" />
       </div>
 
-      <div className="mx-auto max-w-6xl px-6 py-12 md:py-20 space-y-24">
+      <section className="relative mx-auto max-w-6xl px-6 pt-20 pb-24">
+        <div className="grid items-center gap-16 md:grid-cols-2">
+          {/* Left: hero */}
+          <div className="space-y-8">
+            <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-[1.05]">
+              Transcription{" "}
+              <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
+                without compromise.
+              </span>
+            </h1>
 
-        {/* --- BRAND HEADER --- */}
-        <header className="flex items-center justify-between">
-          <div className="group cursor-pointer">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tighter text-slate-950 flex items-center gap-1">
-              Echo<span className="text-indigo-600">.</span>
-            </h2>
-            <div className="h-0.5 w-0 group-hover:w-full bg-indigo-600 transition-all duration-300" />
-          </div>
-        </header>
+            <p className="text-lg md:text-xl text-neutral-600 leading-relaxed max-w-xl">
+              Accurate, speaker-aware transcripts for multilingual audio.
+              Built for professionals who need precision, not summaries.
+            </p>
 
-        {/* Hero Section */}
-        <section className="grid lg:grid-cols-12 gap-16 items-center">
-          <div className="lg:col-span-7 space-y-10">
-            <div className="space-y-6">
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-[1.1] text-slate-950">
-                Transcription <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-                  without compromise.
-                </span>
-              </h1>
-              <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
-                Accurate, speaker-aware transcripts for multilingual audio. 
-                Built for professionals who need precision, not summaries.
-              </p>
-            </div>
-
-            <div className="max-w-md">
-              <div className="group relative flex items-center p-1.5 rounded-2xl bg-white border border-slate-200 shadow-sm focus-within:ring-2 focus-within:ring-indigo-100 focus-within:border-indigo-500 transition-all duration-300">
+            {/* CTA */}
+            <div className="mt-6 w-full max-w-xl rounded-2xl border border-black/10 bg-white/80 backdrop-blur-xl shadow-[0_10px_40px_-20px_rgba(0,0,0,0.25)] p-2">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <input
                   type="email"
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 bg-transparent px-4 py-3 outline-none text-slate-900 placeholder:text-slate-400"
+                  className="w-full flex-1 rounded-xl px-4 py-3 text-neutral-900 placeholder:text-neutral-400 outline-none"
                 />
+
                 <button
                   onClick={startJob}
                   disabled={loading}
-                  className="rounded-xl bg-slate-900 px-8 py-3 text-sm font-semibold text-white hover:bg-slate-800 active:scale-95 transition-all disabled:opacity-50"
+                  className="rounded-xl bg-neutral-900 px-6 py-3 text-white font-medium hover:bg-black transition disabled:opacity-60"
                 >
-                  {loading ? "..." : "Get Started"}
+                  {loading ? "Starting…" : "Get Started"}
                 </button>
               </div>
-              
-              {error && <p className="mt-3 text-red-500 text-sm font-medium ml-2">{error}</p>}
             </div>
+
+            {error && <p className="text-sm text-red-600">{error}</p>}
+
+            <p className="text-sm text-neutral-500">
+              No account required • Secure file handling • Time-limited retention
+            </p>
           </div>
 
-          {/* Transcript Card */}
-          <div className="lg:col-span-5 relative">
-            <div className="absolute -inset-4 bg-gradient-to-tr from-indigo-500 to-purple-500 opacity-10 blur-2xl rounded-3xl" />
-            <div className="relative rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl p-8 space-y-8 shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Speaker 1</span>
-                  <span className="text-xs font-mono text-slate-400">00:00:04</span>
-                </div>
-                <p className="text-[15px] leading-relaxed text-slate-700 font-medium italic">
-                  "We needed a transcript that preserved the original meaning."
-                </p>
+          {/* Right: demo card */}
+          <div className="relative">
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-500/10 via-violet-500/10 to-fuchsia-500/10 blur-2xl" />
+
+            <div className="relative rounded-3xl border border-black/10 bg-white/70 backdrop-blur-xl shadow-[0_20px_60px_-30px_rgba(0,0,0,0.35)] p-8">
+              <div className="flex items-start justify-between">
+                <span className="inline-flex rounded-full bg-indigo-600/10 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-700">
+                  SPEAKER 1
+                </span>
+                <span className="text-xs text-neutral-400">00:00:04</span>
               </div>
 
-              <div className="space-y-4 border-t border-slate-100 pt-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-purple-600 bg-purple-50 px-2 py-0.5 rounded">Speaker 2</span>
-                  <span className="text-xs font-mono text-slate-400">00:00:12</span>
-                </div>
-                <p className="text-[15px] leading-relaxed text-slate-700 font-medium italic">
-                  "Exactly. Accuracy matters when language carries nuance."
-                </p>
+              <p className="mt-4 text-neutral-800 leading-relaxed">
+                “We needed a transcript that preserved the original meaning.”
+              </p>
+
+              <div className="my-6 h-px w-full bg-black/5" />
+
+              <div className="flex items-start justify-between">
+                <span className="inline-flex rounded-full bg-fuchsia-600/10 px-3 py-1 text-xs font-semibold tracking-wide text-fuchsia-700">
+                  SPEAKER 2
+                </span>
+                <span className="text-xs text-neutral-400">00:00:12</span>
               </div>
+
+              <p className="mt-4 text-neutral-800 leading-relaxed">
+                “Exactly. Accuracy matters when language carries nuance.”
+              </p>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Feature Grid */}
-        <section className="grid md:grid-cols-3 gap-12 border-t border-slate-100 pt-20">
+        {/* Feature row */}
+        <div className="mt-20 grid gap-8 md:grid-cols-3">
           {[
-            { title: "Faithful Transcription", desc: "No paraphrasing. Just the raw, human truth." },
-            { title: "Speaker-Aware", desc: "Intelligent diarization for interviews and meetings." },
-            { title: "Secure Files", desc: "Encrypted handling with time-limited data retention." }
-          ].map((f, i) => (
-            <div key={i} className="group cursor-default">
-              <h3 className="text-lg font-bold text-slate-950 group-hover:text-indigo-600 transition-colors">{f.title}</h3>
-              <p className="mt-2 text-slate-500 leading-relaxed text-sm">{f.desc}</p>
+            ["Faithful transcription", "No paraphrasing. No forced rewrites. Just what was said."],
+            ["Speaker-aware output", "Structured transcripts for interviews, meetings, and recordings."],
+            ["Professional-ready", "TXT, DOCX, SRT, VTT — built for real workflows."],
+          ].map(([title, desc]) => (
+            <div
+              key={title}
+              className="rounded-2xl border border-black/10 bg-white/70 backdrop-blur-xl p-6 shadow-[0_10px_40px_-30px_rgba(0,0,0,0.25)]"
+            >
+              <h3 className="text-lg font-semibold">{title}</h3>
+              <p className="mt-2 text-neutral-600">{desc}</p>
             </div>
           ))}
-        </section>
-
-      </div>
+        </div>
+      </section>
     </main>
   );
 }
