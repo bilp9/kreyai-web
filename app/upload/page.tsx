@@ -1,13 +1,80 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function UploadClient() {
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get("job");
+
   const [language, setLanguage] = useState("en");
   const [file, setFile] = useState<File | null>(null);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  const canSubmit = file && acceptedTerms;
+  const canSubmit = file && jobId;
+
+  async function handleUpload() {
+    if (!file || !jobId) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+      // 1️⃣ Get resumable upload URL
+      const res = await fetch(
+        `${API}/api/jobs/${jobId}/upload-url?filename=${encodeURIComponent(
+          file.name
+        )}&content_type=${encodeURIComponent(file.type)}`,
+        { method: "POST" }
+      );
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || "Failed to initialize upload.");
+      }
+
+      const { upload_url } = await res.json();
+
+      // 2️⃣ Upload file directly to GCS
+      const uploadRes = await fetch(upload_url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error("Upload failed.");
+      }
+
+      // 3️⃣ Trigger processing
+      const processRes = await fetch(
+        `${API}/api/jobs/${jobId}/process`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ language }),
+        }
+      );
+
+      if (!processRes.ok) {
+        throw new Error("Processing failed.");
+      }
+
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message);
+    }
+
+    setLoading(false);
+  }
 
   return (
     <main className="min-h-screen bg-white px-6 py-24">
@@ -31,6 +98,7 @@ export default function UploadClient() {
             <option value="en">English</option>
             <option value="es">Spanish</option>
             <option value="fr">French</option>
+            <option value="ht">Haitian Creole</option>
           </select>
         </div>
 
@@ -54,39 +122,29 @@ export default function UploadClient() {
           </div>
         )}
 
-        {/* Terms Checkbox */}
-        <div className="space-y-2">
-          <label className="flex items-start space-x-2 text-sm text-neutral-700">
-            <input
-              type="checkbox"
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1"
-            />
-            <span>
-              I agree to the{" "}
-              <a
-                href="/terms"
-                target="_blank"
-                className="underline hover:text-black"
-              >
-                Terms of Service
-              </a>
-            </span>
-          </label>
-        </div>
+        {error && (
+          <div className="text-sm text-red-600">
+            {error}
+          </div>
+        )}
 
-        {/* Submit Button */}
+        {success && (
+          <div className="text-sm text-green-600">
+            Upload successful. Processing has started.
+          </div>
+        )}
+
         <button
-          disabled={!canSubmit}
+          disabled={!canSubmit || loading}
+          onClick={handleUpload}
           className={`w-full rounded-md px-4 py-2 text-sm font-medium transition
             ${
-              canSubmit
+              canSubmit && !loading
                 ? "bg-black text-white hover:bg-neutral-800"
                 : "bg-neutral-300 text-neutral-500 cursor-not-allowed"
             }`}
         >
-          Continue
+          {loading ? "Uploading..." : "Upload & Start Processing"}
         </button>
 
       </div>
