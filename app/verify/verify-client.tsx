@@ -32,8 +32,10 @@ export default function VerifyClient() {
       );
 
       if (!res.ok) throw new Error("Verification failed.");
-
-      router.push(`/upload?job=${jobId}`);
+    
+      const data = await res.json();
+      const t = data.access_token;
+      router.push(`/upload?job=${jobId}&t=${encodeURIComponent(t)}`);
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
