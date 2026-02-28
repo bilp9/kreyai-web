@@ -16,6 +16,7 @@ export default function UploadClient() {
   const [status, setStatus] = useState<"idle" | "uploading" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [pct, setPct] = useState<number>(0);
+  
 
   useEffect(() => {
     setJobId(jobFromUrl);

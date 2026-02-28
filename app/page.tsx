@@ -7,6 +7,8 @@ export default function Home() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
+  const [language, setLanguage] = useState("en");
+  const [acceptedTerms, setAcceptedTerms] = useState(true); // ON by default
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,19 +18,40 @@ export default function Home() {
       return;
     }
 
+    if (!acceptedTerms) {
+      setError("You must accept the Terms of Service.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/?email=${encodeURIComponent(email)}`,
-        { method: "POST" }
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            language,
+            accepted_terms: acceptedTerms,
+          }),
+        }
       );
 
-      if (!res.ok) throw new Error("Failed to create job.");
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "Failed to create job.");
+      }
 
       const data = await res.json();
-      router.push(`/verify?job=${data.job_id}&email=${encodeURIComponent(email)}`);
+
+      router.push(
+        `/verify?job=${data.job_id}&email=${encodeURIComponent(email)}`
+      );
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
@@ -38,7 +61,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen bg-white text-neutral-900 overflow-hidden">
 
-      {/* Subtle animated background glow */}
+      {/* Background Glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-3xl animate-pulse" />
         <div className="absolute top-10 right-[-150px] h-[500px] w-[500px] rounded-full bg-fuchsia-500/10 blur-3xl animate-pulse" />
@@ -46,7 +69,6 @@ export default function Home() {
 
       <section className="relative mx-auto max-w-6xl px-6 pt-28 pb-32">
 
-        {/* Hero */}
         <div className="max-w-3xl space-y-8">
 
           <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-[1.05]">
@@ -62,7 +84,7 @@ export default function Home() {
           </p>
 
           {/* CTA */}
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="mt-10 flex flex-col gap-4">
 
             <input
               type="email"
@@ -72,13 +94,40 @@ export default function Home() {
               className="w-full sm:w-[360px] rounded-xl border border-neutral-300 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
             />
 
+            {/* Language Selector */}
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="w-full sm:w-[360px] rounded-xl border border-neutral-300 px-4 py-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+            >
+              <option value="en">English</option>
+              <option value="fr">French</option>
+              <option value="es">Spanish</option>
+              <option value="ht">Haitian Creole</option>
+            </select>
+
+            {/* Terms Checkbox */}
+            <label className="flex items-start gap-3 text-sm text-neutral-600 max-w-md">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <span>
+                I agree to the Terms of Service and acknowledge that my files will be
+                processed securely and retained temporarily.
+              </span>
+            </label>
+
             <button
               onClick={startJob}
               disabled={loading}
-              className="rounded-xl bg-neutral-900 px-6 py-3 text-white font-medium hover:bg-black transition disabled:opacity-60"
+              className="w-full sm:w-[360px] rounded-xl bg-neutral-900 px-6 py-3 text-white font-medium hover:bg-black transition disabled:opacity-60"
             >
               {loading ? "Starting…" : "Start transcription"}
             </button>
+
           </div>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -89,10 +138,10 @@ export default function Home() {
 
         </div>
 
-        {/* Subtle Divider */}
+        {/* Divider */}
         <div className="mt-24 h-px w-full bg-gradient-to-r from-transparent via-neutral-200 to-transparent" />
 
-        {/* Feature Section */}
+        {/* Features */}
         <div className="mt-20 grid gap-12 md:grid-cols-3">
 
           {[
