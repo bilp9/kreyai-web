@@ -12,7 +12,7 @@ export default function UploadClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
+  const token = searchParams.get("t");
   const canSubmit = file && jobId;
 
   async function handleUpload() {
@@ -29,7 +29,12 @@ export default function UploadClient() {
         `${API}/api/jobs/${jobId}/upload-url?filename=${encodeURIComponent(
           file.name
         )}&content_type=${encodeURIComponent(file.type)}`,
-        { method: "POST" }
+        {
+          method: "POST",
+          headers: {
+            "X-Job-Token": token || "",
+          },
+        }
       );
 
       if (!res.ok) {
