@@ -8,7 +8,6 @@ export default function UploadClient() {
   const jobId = searchParams.get("job");
   const token = searchParams.get("t");
 
-  const [language, setLanguage] = useState("en");
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,8 +24,12 @@ export default function UploadClient() {
     try {
       const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+      if (!API) {
+        throw new Error("API base URL not configured.");
+      }
+
       // --------------------------------------------------
-      // 1️⃣ Request resumable upload start URL
+      // 1️⃣ Request signed resumable start URL
       // --------------------------------------------------
       const initRes = await fetch(
         `${API}/api/jobs/${jobId}/upload-url?filename=${encodeURIComponent(
@@ -41,25 +44,26 @@ export default function UploadClient() {
       );
 
       if (!initRes.ok) {
-        const err = await initRes.json();
-        throw new Error(err.detail || "Failed to initialize upload.");
+        const text = await initRes.text();
+        throw new Error(`Failed to initialize upload: ${text}`);
       }
 
       const { signed_start_url } = await initRes.json();
 
       // --------------------------------------------------
-      // 2️⃣ Start resumable session
+      // 2️⃣ Start resumable session (MUST BE POST)
       // --------------------------------------------------
       const startRes = await fetch(signed_start_url, {
-        method: "PUT",
+        method: "POST",
         headers: {
-          "Content-Type": file.type,
           "x-goog-resumable": "start",
+          "Content-Type": file.type,
         },
       });
 
       if (!startRes.ok) {
-        throw new Error("Failed to start resumable upload.");
+        const text = await startRes.text();
+        throw new Error(`Failed to start resumable upload: ${text}`);
       }
 
       const sessionUrl = startRes.headers.get("Location");
@@ -80,7 +84,8 @@ export default function UploadClient() {
       });
 
       if (!uploadRes.ok) {
-        throw new Error("Upload failed.");
+        const text = await uploadRes.text();
+        throw new Error(`Upload failed: ${text}`);
       }
 
       // --------------------------------------------------
@@ -103,13 +108,13 @@ export default function UploadClient() {
       );
 
       if (!finalizeRes.ok) {
-        const err = await finalizeRes.json();
-        throw new Error(err.detail || "Processing failed.");
+        const text = await finalizeRes.text();
+        throw new Error(`Finalize failed: ${text}`);
       }
 
       setSuccess(true);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Unexpected error occurred.");
     }
 
     setLoading(false);
@@ -118,28 +123,9 @@ export default function UploadClient() {
   return (
     <main className="min-h-screen bg-white px-6 py-24">
       <div className="mx-auto max-w-xl space-y-8">
-
         <h1 className="text-3xl font-semibold text-center">
           Upload Audio or Video
         </h1>
-
-        {/* Language Selector */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-neutral-700">
-            Language
-          </label>
-
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-          >
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="ht">Haitian Creole</option>
-          </select>
-        </div>
 
         {/* File Upload */}
         <div className="space-y-2">
@@ -176,16 +162,14 @@ export default function UploadClient() {
         <button
           disabled={!canSubmit || loading}
           onClick={handleUpload}
-          className={`w-full rounded-md px-4 py-2 text-sm font-medium transition
-            ${
-              canSubmit && !loading
-                ? "bg-black text-white hover:bg-neutral-800"
-                : "bg-neutral-300 text-neutral-500 cursor-not-allowed"
-            }`}
+          className={`w-full rounded-md px-4 py-2 text-sm font-medium transition ${
+            canSubmit && !loading
+              ? "bg-black text-white hover:bg-neutral-800"
+              : "bg-neutral-300 text-neutral-500 cursor-not-allowed"
+          }`}
         >
           {loading ? "Uploading..." : "Upload & Start Processing"}
         </button>
-
       </div>
     </main>
   );
