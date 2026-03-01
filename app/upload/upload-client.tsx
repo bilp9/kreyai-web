@@ -42,10 +42,10 @@ export default function UploadClient() {
         throw new Error(err.detail || "Failed to initialize upload.");
       }
 
-      const { upload_url } = await res.json();
+      const { signed_start_url } = await res.json();
 
       // 2️⃣ Upload file directly to GCS
-      const uploadRes = await fetch(upload_url, {
+      const uploadRes = await fetch(signed_start_url, {
         method: "PUT",
         headers: {
           "Content-Type": file.type,
