@@ -6,17 +6,18 @@ import { useSearchParams } from "next/navigation";
 export default function UploadClient() {
   const searchParams = useSearchParams();
   const jobId = searchParams.get("job");
+  const token = searchParams.get("t");
 
   const [language, setLanguage] = useState("en");
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const token = searchParams.get("t");
-  const canSubmit = file && jobId;
+
+  const canSubmit = file && jobId && token;
 
   async function handleUpload() {
-    if (!file || !jobId) return;
+    if (!file || !jobId || !token) return;
 
     setLoading(true);
     setError(null);
@@ -24,28 +25,53 @@ export default function UploadClient() {
     try {
       const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-      // 1️⃣ Get resumable upload URL
-      const res = await fetch(
+      // --------------------------------------------------
+      // 1️⃣ Request resumable upload start URL
+      // --------------------------------------------------
+      const initRes = await fetch(
         `${API}/api/jobs/${jobId}/upload-url?filename=${encodeURIComponent(
           file.name
         )}&content_type=${encodeURIComponent(file.type)}`,
         {
           method: "POST",
           headers: {
-            "X-Job-Token": token || "",
+            "X-Job-Token": token,
           },
         }
       );
 
-      if (!res.ok) {
-        const err = await res.json();
+      if (!initRes.ok) {
+        const err = await initRes.json();
         throw new Error(err.detail || "Failed to initialize upload.");
       }
 
-      const { signed_start_url } = await res.json();
+      const { signed_start_url } = await initRes.json();
 
-      // 2️⃣ Upload file directly to GCS
-      const uploadRes = await fetch(signed_start_url, {
+      // --------------------------------------------------
+      // 2️⃣ Start resumable session
+      // --------------------------------------------------
+      const startRes = await fetch(signed_start_url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+          "x-goog-resumable": "start",
+        },
+      });
+
+      if (!startRes.ok) {
+        throw new Error("Failed to start resumable upload.");
+      }
+
+      const sessionUrl = startRes.headers.get("Location");
+
+      if (!sessionUrl) {
+        throw new Error("No resumable session URL returned.");
+      }
+
+      // --------------------------------------------------
+      // 3️⃣ Upload file to session URL
+      // --------------------------------------------------
+      const uploadRes = await fetch(sessionUrl, {
         method: "PUT",
         headers: {
           "Content-Type": file.type,
@@ -57,20 +83,28 @@ export default function UploadClient() {
         throw new Error("Upload failed.");
       }
 
-      // 3️⃣ Trigger processing
-      const processRes = await fetch(
-        `${API}/api/jobs/${jobId}/process`,
+      // --------------------------------------------------
+      // 4️⃣ Finalize upload & queue processing
+      // --------------------------------------------------
+      const finalizeRes = await fetch(
+        `${API}/api/jobs/${jobId}/finalize-upload`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-Job-Token": token,
           },
-          body: JSON.stringify({ language }),
+          body: JSON.stringify({
+            file_path: `jobs/${jobId}/uploads/${file.name}`,
+            size_bytes: file.size,
+            content_type: file.type,
+          }),
         }
       );
 
-      if (!processRes.ok) {
-        throw new Error("Processing failed.");
+      if (!finalizeRes.ok) {
+        const err = await finalizeRes.json();
+        throw new Error(err.detail || "Processing failed.");
       }
 
       setSuccess(true);
