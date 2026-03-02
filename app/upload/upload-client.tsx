@@ -92,17 +92,18 @@ export default function UploadClient() {
       // 4️⃣ Finalize upload & queue processing
       // --------------------------------------------------
       const finalizeRes = await fetch(
-        `${API}/api/jobs/${jobId}/finalize-upload` +
-          `?file_path=${encodeURIComponent(
-            `jobs/${jobId}/uploads/${file.name}`
-          )}` +
-          `&size_bytes=${file.size}` +
-          `&content_type=${encodeURIComponent(file.type)}`,
+        `${API}/api/jobs/${jobId}/finalize-upload`,
         {
           method: "POST",
           headers: {
+            "Content-Type": "application/json",
             "X-Job-Token": token,
           },
+          body: JSON.stringify({
+            file_path: `jobs/${jobId}/uploads/${file.name}`,
+            size_bytes: file.size,
+            content_type: file.type,
+          }),
         }
       );
 
