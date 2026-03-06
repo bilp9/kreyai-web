@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("auto");
   const [acceptedTerms, setAcceptedTerms] = useState(true); // ON by default
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -93,13 +93,14 @@ export default function Home() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full sm:w-[360px] rounded-xl border border-neutral-300 px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
             />
-
+            
             {/* Language Selector */}
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
               className="w-full sm:w-[360px] rounded-xl border border-neutral-300 px-4 py-3 text-neutral-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
             >
+              <option value="auto">Auto Detect</option>
               <option value="en">English</option>
               <option value="fr">French</option>
               <option value="es">Spanish</option>
