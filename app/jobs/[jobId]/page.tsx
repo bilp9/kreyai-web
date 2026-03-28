@@ -7,6 +7,7 @@ type JobStatus = {
   job_id: string;
   status: string;
   progress: number;
+  status_message?: string;
   attempts?: number;
   completed_at?: string;
 };
@@ -22,7 +23,7 @@ export default function JobPage() {
   const statusText: Record<string, string> = {
     pending_verification: "Waiting for email verification.",
     verified: "Verified and ready for upload.",
-    queued: "Upload received. Waiting to start processing.",
+    queued: "Your file has been uploaded successfully. Processing will begin shortly.",
     processing: "Processing is underway.",
     completed: "Your transcript is ready to download.",
     failed: "Processing did not complete successfully.",
@@ -37,7 +38,7 @@ export default function JobPage() {
 
   useEffect(() => {
     if (!token) {
-      setError("Access token missing.");
+      setError("This page link is incomplete.");
       return;
     }
 
@@ -68,14 +69,14 @@ export default function JobPage() {
     void fetchStatus();
     const intervalId = setInterval(() => {
       void fetchStatus();
-    }, 3000);
+    }, 1000);
 
     return () => clearInterval(intervalId);
   }, [jobId, token]);
 
   if (error) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f7f2e8]">
+      <main className="page-shell flex min-h-screen items-center justify-center">
         <p className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-600">
           {error}
         </p>
@@ -84,47 +85,41 @@ export default function JobPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f7f2e8] text-neutral-900">
-
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(circle_at_top,rgba(255,248,216,0.9)_0%,rgba(247,242,232,0)_72%)]" />
-        <div className="absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full bg-[#84a98c]/16 blur-3xl" />
-      </div>
-
-      <section className="relative mx-auto max-w-3xl px-6 pt-28 pb-32 space-y-12">
-
+    <main className="page-shell text-[#13172b]">
+      <section className="mx-auto max-w-4xl space-y-12 px-6 pb-32 pt-24">
         <div className="space-y-3">
-          <h1 className="break-all text-4xl font-semibold tracking-tight">
+          <p className="page-eyebrow">Job Status</p>
+          <h1 className="break-all text-4xl font-bold tracking-tight">
             Job {jobId}
           </h1>
-          <p className="text-neutral-500 text-sm">
-            Track your transcription progress below. This page refreshes automatically while your job is active.
+          <p className="text-sm text-[#717a99]">
+            Follow your progress here. This page updates automatically while your job is running.
           </p>
         </div>
 
         {job ? (
-          <div className="space-y-8 rounded-[32px] border border-[#cdb892] bg-[linear-gradient(180deg,rgba(255,253,249,0.98)_0%,rgba(250,246,239,0.98)_100%)] p-8 shadow-[0_28px_90px_rgba(61,45,22,0.14)]">
+          <div className="brand-panel space-y-8 rounded-[36px] border border-slate-200 bg-white p-8 shadow-xl shadow-indigo-900/5">
 
             <div className="flex justify-between items-center">
-              <span className="text-sm text-neutral-500">Status</span>
+              <span className="text-sm text-[#717a99]">Status</span>
               <span className="break-all text-right capitalize font-medium">
                 {job.status}
               </span>
             </div>
 
-            <div className="rounded-2xl border border-black/5 bg-white/70 px-4 py-4 text-sm text-neutral-700">
-              {statusText[job.status?.toLowerCase()] ?? "Checking your latest job status."}
+            <div className="surface-muted rounded-2xl px-4 py-4 text-sm text-[var(--brand-muted)]">
+              {job.status_message || statusText[job.status?.toLowerCase()] || "Checking your latest job status."}
             </div>
 
             <div className="space-y-3">
-              <div className="flex justify-between text-sm text-neutral-500">
+              <div className="flex justify-between text-sm text-[#717a99]">
                 <span>Progress</span>
                 <span>{job.progress}%</span>
               </div>
 
-              <div className="w-full h-3 overflow-hidden rounded-full bg-[#e8d8b8]">
+              <div className="brand-progress-track w-full h-3 overflow-hidden rounded-full">
                 <div
-                  className="h-3 rounded-full bg-[#8a5a2b] transition-all duration-700 ease-out"
+                  className="brand-progress-fill h-3 rounded-full transition-all duration-700 ease-out"
                   style={{ width: `${job.progress}%` }}
                 />
               </div>
@@ -147,15 +142,15 @@ export default function JobPage() {
                     <a
                       key={ext}
                       href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/jobs/${jobId}/${ext}?t=${token}`}
-                      className="rounded-xl border border-[#d8cab3] bg-white px-4 py-3 text-center text-sm font-medium transition hover:bg-[#f8f4ec]"
+                      className="rounded-xl border border-[rgba(40,41,126,0.14)] bg-white px-4 py-3 text-center text-sm font-medium text-[#28297e] transition hover:bg-[#eef1ff]"
                     >
                       Download {ext.toUpperCase()}
                     </a>
                   ))}
                 </div>
 
-                <p className="text-xs text-neutral-500">
-                  Files are typically retained for 7 days from completion.
+                <p className="text-xs text-[#717a99]">
+                  Download links expire after 7 days.
                 </p>
 
               </div>
@@ -169,11 +164,10 @@ export default function JobPage() {
 
           </div>
         ) : (
-          <div className="rounded-[32px] border border-[#cdb892] bg-[linear-gradient(180deg,rgba(255,253,249,0.98)_0%,rgba(250,246,239,0.98)_100%)] p-8 shadow-[0_28px_90px_rgba(61,45,22,0.14)]">
-            <p className="text-neutral-500">Loading...</p>
+          <div className="brand-panel rounded-[36px] border border-slate-200 bg-white p-8 shadow-xl shadow-indigo-900/5">
+            <p className="text-[#717a99]">Loading...</p>
           </div>
         )}
-
       </section>
     </main>
   );

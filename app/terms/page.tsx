@@ -1,71 +1,181 @@
 const TERMS_SECTIONS = [
   {
-    title: "Service scope",
-    body:
-      "KreyAI provides automated transcription-related services, including file intake, processing workflows, and transcript exports. Features, outputs, and availability may evolve over time.",
+    title: "1. Overview",
+    items: [
+      "KreyAI provides transcription and language-processing services for audio content.",
+      "By accessing or using KreyAI, you agree to comply with these Terms of Service.",
+    ],
   },
   {
-    title: "Your responsibility for uploaded content",
-    body:
-      "By using the service, you confirm that you have the right to upload, process, and receive transcripts for the content you submit. You are responsible for complying with any confidentiality, consent, or copyright obligations tied to that material.",
+    title: "2. Use of the Service",
+    intro: "You agree to use KreyAI only for lawful purposes. You must not:",
+    items: [
+      "Upload content that violates any laws or regulations.",
+      "Upload content you do not have the right to use.",
+      "Use the service to process harmful, abusive, or illegal material.",
+      "Attempt to interfere with or disrupt the platform.",
+      "You are solely responsible for the content you upload.",
+    ],
   },
   {
-    title: "Accuracy and limitations",
-    body:
-      "KreyAI is intended to produce useful, professional transcripts, but automated output may still contain mistakes. Accuracy can vary based on audio quality, speaker overlap, accents, language mix, and recording conditions.",
+    title: "3. User Content & Ownership",
+    items: [
+      "You retain full ownership of your audio files and generated transcripts.",
+      "By using the service, you grant KreyAI a limited, temporary right to process your content solely to provide the transcription service.",
+    ],
+    calloutTitle: "We do not:",
+    calloutItems: [
+      "Claim ownership of your data.",
+      "Use your data for training models.",
+      "Sell or share your data.",
+    ],
   },
   {
-    title: "Appropriate use",
-    body:
-      "You may not use KreyAI for unlawful activity, abusive conduct, or workflows that would violate the rights of others. We may restrict access if the service is used in a way that creates operational, legal, or safety risk.",
+    title: "4. Data Handling & Retention",
+    items: [
+      "Files and generated outputs are automatically deleted after 7 days.",
+      "Access is provided through secure, time-limited links.",
+      "We are not responsible for files after deletion.",
+      "Users are responsible for downloading their files within the retention period.",
+    ],
   },
   {
-    title: "Availability and changes",
-    body:
-      "We aim to provide a reliable service, but uptime, processing speed, and specific features are not guaranteed in every circumstance. KreyAI may update workflows, pricing, limits, or policies as the product develops.",
+    title: "5. Service Availability",
+    intro: "We aim to provide a reliable service, but we do not guarantee:",
+    items: [
+      "Continuous, uninterrupted availability.",
+      "Error-free processing.",
+      "KreyAI may experience downtime, maintenance, or unexpected issues.",
+    ],
   },
   {
-    title: "Support",
-    body:
-      "For commercial, operational, or policy questions, contact support@kreyai.com.",
+    title: "6. Accuracy Disclaimer",
+    intro: "KreyAI uses advanced AI models to generate transcriptions, but:",
+    items: [
+      "Transcriptions may contain errors or inaccuracies.",
+      "Language detection, speaker identification, and formatting are not guaranteed to be perfect.",
+    ],
+    calloutTitle: "Users are responsible for reviewing and verifying outputs before relying on them.",
+    calloutItems: [],
+  },
+  {
+    title: "7. Limitation of Liability",
+    intro: "To the maximum extent permitted by law:",
+    items: [
+      "KreyAI is not liable for any indirect, incidental, or consequential damages.",
+      "We are not responsible for loss of data, missed deadlines, or decisions made based on generated outputs.",
+      "Use of the service is at your own risk.",
+    ],
+  },
+  {
+    title: "8. Third-Party Services",
+    items: [
+      "KreyAI relies on third-party infrastructure providers such as cloud storage, processing, email delivery, and payment processing.",
+      "We are not responsible for failures or issues originating from those services.",
+    ],
+  },
+  {
+    title: "9. Payments, Credits & Refunds",
+    items: [
+      "KreyAI uses a prepaid credit model for public access to paid transcription services.",
+      "Credits are purchased in advance, deducted based on submitted audio duration, and do not expire unless stated otherwise at purchase.",
+      "Used credits are generally non-refundable once processing has occurred.",
+      "Unused credits may be eligible for refunds or account credit at KreyAI's discretion.",
+      "If a job fails because of a verified service issue, KreyAI may restore credits, retry processing, or issue a refund or account credit.",
+      "Prices may change from time to time, but pricing changes apply only to future purchases.",
+    ],
+  },
+  {
+    title: "10. Payment Processing",
+    items: [
+      "Payments are processed by third-party payment providers such as Stripe.",
+      "By completing a purchase, you authorize KreyAI and its payment processors to charge the selected amount, applicable taxes, and related fees.",
+      "KreyAI does not store full payment card details on its own systems unless explicitly stated otherwise.",
+    ],
+  },
+  {
+    title: "11. Termination",
+    intro: "We reserve the right to:",
+    items: [
+      "Suspend or terminate access to the service at any time.",
+      "Remove content that violates these terms.",
+    ],
+  },
+  {
+    title: "12. Changes to the Terms",
+    items: [
+      "We may update these Terms of Service from time to time.",
+      "Continued use of the service after updates constitutes acceptance of the revised terms.",
+    ],
+  },
+  {
+    title: "13. Governing Law",
+    items: [
+      "These Terms are governed by the laws of the State of Arizona, without regard to conflict of law principles.",
+    ],
+  },
+  {
+    title: "14. Contact",
+    items: [
+      "For questions regarding these Terms, email support@kreyai.com.",
+    ],
   },
 ];
 
 export default function TermsPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f7f2e8] text-neutral-900">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute right-[-100px] top-28 h-[320px] w-[320px] rounded-full bg-[#84a98c]/16 blur-3xl" />
-      </div>
-
-      <section className="relative mx-auto max-w-5xl px-6 pb-24 pt-18">
-        <div className="max-w-3xl space-y-6">
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#8a5a2b]">
-            Terms
+    <main className="page-shell text-neutral-900">
+      <section className="page-wrap-narrow">
+        <div className="page-header">
+          <p className="page-eyebrow">Terms of Service</p>
+          <h1 className="page-title">KreyAI Terms of Service</h1>
+          <p className="page-lede">
+            Welcome to KreyAI. By using our services, you agree to these terms. If you do not agree, please do not use
+            the service.
           </p>
-          <h1 className="text-5xl font-semibold tracking-tight md:text-6xl">
-            Simple terms for using KreyAI.
-          </h1>
-          <p className="text-lg leading-8 text-neutral-700">
-            These terms are intended to set practical expectations about what the service does, what you are responsible for, and where automated transcription still has limits.
-          </p>
+          <p className="page-meta">Effective Date: March 26, 2026</p>
         </div>
 
         <div className="mt-14 grid gap-5">
           {TERMS_SECTIONS.map((section) => (
             <article
               key={section.title}
-              className="rounded-[26px] border border-black/5 bg-white/75 p-6 shadow-[0_18px_50px_rgba(59,43,22,0.08)]"
+              className="surface-panel rounded-[28px] p-6"
             >
               <h2 className="text-xl font-semibold tracking-tight">{section.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-neutral-600">{section.body}</p>
+              {section.intro ? (
+                <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">{section.intro}</p>
+              ) : null}
+              <ul className="mt-4 space-y-3 text-sm leading-7 text-[var(--brand-muted)]">
+                {section.items.map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--brand-blue)]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              {section.calloutTitle ? (
+                <div className="surface-callout mt-5 rounded-[20px] p-5">
+                  <p className="text-sm font-semibold text-[var(--brand-blue-deep)]">{section.calloutTitle}</p>
+                  {section.calloutItems.length > 0 ? (
+                    <ul className="mt-3 space-y-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
+                      {section.calloutItems.map((item) => (
+                        <li key={item} className="flex gap-3">
+                          <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--brand-blue-deep)]" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              ) : null}
             </article>
           ))}
         </div>
 
-        <div className="mt-12 rounded-[28px] border border-black/5 bg-white/70 p-7 shadow-[0_18px_50px_rgba(59,43,22,0.08)]">
-          <p className="text-sm leading-7 text-neutral-600">
-            If you need custom commercial terms, a higher-assurance workflow, or a review for a sensitive deployment, contact{" "}
+        <div className="surface-panel mt-12 rounded-[28px] p-7">
+          <p className="text-sm leading-7 text-[var(--brand-muted)]">
+            Questions regarding these terms can be sent to{" "}
             <span className="font-medium text-neutral-900">support@kreyai.com</span>.
           </p>
         </div>

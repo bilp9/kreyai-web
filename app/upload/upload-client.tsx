@@ -3,10 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type UploadStage = "idle" | "preparing" | "uploading" | "finalizing" | "done";
+type SpeakerMode = "single" | "multi" | "unsure";
 
 export default function UploadClient() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const jobId = searchParams.get("job");
   const token = searchParams.get("t");
@@ -17,6 +20,7 @@ export default function UploadClient() {
   const [success, setSuccess] = useState(false);
   const [uploadPercent, setUploadPercent] = useState(0);
   const [uploadStage, setUploadStage] = useState<UploadStage>("idle");
+  const [speakerMode, setSpeakerMode] = useState<SpeakerMode>("single");
 
   const canSubmit = file && jobId && token;
 
@@ -143,6 +147,7 @@ export default function UploadClient() {
             file_path: `jobs/${jobId}/uploads/${file.name}`,
             size_bytes: file.size,
             content_type: file.type,
+            speaker_mode: speakerMode,
           }),
         }
       );
@@ -154,6 +159,7 @@ export default function UploadClient() {
 
       setUploadStage("done");
       setSuccess(true);
+      router.push(`/jobs/${jobId}?t=${encodeURIComponent(token)}`);
     } catch (err: unknown) {
       setError(getErrorMessage(err));
       setUploadStage("idle");
@@ -163,57 +169,51 @@ export default function UploadClient() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f7f2e8] px-6 py-20 text-neutral-900">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(circle_at_top,rgba(255,248,216,0.9)_0%,rgba(247,242,232,0)_72%)]" />
-        <div className="absolute -top-24 left-0 h-[420px] w-[420px] rounded-full bg-[#e7b56e]/20 blur-3xl" />
-        <div className="absolute right-[-120px] top-24 h-[420px] w-[420px] rounded-full bg-[#84a98c]/16 blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto grid max-w-5xl gap-10 md:grid-cols-[1.1fr_0.9fr]">
+    <main className="page-shell px-6 py-20 text-[#13172b]">
+      <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[1.05fr_0.95fr]">
         <section className="space-y-6">
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#8a5a2b]">
+          <p className="page-eyebrow">
             Secure Upload
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
             Upload your audio and start processing.
           </h1>
-          <p className="max-w-xl text-base leading-7 text-neutral-600 md:text-lg">
-            We keep the handoff simple: upload once, confirm the file, and we queue the job immediately.
+          <p className="max-w-xl text-base leading-7 text-[var(--brand-muted)] md:text-lg">
+            Upload your file, confirm your choices, and we will take it from there.
           </p>
 
           <div className="grid gap-4 sm:grid-cols-3">
             {[
               ["Formats", "Audio and video files are accepted when supported by the upload flow."],
-              ["Security", "Access stays tied to your signed job link."],
-              ["Next step", "We start processing as soon as the upload finalizes."],
+              ["Access", "This page is linked to your request and upload."],
+              ["Next step", "Processing starts as soon as your upload finishes."],
             ].map(([title, description]) => (
-              <div key={title} className="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-[0_18px_50px_rgba(59,43,22,0.08)]">
-                <p className="text-sm font-semibold text-neutral-900">{title}</p>
-                <p className="mt-2 text-sm leading-6 text-neutral-600">{description}</p>
+              <div key={title} className="surface-panel rounded-2xl p-4">
+                <p className="text-sm font-semibold text-[#13172b]">{title}</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">{description}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="rounded-[32px] border border-[#cdb892] bg-[linear-gradient(180deg,rgba(255,253,249,0.98)_0%,rgba(250,246,239,0.98)_100%)] p-6 shadow-[0_28px_90px_rgba(61,45,22,0.14)] md:p-8">
+        <section className="brand-panel rounded-[36px] border border-slate-200 bg-white p-6 shadow-xl shadow-indigo-900/5 md:p-8">
           <div className="space-y-6">
             <div>
-              <p className="text-sm font-medium text-neutral-500">Job reference</p>
-              <p className="mt-1 break-all font-mono text-sm text-neutral-800">{jobId ?? "Missing job ID"}</p>
+              <p className="text-sm font-medium text-[#717a99]">Job reference</p>
+              <p className="mt-1 break-all font-mono text-sm text-[#13172b]">{jobId ?? "Missing job ID"}</p>
             </div>
 
             {!jobId || !token ? (
-              <div className="rounded-2xl border border-[#d7c59e] bg-[#fff4de] px-4 py-4 text-sm leading-6 text-[#7a4c18]">
-                This upload link is incomplete or expired. Return to the verification step and open the latest secure upload link again.
+              <div className="brand-note rounded-2xl px-4 py-4 text-sm leading-6">
+                This upload link is incomplete or expired. Return to your email and open the latest link again.
               </div>
             ) : null}
 
-            <div className="rounded-2xl border border-dashed border-[#d8cab3] bg-white/70 p-5">
-              <label className="block text-sm font-medium text-neutral-700">
+            <div className="rounded-2xl border border-dashed border-[rgba(40,41,126,0.18)] bg-white/72 p-5">
+              <label className="block text-sm font-semibold text-[#3d4564]">
                 Choose file
               </label>
-              <p className="mt-1 text-sm text-neutral-500">
+              <p className="mt-1 text-sm text-[#717a99]">
                 Select the recording you want transcribed. Keep the browser open until the upload finishes.
               </p>
 
@@ -222,21 +222,60 @@ export default function UploadClient() {
                 accept="audio/*,video/*"
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
                 disabled={loading || success || !jobId || !token}
-                className="mt-4 block w-full text-sm text-neutral-700 file:mr-4 file:rounded-full file:border-0 file:bg-[#231f1b] file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-black disabled:cursor-not-allowed disabled:opacity-70"
+                className="mt-4 block w-full text-sm text-[#4f5879] file:mr-4 file:rounded-full file:border-0 file:bg-[#28297e] file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-[#17195b] disabled:cursor-not-allowed disabled:opacity-70"
               />
 
               {file && (
-                <div className="mt-4 rounded-xl bg-white px-4 py-3 text-sm text-neutral-600 shadow-sm">
-                  Selected: <span className="font-medium text-neutral-900">{file.name}</span>
-                  <span className="block pt-1 text-xs text-neutral-500">
+                <div className="mt-4 rounded-xl bg-white px-4 py-3 text-sm text-[#59627f] shadow-sm">
+                  Selected: <span className="font-medium text-[#13172b]">{file.name}</span>
+                  <span className="block pt-1 text-xs text-[#717a99]">
                     {(file.size / (1024 * 1024)).toFixed(1)} MB
                   </span>
                 </div>
               )}
             </div>
 
-            <div className="rounded-2xl border border-black/5 bg-white/70 px-4 py-4 text-sm leading-6 text-neutral-600">
-              Your upload is attached to this secure job link. Once processing starts, you can track status and download results from the same flow.
+            <div className="surface-muted rounded-2xl px-4 py-4 text-sm leading-6 text-[var(--brand-muted)]">
+              Once processing begins, you can follow progress and download your files from the same flow.
+            </div>
+
+            <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+              <div>
+                <p className="text-sm font-semibold text-[#13172b]">Speakers</p>
+                <p className="mt-1 text-sm leading-6 text-[var(--brand-muted)]">
+                  Choose speaker labels for interviews, meetings, and conversations. For one-person recordings, a clean
+                  transcript is usually the best fit.
+                </p>
+              </div>
+
+              <div className="grid gap-3">
+                {[
+                  ["single", "One speaker", "Returns a clean transcript without speaker labels."],
+                  ["multi", "More than one speaker", "Adds speaker labels to make conversations easier to follow."],
+                  ["unsure", "Not sure", "We will treat it like a conversation to help keep the result readable."],
+                ].map(([value, label, description]) => (
+                  <label
+                    key={value}
+                    className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  >
+                    <input
+                      type="radio"
+                      name="speaker_mode"
+                      value={value}
+                      checked={speakerMode === value}
+                      onChange={() => setSpeakerMode(value as SpeakerMode)}
+                      disabled={loading || success || !jobId || !token}
+                      className="mt-1 h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <span>
+                      <span className="block font-medium text-[#13172b]">{label}</span>
+                      <span className="mt-1 block text-[13px] leading-5 text-[var(--brand-muted)]">
+                        {description}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
             </div>
 
             {error && (
@@ -262,10 +301,10 @@ export default function UploadClient() {
             )}
 
             {loading && (
-              <div className="space-y-3 rounded-2xl border border-[#d7c59e] bg-[#fff4de] px-4 py-4 text-sm text-[#7a4c18]">
+              <div className="brand-note space-y-3 rounded-2xl px-4 py-4 text-sm">
                 <div className="flex items-center justify-between gap-4">
                   <span>
-                    {uploadStage === "preparing" && "Preparing secure upload…"}
+                    {uploadStage === "preparing" && "Preparing upload…"}
                     {uploadStage === "uploading" && "Uploading file…"}
                     {uploadStage === "finalizing" && "Finalizing and starting processing…"}
                     {uploadStage === "done" && "Upload complete."}
@@ -275,9 +314,9 @@ export default function UploadClient() {
                   </span>
                 </div>
 
-                <div className="h-2 overflow-hidden rounded-full bg-[#e8d8b8]">
+                <div className="brand-progress-track h-2 overflow-hidden rounded-full">
                   <div
-                    className="h-full rounded-full bg-[#8a5a2b] transition-all duration-300"
+                    className="brand-progress-fill h-full rounded-full transition-all duration-300"
                     style={{
                       width:
                         uploadStage === "preparing"
@@ -293,7 +332,7 @@ export default function UploadClient() {
                 />
                 </div>
 
-                <p className="text-xs leading-5 text-[#7a4c18]/90">
+                <p className="text-xs leading-5 text-[#17195b]/80">
                   Large files can take longer to transfer and may take an extra moment before the job status page updates.
                 </p>
               </div>
@@ -304,14 +343,14 @@ export default function UploadClient() {
               onClick={handleUpload}
               className={`flex w-full items-center justify-center gap-3 rounded-2xl px-5 py-3 text-sm font-medium transition ${
                 canSubmit && !loading && !success
-                  ? "bg-[#231f1b] text-white hover:bg-black"
+                  ? "brand-button text-white"
                   : "cursor-not-allowed bg-neutral-200 text-neutral-500"
               }`}
             >
               {loading ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Uploading secure file…
+                  Uploading file…
                 </>
               ) : success ? (
                 "Upload complete"

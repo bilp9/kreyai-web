@@ -1,71 +1,158 @@
 const PRIVACY_SECTIONS = [
   {
-    title: "What KreyAI collects",
-    body:
-      "KreyAI may collect the email address you provide, the files you upload for transcription, job metadata needed to deliver the service, and operational logs that help keep the system reliable and secure.",
+    title: "1. Information We Collect",
+    intro: "We collect only the information necessary to provide our services:",
+    items: [
+      "User-provided information: email address for job access and delivery, audio files you upload, and optional metadata you provide.",
+      "Generated data: transcripts and output files generated from your uploads, along with processing metadata such as duration, language detection, and timestamps.",
+      "Billing information: transaction and purchase metadata needed to confirm credit purchases, process refunds, prevent abuse, and support billing operations.",
+      "Technical data: basic system logs like request timestamps and job IDs, plus error logs used for debugging and service reliability.",
+      "We do not collect unnecessary personal data.",
+    ],
   },
   {
-    title: "How customer content is used",
-    body:
-      "Uploaded audio, video, and transcript outputs are processed for the purpose of delivering the requested transcription workflow. Customer content is not intended to be used for model training.",
+    title: "2. How We Use Your Information",
+    intro: "Your data is used strictly to operate the service:",
+    items: [
+      "Process and transcribe your audio files.",
+      "Generate downloadable outputs such as TXT, DOCX, and SRT files.",
+      "Deliver job results and notifications.",
+      "Process payments, credit purchases, refunds, and fraud-prevention checks.",
+      "Maintain system performance and reliability.",
+    ],
+    calloutTitle: "We do not use your data for:",
+    calloutItems: [
+      "Training AI or machine learning models.",
+      "Marketing or advertising.",
+      "Selling or sharing with third parties.",
+    ],
   },
   {
-    title: "Retention and storage",
-    body:
-      "KreyAI is designed around temporary retention rather than permanent file hosting. Exact retention behavior may vary by deployment and operational policy, but the service is not positioned as long-term storage.",
+    title: "3. Data Retention",
+    items: [
+      "All uploaded files and generated outputs are automatically deleted after 7 days.",
+      "Temporary processing data is deleted once jobs are completed or expired.",
+      "Logs may be retained longer for operational and security purposes, but do not contain your file content.",
+    ],
   },
   {
-    title: "Sharing and subprocessors",
-    body:
-      "Customer data may be handled by infrastructure and service providers required to run the product, such as hosting, storage, email delivery, and transcription-related systems. Data is not sold.",
+    title: "4. Data Storage & Security",
+    intro: "We implement appropriate technical measures to protect your data:",
+    items: [
+      "Secure cloud storage, including encrypted storage systems.",
+      "Time-limited, signed access links.",
+      "Restricted internal access to systems.",
+      "While we take strong precautions, no system is 100% secure. We continuously improve our safeguards.",
+    ],
   },
   {
-    title: "Security",
-    body:
-      "KreyAI uses secure application workflows, access tokens, and controlled file handling as part of normal operations. No system can promise absolute security, so highly sensitive use cases should be reviewed before use.",
+    title: "5. Data Sharing",
+    intro:
+      "We do not sell, rent, or trade your data. We only share data when necessary to operate the service, such as:",
+    items: [
+      "Cloud infrastructure providers for storage and processing.",
+      "Email delivery services for notifications.",
+      "Payment processors for secure purchase handling and related billing workflows.",
+      "These providers are used strictly to deliver the service and are not permitted to use your data for other purposes.",
+    ],
   },
   {
-    title: "Questions or requests",
-    body:
-      "If you have questions about data handling or need to raise a privacy concern, contact support@kreyai.com before or after using the service.",
+    title: "6. Payments & Billing",
+    items: [
+      "Payments are processed by third-party providers such as Stripe.",
+      "KreyAI does not receive or store full payment card numbers on its own systems unless explicitly stated otherwise.",
+      "We may receive limited billing details such as payment status, transaction identifiers, card brand, and partial card information from payment providers.",
+      "Billing data is used only for purchase confirmation, support, refunds, accounting, and fraud prevention.",
+    ],
+  },
+  {
+    title: "7. Your Rights & Control",
+    items: [
+      "You may choose not to upload sensitive content.",
+      "You may download your files at any time within the retention period.",
+      "You may request early deletion of your data as a future feature.",
+    ],
+  },
+  {
+    title: "8. Third-Party Services",
+    items: [
+      "KreyAI relies on trusted third-party infrastructure providers such as cloud hosting, storage, email, and payment services.",
+      "These providers process data only as required to deliver the service.",
+    ],
+  },
+  {
+    title: "9. Children's Privacy",
+    items: [
+      "KreyAI is not intended for use by individuals under the age of 13.",
+      "We do not knowingly collect data from children.",
+    ],
+  },
+  {
+    title: "10. Changes to This Policy",
+    items: [
+      'We may update this Privacy Policy from time to time. Updates will be reflected with a revised "Effective Date."',
+    ],
+  },
+  {
+    title: "11. Contact",
+    items: [
+      "If you have any questions about this Privacy Policy, you may contact us at support@kreyai.com.",
+    ],
   },
 ];
 
 export default function PrivacyPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f7f2e8] text-neutral-900">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-120px] top-24 h-[320px] w-[320px] rounded-full bg-[#e7b56e]/16 blur-3xl" />
-      </div>
-
-      <section className="relative mx-auto max-w-5xl px-6 pb-24 pt-18">
-        <div className="max-w-3xl space-y-6">
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#8a5a2b]">
-            Privacy
+    <main className="page-shell text-neutral-900">
+      <section className="page-wrap-narrow">
+        <div className="page-header">
+          <p className="page-eyebrow">Privacy Policy</p>
+          <h1 className="page-title">KreyAI Privacy Policy</h1>
+          <p className="page-lede">
+            KreyAI is committed to protecting your privacy. This policy explains how we collect, use, store, and
+            protect your information when you use our services.
           </p>
-          <h1 className="text-5xl font-semibold tracking-tight md:text-6xl">
-            Privacy information in plain language.
-          </h1>
-          <p className="text-lg leading-8 text-neutral-700">
-            This page is meant to explain, at a practical level, how KreyAI handles customer information and uploaded transcription material.
-          </p>
+          <p className="page-meta">Effective Date: March 26, 2026</p>
         </div>
 
         <div className="mt-14 grid gap-5">
           {PRIVACY_SECTIONS.map((section) => (
             <article
               key={section.title}
-              className="rounded-[26px] border border-black/5 bg-white/75 p-6 shadow-[0_18px_50px_rgba(59,43,22,0.08)]"
+              className="surface-panel rounded-[28px] p-6"
             >
               <h2 className="text-xl font-semibold tracking-tight">{section.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-neutral-600">{section.body}</p>
+              {section.intro ? (
+                <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">{section.intro}</p>
+              ) : null}
+              <ul className="mt-4 space-y-3 text-sm leading-7 text-[var(--brand-muted)]">
+                {section.items.map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--brand-blue)]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              {section.calloutTitle ? (
+                <div className="surface-callout mt-5 rounded-[20px] p-5">
+                  <p className="text-sm font-semibold text-[var(--brand-blue-deep)]">{section.calloutTitle}</p>
+                  <ul className="mt-3 space-y-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
+                    {section.calloutItems?.map((item) => (
+                      <li key={item} className="flex gap-3">
+                        <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--brand-blue-deep)]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
             </article>
           ))}
         </div>
 
-        <div className="mt-12 rounded-[28px] border border-[#d7c59e] bg-[#fff4de] p-7 shadow-[0_18px_50px_rgba(59,43,22,0.08)]">
-          <p className="text-sm leading-7 text-[#7a4c18]">
-            This page is a customer-facing summary, not a jurisdiction-specific legal opinion. If you need custom privacy terms or a stricter data handling review, contact{" "}
+        <div className="surface-callout mt-12 rounded-[28px] p-7">
+          <p className="text-sm leading-7 text-[var(--brand-blue-deep)]">
+            Questions about privacy or data handling can be sent to{" "}
             <span className="font-medium text-neutral-900">support@kreyai.com</span>.
           </p>
         </div>
