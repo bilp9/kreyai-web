@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+import BillingClient from "./billing-client";
+
 const BILLING_SECTIONS = [
   {
     title: "1. Pricing Model",
@@ -81,6 +84,12 @@ export default function BillingPage() {
             This Billing Policy explains how payments, credits, and billing are handled when using KreyAI.
           </p>
           <p className="page-meta">Effective Date: March 26, 2026</p>
+        </div>
+
+        <div className="mt-12">
+          <Suspense fallback={<div className="surface-panel rounded-[28px] p-6 text-sm text-[var(--brand-muted)]">Loading billing…</div>}>
+            <BillingClient />
+          </Suspense>
         </div>
 
         <div className="mt-14 grid gap-5">

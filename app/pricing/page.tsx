@@ -1,5 +1,8 @@
+import Link from "next/link";
+
 const CREDIT_PACKS = [
   {
+    id: "free",
     name: "Free",
     price: "$0",
     label: "Get started",
@@ -13,6 +16,7 @@ const CREDIT_PACKS = [
     ],
   },
   {
+    id: "starter",
     name: "Starter Pack",
     price: "$10",
     label: "Popular",
@@ -26,6 +30,7 @@ const CREDIT_PACKS = [
     ],
   },
   {
+    id: "growth",
     name: "Growth Pack",
     price: "$25",
     label: "Best value",
@@ -95,6 +100,15 @@ export default function PricingPage() {
                     {point}
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-6">
+                <Link
+                  href={pack.id === "free" ? "/" : `/billing?pack=${encodeURIComponent(pack.id)}`}
+                  className="brand-button inline-flex w-full items-center justify-center rounded-2xl px-5 py-3.5 text-sm font-semibold"
+                >
+                  {pack.id === "free" ? "Start free" : `Buy ${pack.name}`}
+                </Link>
               </div>
             </article>
           ))}

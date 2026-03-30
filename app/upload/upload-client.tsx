@@ -17,6 +17,12 @@ export default function UploadClient() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [creditError, setCreditError] = useState<{
+    message: string;
+    required_minutes?: number;
+    available_minutes?: number;
+    missing_minutes?: number;
+  } | null>(null);
   const [success, setSuccess] = useState(false);
   const [uploadPercent, setUploadPercent] = useState(0);
   const [uploadStage, setUploadStage] = useState<UploadStage>("idle");
@@ -70,6 +76,7 @@ export default function UploadClient() {
 
     setLoading(true);
     setError(null);
+    setCreditError(null);
     setSuccess(false);
     setUploadPercent(0);
     setUploadStage("preparing");
@@ -153,8 +160,26 @@ export default function UploadClient() {
       );
 
       if (!finalizeRes.ok) {
-        const text = await finalizeRes.text();
-        throw new Error(`Finalize failed: ${text}`);
+        const payload = await finalizeRes.json().catch(() => null);
+        if (finalizeRes.status === 402 && payload?.detail) {
+          const detail = payload.detail;
+          setCreditError({
+            message: typeof detail?.message === "string" ? detail.message : "Insufficient credits for this upload.",
+            required_minutes: detail?.required_minutes,
+            available_minutes: detail?.available_minutes,
+            missing_minutes: detail?.missing_minutes,
+          });
+          setUploadStage("idle");
+          setLoading(false);
+          return;
+        }
+        const detailText =
+          typeof payload?.detail === "string"
+            ? payload.detail
+            : typeof payload?.detail?.message === "string"
+              ? payload.detail.message
+              : "Finalize failed.";
+        throw new Error(`Finalize failed: ${detailText}`);
       }
 
       setUploadStage("done");
@@ -281,6 +306,25 @@ export default function UploadClient() {
             {error && (
               <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
+              </div>
+            )}
+
+            {creditError && (
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
+                <p className="font-medium">{creditError.message}</p>
+                {typeof creditError.required_minutes === "number" ? (
+                  <p className="mt-2 leading-6">
+                    Required: {creditError.required_minutes} min. Available: {creditError.available_minutes ?? 0} min.
+                  </p>
+                ) : null}
+                <div className="mt-3">
+                  <Link
+                    href={`/billing?job=${encodeURIComponent(jobId ?? "")}&t=${encodeURIComponent(token ?? "")}`}
+                    className="font-medium underline underline-offset-4"
+                  >
+                    Buy credits and return to upload
+                  </Link>
+                </div>
               </div>
             )}
 
