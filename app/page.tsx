@@ -241,6 +241,11 @@ export default function Home() {
                 Kreyai is built for interviews in the field, podcasts, journalism, meetings, and real conversations.
                 Clean transcripts you can use without reworking.
               </p>
+
+              <div className="max-w-2xl rounded-2xl border border-[#d9def1] bg-white/70 px-5 py-4 text-sm leading-7 text-[#4f5879] shadow-sm">
+                Need to buy minutes or check what is left on your account? Visit the Billing page and enter your email
+                to view your available balance.
+              </div>
             </div>
           </div>
 

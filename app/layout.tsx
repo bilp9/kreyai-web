@@ -35,9 +35,9 @@ export const metadata: Metadata = {
       "Transcribe interviews, podcasts, meetings, and real conversations with clean exports and speaker-labeled premium output.",
     images: [
       {
-        url: "/icon.svg",
-        width: 512,
-        height: 512,
+        url: "/og-kreyai.jpg",
+        width: 1200,
+        height: 630,
         alt: "KreyAI",
       },
     ],
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     title: "KreyAI | Audio Transcription With Speaker Labels and Credits",
     description:
       "Clean transcripts, subtitle exports, and speaker-labeled premium output for real-world audio.",
-    images: ["/icon.svg"],
+    images: ["/og-kreyai.jpg"],
   },
   robots: {
     index: true,
@@ -79,6 +79,9 @@ export default function RootLayout({
               <Link href="/pricing" className="transition hover:text-[#13172b]">
                 Pricing
               </Link>
+              <Link href="/billing" className="transition hover:text-[#13172b]">
+                Billing
+              </Link>
               <Link href="/faq" className="transition hover:text-[#13172b]">
                 FAQ
               </Link>
@@ -97,6 +100,9 @@ export default function RootLayout({
             </nav>
 
             <nav className="flex w-full flex-wrap gap-4 border-t border-[var(--brand-border)] pt-3 text-sm font-medium text-[var(--brand-muted)] md:hidden">
+              <Link href="/billing" className="transition hover:text-[#13172b]">
+                Billing
+              </Link>
               <Link href="/faq" className="transition hover:text-[#13172b]">
                 FAQ
               </Link>
