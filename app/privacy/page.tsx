@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "Review how KreyAI handles uploaded audio, generated transcripts, billing records, retention, and deletion under the service privacy policy.",
+  alternates: {
+    canonical: "/privacy",
+  },
+};
+
 const PRIVACY_SECTIONS = [
   {
     title: "1. Information We Collect",
@@ -30,7 +41,10 @@ const PRIVACY_SECTIONS = [
   {
     title: "3. Data Retention",
     items: [
-      "All uploaded files and generated outputs are automatically deleted after 7 days.",
+      "Uploaded files and generated outputs are retained for a 7-day availability window after job completion.",
+      "After that period, files are scheduled for automatic deletion from active storage.",
+      "KreyAI does not keep customer files for ongoing operational access after that 7-day period.",
+      "If you need access again after 7 days, you must submit a new job.",
       "Temporary processing data is deleted once jobs are completed or expired.",
       "Logs may be retained longer for operational and security purposes, but do not contain your file content.",
     ],
@@ -69,7 +83,7 @@ const PRIVACY_SECTIONS = [
     title: "7. Your Rights & Control",
     items: [
       "You may choose not to upload sensitive content.",
-      "You may download your files at any time within the retention period.",
+      "You may download your files at any time within the 7-day availability window.",
       "You may request early deletion of your data as a future feature.",
     ],
   },

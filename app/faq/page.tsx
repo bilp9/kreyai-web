@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "FAQ",
+  description:
+    "Read common questions about KreyAI transcription accuracy, credits, file privacy, speaker labels, downloads, and supported formats.",
+  alternates: {
+    canonical: "/faq",
+  },
+};
+
 const FAQS = [
   {
     question: "What is Kreyai?",
@@ -26,7 +37,7 @@ const FAQS = [
     question: "How does pricing work?",
     answer: "Kreyai uses a credit-based system:",
     bullets: [
-      "You receive free minutes to get started.",
+      "New emails receive a one-time 30-minute starter allowance.",
       "You can purchase additional minutes as needed.",
       "Credits are deducted based on the length of your audio.",
     ],
@@ -103,7 +114,7 @@ const FAQS = [
   {
     question: "Can I delete my files sooner?",
     answer:
-      "Currently, files are automatically deleted after 7 days. Manual deletion options may be added in the future.",
+      "Yes. You can request immediate deletion from your job page. Once deleted, download links stop working right away, and you must submit a new request if you need the files again.",
   },
 ];
 

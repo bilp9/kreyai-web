@@ -6,8 +6,53 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Kreyai",
-  description: "Transcribe, refine, and understand audio with precision.",
+  metadataBase: new URL("https://kreyai.com"),
+  title: {
+    default: "KreyAI | Audio Transcription With Speaker Labels and Credits",
+    template: "%s | KreyAI",
+  },
+  description:
+    "KreyAI turns audio into clean transcripts, subtitles, and speaker-labeled outputs for interviews, podcasts, meetings, and multilingual recordings.",
+  keywords: [
+    "audio transcription",
+    "speaker labeled transcription",
+    "multilingual transcription",
+    "podcast transcript",
+    "interview transcription",
+    "meeting transcription",
+    "subtitle export",
+    "haitian creole transcription",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://kreyai.com",
+    siteName: "KreyAI",
+    title: "KreyAI | Audio Transcription With Speaker Labels and Credits",
+    description:
+      "Transcribe interviews, podcasts, meetings, and real conversations with clean exports and speaker-labeled premium output.",
+    images: [
+      {
+        url: "/icon.svg",
+        width: 512,
+        height: 512,
+        alt: "KreyAI",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "KreyAI | Audio Transcription With Speaker Labels and Credits",
+    description:
+      "Clean transcripts, subtitle exports, and speaker-labeled premium output for real-world audio.",
+    images: ["/icon.svg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

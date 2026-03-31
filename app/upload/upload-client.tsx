@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -8,11 +8,21 @@ import { useRouter } from "next/navigation";
 type UploadStage = "idle" | "preparing" | "uploading" | "finalizing" | "done";
 type SpeakerMode = "single" | "multi" | "unsure";
 
+type BalanceResponse = {
+  email: string;
+  balance_minutes: number;
+  total_purchased_minutes: number;
+  total_granted_minutes?: number;
+  total_consumed_minutes: number;
+  total_refunded_minutes: number;
+};
+
 export default function UploadClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const jobId = searchParams.get("job");
   const token = searchParams.get("t");
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,8 +37,80 @@ export default function UploadClient() {
   const [uploadPercent, setUploadPercent] = useState(0);
   const [uploadStage, setUploadStage] = useState<UploadStage>("idle");
   const [speakerMode, setSpeakerMode] = useState<SpeakerMode>("single");
+  const [jobEmail, setJobEmail] = useState("");
+  const [balance, setBalance] = useState<BalanceResponse | null>(null);
+  const [loadingBalance, setLoadingBalance] = useState(false);
 
   const canSubmit = file && jobId && token;
+
+  useEffect(() => {
+    if (!apiBase || !jobId || !token) {
+      return;
+    }
+
+    let active = true;
+
+    async function loadJobEmail() {
+      const headers = new Headers();
+      headers.set("X-Job-Token", token!);
+      const res = await fetch(`${apiBase}/api/jobs/${jobId}`, {
+        headers,
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        return;
+      }
+
+      const data = (await res.json()) as { email?: string };
+      if (active && data.email) {
+        setJobEmail(data.email);
+      }
+    }
+
+    void loadJobEmail();
+    return () => {
+      active = false;
+    };
+  }, [apiBase, jobId, token]);
+
+  useEffect(() => {
+    if (!apiBase || !jobEmail) {
+      setBalance(null);
+      return;
+    }
+
+    let active = true;
+
+    async function loadBalance() {
+      setLoadingBalance(true);
+      try {
+        const res = await fetch(`${apiBase}/api/billing/balance?email=${encodeURIComponent(jobEmail)}`, {
+          cache: "no-store",
+        });
+        if (!res.ok) {
+          throw new Error("Unable to load credit balance.");
+        }
+        const data = (await res.json()) as BalanceResponse;
+        if (active) {
+          setBalance(data);
+        }
+      } catch {
+        if (active) {
+          setBalance(null);
+        }
+      } finally {
+        if (active) {
+          setLoadingBalance(false);
+        }
+      }
+    }
+
+    void loadBalance();
+    return () => {
+      active = false;
+    };
+  }, [apiBase, jobEmail, creditError]);
 
   function getErrorMessage(err: unknown): string {
     if (err instanceof Error) {
@@ -82,9 +164,7 @@ export default function UploadClient() {
     setUploadStage("preparing");
 
     try {
-      const API = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-      if (!API) {
+      if (!apiBase) {
         throw new Error("API base URL not configured.");
       }
 
@@ -92,7 +172,7 @@ export default function UploadClient() {
       // 1️⃣ Request signed resumable start URL
       // --------------------------------------------------
       const initRes = await fetch(
-        `${API}/api/jobs/${jobId}/upload-url?filename=${encodeURIComponent(
+        `${apiBase}/api/jobs/${jobId}/upload-url?filename=${encodeURIComponent(
           file.name
         )}&content_type=${encodeURIComponent(file.type)}`,
         {
@@ -143,7 +223,7 @@ export default function UploadClient() {
       // --------------------------------------------------
       setUploadStage("finalizing");
       const finalizeRes = await fetch(
-        `${API}/api/jobs/${jobId}/finalize-upload`,
+        `${apiBase}/api/jobs/${jobId}/finalize-upload`,
         {
           method: "POST",
           headers: {
@@ -218,6 +298,24 @@ export default function UploadClient() {
                 <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">{description}</p>
               </div>
             ))}
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="surface-panel rounded-2xl p-4">
+              <p className="text-sm font-semibold text-[#13172b]">Account email</p>
+              <p className="mt-2 break-all text-sm leading-6 text-[var(--brand-muted)]">
+                {jobEmail || "Loading account email…"}
+              </p>
+            </div>
+            <div className="surface-panel rounded-2xl p-4">
+              <p className="text-sm font-semibold text-[#13172b]">Available balance</p>
+              <p className="mt-2 text-2xl font-semibold tracking-tight text-[#13172b]">
+                {loadingBalance ? "…" : balance ? `${balance.balance_minutes} min` : "0 min"}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
+                Credits for this email are checked before processing starts.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -319,7 +417,7 @@ export default function UploadClient() {
                 ) : null}
                 <div className="mt-3">
                   <Link
-                    href={`/billing?job=${encodeURIComponent(jobId ?? "")}&t=${encodeURIComponent(token ?? "")}`}
+                    href={`/billing?job=${encodeURIComponent(jobId ?? "")}&t=${encodeURIComponent(token ?? "")}&email=${encodeURIComponent(jobEmail)}`}
                     className="font-medium underline underline-offset-4"
                   >
                     Buy credits and return to upload

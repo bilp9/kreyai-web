@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Pricing",
+  description:
+    "See KreyAI prepaid credit packs, one-time starter allowance, and how transcription minutes are priced for standard and premium jobs.",
+  alternates: {
+    canonical: "/pricing",
+  },
+};
 
 const CREDIT_PACKS = [
   {
@@ -47,6 +57,7 @@ const CREDIT_PACKS = [
 
 const HOW_CREDITS_WORK = [
   "KreyAI uses a prepaid credit system.",
+  "New emails receive a one-time 30-minute starter allowance to test the product.",
   "Credits are deducted based on the duration of the audio you submit.",
   "Credits are only the public pricing model. There are no subscriptions or seat licenses.",
   "Credits do not expire and can be used anytime.",

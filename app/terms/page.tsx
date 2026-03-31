@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description:
+    "Read the KreyAI terms covering transcription use, credits, payments, refunds, file retention, and service limitations.",
+  alternates: {
+    canonical: "/terms",
+  },
+};
+
 const TERMS_SECTIONS = [
   {
     title: "1. Overview",
@@ -33,10 +44,12 @@ const TERMS_SECTIONS = [
   {
     title: "4. Data Handling & Retention",
     items: [
-      "Files and generated outputs are automatically deleted after 7 days.",
-      "Access is provided through secure, time-limited links.",
-      "We are not responsible for files after deletion.",
-      "Users are responsible for downloading their files within the retention period.",
+      "Uploaded files and generated outputs are available for download for 7 days after job completion.",
+      "Access is provided through secure, time-limited links during that 7-day window.",
+      "After that period, files are scheduled for automatic deletion from active storage.",
+      "KreyAI does not keep customer files for ongoing operational access after that period.",
+      "If you need access again after 7 days, you must submit a new job.",
+      "You are responsible for downloading your files within the 7-day availability period.",
     ],
   },
   {

@@ -36,8 +36,8 @@ const TRUST_ITEMS = [
     description: "Your files are used only for transcription and never for training or sharing.",
   },
   {
-    title: "Deleted after 7 days",
-    description: "All files and outputs are automatically removed from our system.",
+    title: "7-day file access",
+    description: "Files stay available for 7 days, then are scheduled for automatic deletion from active storage.",
   },
   {
     title: "No login required",

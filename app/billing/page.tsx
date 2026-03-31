@@ -1,5 +1,15 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import BillingClient from "./billing-client";
+
+export const metadata: Metadata = {
+  title: "Billing Policy",
+  description:
+    "Buy KreyAI transcription credits, review billing terms, and manage prepaid minute balances for future uploads.",
+  alternates: {
+    canonical: "/billing",
+  },
+};
 
 const BILLING_SECTIONS = [
   {
@@ -17,6 +27,7 @@ const BILLING_SECTIONS = [
       "Credits are consumed when a transcription job is processed.",
       "The number of credits deducted corresponds to the length of the audio file.",
       "Once credits are used, they cannot be reversed.",
+      "If you request immediate file deletion after processing, download links stop working right away and a new request is required if you need the files again.",
     ],
   },
   {

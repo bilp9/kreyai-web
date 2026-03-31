@@ -1,4 +1,15 @@
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
+
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Ops",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 type OpsJob = {
   job_id: string;
@@ -57,6 +68,49 @@ type OpsDashboardResponse = {
   jobs: OpsJob[];
 };
 
+type OpsBillingLedgerEntry = {
+  id: string;
+  email: string;
+  entry_type: string;
+  delta_minutes: number;
+  balance_after_minutes: number;
+  source: string;
+  description: string;
+  metadata?: Record<string, unknown>;
+  created_at?: string;
+};
+
+type OpsBillingResponse = {
+  viewer: {
+    id: string;
+    email?: string;
+  };
+  email: string;
+  account: {
+    email: string;
+    balance_minutes: number;
+    total_purchased_minutes: number;
+    total_granted_minutes: number;
+    total_consumed_minutes: number;
+    total_refunded_minutes: number;
+    stripe_customer_id?: string | null;
+    updated_at?: string | null;
+  };
+  access_decision: {
+    allowed: boolean;
+    source: string;
+    reason: string;
+    credits_to_deduct: number;
+    requires_credit_check: boolean;
+    available_credits: number;
+    missing_credits: number;
+  };
+  partner_access?: {
+    active?: boolean;
+  };
+  ledger: OpsBillingLedgerEntry[];
+};
+
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 const STATUS_OPTIONS = [
@@ -71,6 +125,7 @@ const STATUS_OPTIONS = [
 ];
 
 const LIMIT_OPTIONS = [10, 25, 50, 100];
+const BILLING_LEDGER_LIMIT = 50;
 
 function getSingleParam(value: string | string[] | undefined): string {
   if (Array.isArray(value)) {
@@ -99,6 +154,11 @@ function formatSeconds(value?: number | null): string {
 function formatPercent(value?: number | null): string {
   if (typeof value !== "number") return "—";
   return `${value.toFixed(3)}x`;
+}
+
+function formatDelta(value?: number | null): string {
+  if (typeof value !== "number") return "—";
+  return `${value > 0 ? "+" : ""}${value} min`;
 }
 
 function getViewerLabel(viewer: OpsDashboardResponse["viewer"]): string {
@@ -174,6 +234,54 @@ function buildDashboardUrl(filters: {
   return `/ops/dashboard?${params.toString()}`;
 }
 
+function buildBillingUrl(email: string) {
+  const params = new URLSearchParams();
+  params.set("email", email);
+  params.set("limit", String(BILLING_LEDGER_LIMIT));
+  return `/ops/billing?${params.toString()}`;
+}
+
+function buildOpsPageHref(options: {
+  tab?: string;
+  limit?: number;
+  status?: string;
+  language?: string;
+  email?: string;
+  billingEmail?: string;
+  billingNotice?: string;
+  billingError?: string;
+}) {
+  const params = new URLSearchParams();
+
+  if (options.tab) {
+    params.set("tab", options.tab);
+  }
+  if (typeof options.limit === "number") {
+    params.set("limit", String(options.limit));
+  }
+  if (options.status) {
+    params.set("status", options.status);
+  }
+  if (options.language) {
+    params.set("language", options.language);
+  }
+  if (options.email) {
+    params.set("email", options.email);
+  }
+  if (options.billingEmail) {
+    params.set("billing_email", options.billingEmail);
+  }
+  if (options.billingNotice) {
+    params.set("billing_notice", options.billingNotice);
+  }
+  if (options.billingError) {
+    params.set("billing_error", options.billingError);
+  }
+
+  const query = params.toString();
+  return query ? `/ops?${query}` : "/ops";
+}
+
 async function getDashboardData(filters: {
   limit: number;
   status?: string;
@@ -209,6 +317,40 @@ async function getDashboardData(filters: {
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Unable to load ops dashboard.",
+    };
+  }
+}
+
+async function getBillingData(email: string): Promise<{ data?: OpsBillingResponse; error?: string }> {
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const apiKey = process.env.KREYAI_OPS_API_KEY;
+
+  if (!apiBase) {
+    return { error: "NEXT_PUBLIC_API_BASE_URL is not configured." };
+  }
+
+  if (!apiKey) {
+    return { error: "KREYAI_OPS_API_KEY is not configured for the ops dashboard." };
+  }
+
+  try {
+    const res = await fetch(`${apiBase}${buildBillingUrl(email)}`, {
+      cache: "no-store",
+      headers: {
+        "X-API-Key": apiKey,
+      },
+    });
+
+    if (!res.ok) {
+      return { error: `Ops billing request failed (${res.status}).` };
+    }
+
+    return {
+      data: (await res.json()) as OpsBillingResponse,
+    };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Unable to load ops billing view.",
     };
   }
 }
@@ -331,12 +473,96 @@ function MetricCard({
   );
 }
 
+function BillingMetricCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | number;
+}) {
+  return (
+    <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-5">
+      <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">{label}</p>
+      <p className="mt-3 text-2xl font-semibold text-white">{value}</p>
+    </div>
+  );
+}
+
+function SectionShell({
+  eyebrow,
+  title,
+  description,
+  children,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,39,0.88),rgba(7,12,24,0.94))] shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
+      <div className="border-b border-white/10 px-6 py-6">
+        <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">{eyebrow}</p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
+      </div>
+      <div className="px-6 py-6">{children}</div>
+    </section>
+  );
+}
+
 export default async function OpsPage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
+  async function applyBillingAdjustment(formData: FormData) {
+    "use server";
+
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiKey = process.env.KREYAI_OPS_API_KEY;
+    const email = getSingleParam(formData.get("email")?.toString());
+    const action = getSingleParam(formData.get("action")?.toString());
+    const minutes = getSingleParam(formData.get("minutes")?.toString());
+    const notes = getSingleParam(formData.get("notes")?.toString());
+
+    if (!apiBase || !apiKey) {
+      redirect(`/ops?tab=billing&billing_email=${encodeURIComponent(email)}&billing_error=${encodeURIComponent("Ops billing is not configured.")}`);
+    }
+
+    const res = await fetch(`${apiBase}/ops/billing/adjust`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+      },
+      body: JSON.stringify({
+        email,
+        action,
+        minutes: Number.parseInt(minutes, 10),
+        notes,
+      }),
+    });
+
+    if (!res.ok) {
+      let detail = "Unable to apply adjustment.";
+      try {
+        const payload = (await res.json()) as { detail?: string };
+        if (typeof payload.detail === "string" && payload.detail) {
+          detail = payload.detail;
+        }
+      } catch {}
+      redirect(`/ops?tab=billing&billing_email=${encodeURIComponent(email)}&billing_error=${encodeURIComponent(detail)}`);
+    }
+
+    redirect(`/ops?tab=billing&billing_email=${encodeURIComponent(email)}&billing_notice=${encodeURIComponent(`Applied ${action} of ${minutes} minutes.`)}`);
+  }
+
   const resolvedParams = await searchParams;
+  const tab = getSingleParam(resolvedParams.tab) || "jobs";
+  const billingEmail = getSingleParam(resolvedParams.billing_email);
+  const billingNotice = getSingleParam(resolvedParams.billing_notice);
+  const billingError = getSingleParam(resolvedParams.billing_error);
 
   const limitParam = Number.parseInt(getSingleParam(resolvedParams.limit), 10);
   const filters = {
@@ -349,6 +575,20 @@ export default async function OpsPage({
   const { data, error } = await getDashboardData(filters);
   const filteredJobs = data ? applyJobFilters(data.jobs, filters) : [];
   const filteredSummary = data ? summarizeJobs(filteredJobs) : null;
+  const billingResult = billingEmail ? await getBillingData(billingEmail) : { data: undefined, error: undefined };
+  const billingData = billingResult.data;
+  const billingLookupError = billingResult.error;
+  const jobsHref = buildOpsPageHref({
+    tab: "jobs",
+    limit: filters.limit,
+    status: filters.status,
+    language: filters.language,
+    email: filters.email,
+  });
+  const billingHref = buildOpsPageHref({
+    tab: "billing",
+    billingEmail,
+  });
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#07111f] text-slate-100">
@@ -369,15 +609,15 @@ export default async function OpsPage({
               </p>
               <div className="space-y-3">
                 <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white md:text-5xl">
-                  Mission control for transcript flow, failures, and throughput.
+                  Operational view for jobs, balances, and support actions.
                 </h1>
                 <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">
-                  Live operational view for queue health, job filtering, and recent processing behavior across the soft-launch system.
+                  Keep an eye on processing health, inspect customer balances, and resolve credit issues without leaving the dashboard.
                 </p>
               </div>
             </div>
 
-            {data && (
+            {tab === "jobs" && data && (
               <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[420px]">
                 <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4">
                   <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
@@ -408,91 +648,352 @@ export default async function OpsPage({
           </div>
         </div>
 
-        <form
-          method="GET"
-          className="grid gap-4 rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(9,18,35,0.88),rgba(7,12,24,0.92))] p-5 shadow-[0_24px_80px_rgba(2,6,23,0.45)] md:grid-cols-2 xl:grid-cols-5 xl:p-6"
-        >
-          <label className="space-y-2 text-sm">
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
-              Status
-            </span>
-            <select
-              name="status"
-              defaultValue={filters.status}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
-            >
-              {STATUS_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value} className="bg-slate-950 text-white">
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="space-y-2 text-sm">
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
-              Language
-            </span>
-            <input
-              name="language"
-              defaultValue={filters.language}
-              placeholder="en, fr, ht..."
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
-            />
-          </label>
-
-          <label className="space-y-2 text-sm">
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
-              Email Search
-            </span>
-            <input
-              name="email"
-              defaultValue={filters.email}
-              placeholder="billy@kreyai.com"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
-            />
-          </label>
-
-          <label className="space-y-2 text-sm">
-            <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
-              Rows
-            </span>
-            <select
-              name="limit"
-              defaultValue={String(filters.limit)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
-            >
-              {LIMIT_OPTIONS.map((option) => (
-                <option key={option} value={option} className="bg-slate-950 text-white">
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div className="flex items-end gap-3">
-            <button
-              type="submit"
-              className="w-full rounded-2xl bg-[linear-gradient(135deg,#38bdf8,#2563eb)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(37,99,235,0.35)] transition hover:brightness-110"
-            >
-              Apply
-            </button>
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+          <div className="grid gap-4 md:grid-cols-2">
             <a
-              href="/ops"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-medium text-slate-200 transition hover:bg-white/10"
+              href={jobsHref}
+              className={`rounded-[28px] border px-5 py-5 transition ${
+                tab === "jobs"
+                  ? "border-cyan-300/40 bg-[linear-gradient(135deg,rgba(56,189,248,0.16),rgba(37,99,235,0.14))] shadow-[0_18px_50px_rgba(14,165,233,0.12)]"
+                  : "border-white/10 bg-white/5 hover:bg-white/10"
+              }`}
             >
-              Reset
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">Tab</p>
+              <h2 className="mt-2 text-lg font-semibold text-white">Jobs</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                Queue health, throughput, routing mix, and recent execution details.
+              </p>
+            </a>
+
+            <a
+              href={billingHref}
+              className={`rounded-[28px] border px-5 py-5 transition ${
+                tab === "billing"
+                  ? "border-cyan-300/40 bg-[linear-gradient(135deg,rgba(56,189,248,0.16),rgba(37,99,235,0.14))] shadow-[0_18px_50px_rgba(14,165,233,0.12)]"
+                  : "border-white/10 bg-white/5 hover:bg-white/10"
+              }`}
+            >
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">Tab</p>
+              <h2 className="mt-2 text-lg font-semibold text-white">Billing</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                Customer balances, ledger history, manual adjustments, and dispute resolution.
+              </p>
             </a>
           </div>
-        </form>
 
-        {error && (
+          <a
+            href={tab === "billing" ? billingHref : jobsHref}
+            className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+          >
+            Refresh now
+          </a>
+        </div>
+
+        {tab === "jobs" && (
+          <SectionShell
+            eyebrow="Filters"
+            title="Queue slice"
+            description="Narrow the jobs view by status, language, and customer email so active incidents are easier to isolate."
+          >
+            <form
+              method="GET"
+              className="grid gap-4 md:grid-cols-2 xl:grid-cols-5"
+            >
+              <input type="hidden" name="tab" value="jobs" />
+              <label className="space-y-2 text-sm">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                  Status
+                </span>
+                <select
+                  name="status"
+                  defaultValue={filters.status}
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                >
+                  {STATUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value} className="bg-slate-950 text-white">
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="space-y-2 text-sm">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                  Language
+                </span>
+                <input
+                  name="language"
+                  defaultValue={filters.language}
+                  placeholder="en, fr, ht..."
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                />
+              </label>
+
+              <label className="space-y-2 text-sm">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                  Email Search
+                </span>
+                <input
+                  name="email"
+                  defaultValue={filters.email}
+                  placeholder="billy@kreyai.com"
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                />
+              </label>
+
+              <label className="space-y-2 text-sm">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                  Rows
+                </span>
+                <select
+                  name="limit"
+                  defaultValue={String(filters.limit)}
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                >
+                  {LIMIT_OPTIONS.map((option) => (
+                    <option key={option} value={option} className="bg-slate-950 text-white">
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <div className="flex items-end gap-3">
+                <button
+                  type="submit"
+                  className="w-full rounded-2xl bg-[linear-gradient(135deg,#38bdf8,#2563eb)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(37,99,235,0.35)] transition hover:brightness-110"
+                >
+                  Apply
+                </button>
+                <a
+                  href="/ops?tab=jobs"
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-medium text-slate-200 transition hover:bg-white/10"
+                >
+                  Reset
+                </a>
+              </div>
+            </form>
+          </SectionShell>
+        )}
+
+        {tab === "billing" && (
+          <section className="space-y-6">
+            <SectionShell
+              eyebrow="Lookup"
+              title="Customer billing account"
+              description="Search any customer by email to review balance, ledger history, and manual support actions."
+            >
+              <form
+                method="GET"
+                className="grid gap-4 md:grid-cols-[1fr_auto]"
+              >
+                <input type="hidden" name="tab" value="billing" />
+                <label className="space-y-2 text-sm">
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                    Customer Email
+                  </span>
+                  <input
+                    name="billing_email"
+                    defaultValue={billingEmail}
+                    placeholder="name@company.com"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                  />
+                </label>
+
+                <div className="flex items-end gap-3">
+                  <button
+                    type="submit"
+                    className="rounded-2xl bg-[linear-gradient(135deg,#38bdf8,#2563eb)] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(37,99,235,0.35)] transition hover:brightness-110"
+                  >
+                    Load account
+                  </button>
+                </div>
+              </form>
+            </SectionShell>
+
+            {billingNotice ? (
+              <div className="rounded-[28px] border border-emerald-400/25 bg-emerald-400/10 px-6 py-5 text-sm text-emerald-100 shadow-[0_20px_60px_rgba(16,185,129,0.18)]">
+                {billingNotice}
+              </div>
+            ) : null}
+
+            {(billingError || billingLookupError) ? (
+              <div className="rounded-[28px] border border-rose-400/25 bg-rose-400/10 px-6 py-5 text-sm text-rose-100 shadow-[0_20px_60px_rgba(136,19,55,0.22)]">
+                {billingError || billingLookupError}
+              </div>
+            ) : null}
+
+            {billingData ? (
+              <>
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                  <BillingMetricCard label="Balance" value={`${billingData.account.balance_minutes} min`} />
+                  <BillingMetricCard label="Purchased" value={`${billingData.account.total_purchased_minutes} min`} />
+                  <BillingMetricCard label="Granted" value={`${billingData.account.total_granted_minutes} min`} />
+                  <BillingMetricCard label="Consumed" value={`${billingData.account.total_consumed_minutes} min`} />
+                  <BillingMetricCard label="Refunded" value={`${billingData.account.total_refunded_minutes} min`} />
+                </div>
+
+                <div className="grid gap-5 xl:grid-cols-[1.05fr,0.95fr]">
+                  <div className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,39,0.88),rgba(7,12,24,0.94))] p-6 shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">Account</p>
+                      <h2 className="text-2xl font-semibold tracking-tight text-white">{billingData.email}</h2>
+                      <p className="text-sm leading-6 text-slate-400">
+                        Stripe customer: {billingData.account.stripe_customer_id || "Not linked"} • Last updated {formatDate(billingData.account.updated_at || undefined)}
+                      </p>
+                    </div>
+
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4">
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Access decision</p>
+                        <p className="mt-2 text-lg font-semibold text-white">
+                          {billingData.access_decision.allowed ? "Allowed" : "Blocked"}
+                        </p>
+                        <p className="mt-1 text-sm text-slate-400">
+                          {billingData.access_decision.reason.replaceAll("_", " ")}
+                        </p>
+                      </div>
+                      <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4">
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Partner plan</p>
+                        <p className="mt-2 text-lg font-semibold text-white">
+                          {billingData.partner_access?.active ? "Active" : "No"}
+                        </p>
+                        <p className="mt-1 text-sm text-slate-400">
+                          Available now: {billingData.access_decision.available_credits} min
+                        </p>
+                      </div>
+                    </div>
+
+                    <form action={applyBillingAdjustment} className="mt-6 space-y-4 rounded-[28px] border border-white/10 bg-white/5 p-5">
+                      <input type="hidden" name="email" value={billingData.email} />
+                      <div className="space-y-2">
+                        <p className="text-xs font-medium uppercase tracking-[0.18em] text-cyan-200/70">Manual adjustment</p>
+                        <p className="text-sm leading-6 text-slate-400">
+                          Use grant for goodwill, refund for restored minutes, and debit when reversing a mistaken balance.
+                        </p>
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <label className="space-y-2 text-sm">
+                          <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Action</span>
+                          <select
+                            name="action"
+                            defaultValue="grant"
+                            className="w-full rounded-2xl border border-white/10 bg-[#07111f] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/60"
+                          >
+                            <option value="grant">Grant credits</option>
+                            <option value="refund">Refund credits</option>
+                            <option value="debit">Debit credits</option>
+                          </select>
+                        </label>
+
+                        <label className="space-y-2 text-sm">
+                          <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Minutes</span>
+                          <input
+                            type="number"
+                            min="1"
+                            step="1"
+                            name="minutes"
+                            placeholder="30"
+                            className="w-full rounded-2xl border border-white/10 bg-[#07111f] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60"
+                          />
+                        </label>
+                      </div>
+
+                      <label className="space-y-2 text-sm">
+                        <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Reason / note</span>
+                        <textarea
+                          name="notes"
+                          rows={3}
+                          placeholder="Support adjustment for customer dispute, manual restoration after issue, courtesy grant..."
+                          className="w-full rounded-2xl border border-white/10 bg-[#07111f] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60"
+                        />
+                      </label>
+
+                      <button
+                        type="submit"
+                        className="rounded-2xl bg-[linear-gradient(135deg,#38bdf8,#2563eb)] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(37,99,235,0.35)] transition hover:brightness-110"
+                      >
+                        Apply adjustment
+                      </button>
+                    </form>
+                  </div>
+
+                  <div className="overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,39,0.88),rgba(7,12,24,0.94))] shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
+                    <div className="border-b border-white/10 px-6 py-6">
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">Ledger</p>
+                      <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Transaction history</h2>
+                      <p className="mt-2 text-sm leading-6 text-slate-400">
+                        Every credit change is recorded here, including purchases, starter grants, debits, refunds, and manual ops adjustments.
+                      </p>
+                    </div>
+
+                    {billingData.ledger.length === 0 ? (
+                      <div className="px-6 py-14 text-center">
+                        <div className="mx-auto max-w-md rounded-[28px] border border-dashed border-white/10 bg-white/[0.03] px-6 py-10">
+                          <p className="text-lg font-medium text-white">No transactions yet</p>
+                          <p className="mt-3 text-sm leading-6 text-slate-400">
+                            This customer has no ledger entries yet beyond the current account snapshot.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-left text-sm">
+                          <thead className="bg-white/[0.03] text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                            <tr>
+                              <th className="px-6 py-4 font-medium">When</th>
+                              <th className="px-4 py-4 font-medium">Type</th>
+                              <th className="px-4 py-4 font-medium">Delta</th>
+                              <th className="px-4 py-4 font-medium">Balance</th>
+                              <th className="px-6 py-4 font-medium">Details</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/5">
+                            {billingData.ledger.map((entry) => (
+                              <tr key={entry.id} className="align-top transition hover:bg-white/[0.03]">
+                                <td className="px-6 py-5 text-slate-200">{formatDate(entry.created_at)}</td>
+                                <td className="px-4 py-5">
+                                  <div className="font-medium text-white">{entry.entry_type.replaceAll("_", " ")}</div>
+                                  <div className="mt-1 text-xs text-slate-500">{entry.source || "—"}</div>
+                                </td>
+                                <td className={`px-4 py-5 font-medium ${entry.delta_minutes >= 0 ? "text-emerald-200" : "text-rose-200"}`}>
+                                  {formatDelta(entry.delta_minutes)}
+                                </td>
+                                <td className="px-4 py-5 text-slate-200">{entry.balance_after_minutes} min</td>
+                                <td className="px-6 py-5">
+                                  <div className="text-slate-200">{entry.description || "—"}</div>
+                                  {"approved_by" in (entry.metadata || {}) ? (
+                                    <div className="mt-1 text-xs text-slate-500">
+                                      By {String(entry.metadata?.approved_by || "ops")}
+                                    </div>
+                                  ) : null}
+                                  {"notes" in (entry.metadata || {}) && String(entry.metadata?.notes || "").trim() ? (
+                                    <div className="mt-1 text-xs leading-5 text-slate-500">
+                                      {String(entry.metadata?.notes || "")}
+                                    </div>
+                                  ) : null}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : null}
+          </section>
+        )}
+
+        {tab === "jobs" && error && (
           <div className="rounded-[28px] border border-rose-400/25 bg-rose-400/10 px-6 py-5 text-sm text-rose-100 shadow-[0_20px_60px_rgba(136,19,55,0.22)]">
             {error}
           </div>
         )}
 
-        {data && filteredSummary && (
+        {tab === "jobs" && data && filteredSummary && (
           <>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               <MetricCard

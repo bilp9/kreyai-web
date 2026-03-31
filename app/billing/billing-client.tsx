@@ -23,6 +23,7 @@ type BalanceResponse = {
   email: string;
   balance_minutes: number;
   total_purchased_minutes: number;
+  total_granted_minutes?: number;
   total_consumed_minutes: number;
   total_refunded_minutes: number;
   stripe_customer_id?: string | null;
@@ -176,6 +177,9 @@ export default function BillingClient() {
             Purchase a credit pack, then use your balance across future uploads. Credits are deducted from the audio
             duration before processing begins.
           </p>
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--brand-blue)]">
+            New emails receive a one-time 30-minute starter allowance automatically.
+          </p>
         </div>
 
         {jobId && jobToken ? (
@@ -198,6 +202,9 @@ export default function BillingClient() {
             placeholder="name@company.com"
             className="brand-input w-full rounded-2xl border-slate-200 px-4 py-3.5 outline-none"
           />
+          <p className="text-xs leading-5 text-[var(--brand-muted)]">
+            Enter any customer email to check the available minute balance for that account.
+          </p>
         </label>
 
         <div className="surface-muted rounded-2xl px-5 py-4">
@@ -206,12 +213,17 @@ export default function BillingClient() {
             {loadingBalance ? "…" : balance ? `${balance.balance_minutes} min` : "0 min"}
           </p>
           <p className="mt-1 text-sm text-[var(--brand-muted)]">Available for future uploads under this email.</p>
+          {balance ? (
+            <p className="mt-2 text-xs leading-5 text-[var(--brand-blue)]">
+              Purchased: {balance.total_purchased_minutes} min. Starter grant: {balance.total_granted_minutes ?? 0} min.
+            </p>
+          ) : null}
         </div>
       </div>
 
       {success ? (
         <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-800">
-          Payment received. Your credits should now be available.
+          Payment received. Your balance for {email || "this email"} should now reflect the new minutes.
         </div>
       ) : null}
 
