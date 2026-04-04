@@ -76,6 +76,9 @@ export default function RootLayout({
             </Link>
 
             <nav className="hidden items-center gap-8 text-sm font-medium text-[var(--brand-muted)] md:flex">
+              <Link href="/about" className="transition hover:text-[#13172b]">
+                About
+              </Link>
               <Link href="/pricing" className="transition hover:text-[#13172b]">
                 Pricing
               </Link>
@@ -100,6 +103,9 @@ export default function RootLayout({
             </nav>
 
             <nav className="flex w-full flex-wrap gap-4 border-t border-[var(--brand-border)] pt-3 text-sm font-medium text-[var(--brand-muted)] md:hidden">
+              <Link href="/about" className="transition hover:text-[#13172b]">
+                About
+              </Link>
               <Link href="/billing" className="transition hover:text-[#13172b]">
                 Billing
               </Link>
@@ -124,6 +130,9 @@ export default function RootLayout({
           <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-sm text-[var(--brand-muted)] md:flex-row md:items-center md:justify-between">
             <p>© 2026 KreyAI Technologies LLC. All rights reserved.</p>
             <nav className="flex flex-wrap items-center gap-5">
+              <Link href="/about" className="transition hover:text-[#13172b]">
+                About
+              </Link>
               <Link href="/privacy" className="transition hover:text-[#13172b]">
                 Privacy
               </Link>
