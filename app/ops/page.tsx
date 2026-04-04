@@ -178,39 +178,39 @@ function getViewerLabel(viewer: OpsDashboardResponse["viewer"]): string {
 function getStatusTone(status?: string) {
   switch (normalizeText(status)) {
     case "completed":
-      return "bg-emerald-400/15 text-emerald-200 ring-1 ring-inset ring-emerald-400/30";
+      return "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200";
     case "failed":
-      return "bg-rose-400/15 text-rose-200 ring-1 ring-inset ring-rose-400/30";
+      return "bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-200";
     case "processing":
-      return "bg-sky-400/15 text-sky-200 ring-1 ring-inset ring-sky-400/30";
+      return "bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-200";
     case "queued":
-      return "bg-amber-300/15 text-amber-100 ring-1 ring-inset ring-amber-300/30";
+      return "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200";
     case "verified":
-      return "bg-indigo-300/15 text-indigo-100 ring-1 ring-inset ring-indigo-300/30";
+      return "bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-200";
     default:
-      return "bg-white/8 text-slate-200 ring-1 ring-inset ring-white/10";
+      return "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200";
   }
 }
 
 function getLaneTone(lane?: string) {
   switch (normalizeText(lane)) {
     case "gpu":
-      return "bg-fuchsia-400/15 text-fuchsia-100 ring-1 ring-inset ring-fuchsia-400/30";
+      return "bg-fuchsia-50 text-fuchsia-700 ring-1 ring-inset ring-fuchsia-200";
     case "cpu":
-      return "bg-cyan-400/15 text-cyan-100 ring-1 ring-inset ring-cyan-400/30";
+      return "bg-cyan-50 text-cyan-700 ring-1 ring-inset ring-cyan-200";
     default:
-      return "bg-white/8 text-slate-200 ring-1 ring-inset ring-white/10";
+      return "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200";
   }
 }
 
 function getTierTone(tier?: string) {
   switch (normalizeText(tier)) {
     case "premium":
-      return "bg-amber-300/15 text-amber-100 ring-1 ring-inset ring-amber-300/30";
+      return "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200";
     case "standard":
-      return "bg-emerald-400/15 text-emerald-100 ring-1 ring-inset ring-emerald-400/30";
+      return "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200";
     default:
-      return "bg-white/8 text-slate-200 ring-1 ring-inset ring-white/10";
+      return "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200";
   }
 }
 
@@ -443,12 +443,12 @@ function StatusCountCard({
   count: number;
 }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/5 px-4 py-4 backdrop-blur-sm">
+    <div className="rounded-3xl border border-[var(--brand-border)] bg-white px-4 py-4 shadow-sm">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-sm capitalize text-slate-300">
+        <span className="text-sm capitalize text-[var(--brand-muted)]">
           {status.replaceAll("_", " ")}
         </span>
-        <span className="text-lg font-semibold text-white">{count}</span>
+        <span className="text-lg font-semibold text-[#101426]">{count}</span>
       </div>
     </div>
   );
@@ -464,11 +464,11 @@ function MetricCard({
   detail: string;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(20,31,61,0.92),rgba(10,16,35,0.98))] p-6 shadow-[0_30px_80px_rgba(1,6,20,0.45)]">
-      <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,rgba(125,211,252,0),rgba(125,211,252,0.85),rgba(125,211,252,0))]" />
-      <p className="text-xs uppercase tracking-[0.18em] text-sky-100/60">{label}</p>
-      <p className="mt-4 text-4xl font-semibold tracking-tight text-white">{value}</p>
-      <p className="mt-3 text-sm leading-6 text-slate-300">{detail}</p>
+    <div className="relative overflow-hidden rounded-[28px] border border-[var(--brand-border)] bg-white p-6 shadow-[0_18px_48px_rgba(15,23,42,0.06)]">
+      <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,rgba(40,41,126,0),rgba(40,41,126,0.28),rgba(40,41,126,0))]" />
+      <p className="text-xs uppercase tracking-[0.18em] text-[#7a8098]">{label}</p>
+      <p className="mt-4 text-4xl font-semibold tracking-tight text-[#101426]">{value}</p>
+      <p className="mt-3 text-sm leading-6 text-[var(--brand-muted)]">{detail}</p>
     </div>
   );
 }
@@ -481,9 +481,9 @@ function BillingMetricCard({
   value: string | number;
 }) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-5">
-      <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">{label}</p>
-      <p className="mt-3 text-2xl font-semibold text-white">{value}</p>
+    <div className="rounded-3xl border border-[var(--brand-border)] bg-white px-5 py-5 shadow-sm">
+      <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">{label}</p>
+      <p className="mt-3 text-2xl font-semibold text-[#101426]">{value}</p>
     </div>
   );
 }
@@ -500,11 +500,11 @@ function SectionShell({
   children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,39,0.88),rgba(7,12,24,0.94))] shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
-      <div className="border-b border-white/10 px-6 py-6">
-        <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">{eyebrow}</p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">{title}</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
+    <section className="overflow-hidden rounded-[34px] border border-[var(--brand-border)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(249,250,255,0.96))] shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
+      <div className="border-b border-[var(--brand-border)] px-6 py-6">
+        <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">{eyebrow}</p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#101426]">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">{description}</p>
       </div>
       <div className="px-6 py-6">{children}</div>
     </section>
@@ -591,27 +591,27 @@ export default async function OpsPage({
   });
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#07111f] text-slate-100">
+    <main className="relative min-h-screen overflow-hidden bg-[#f7f8fb] text-[#101426]">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.25),transparent_34%),radial-gradient(circle_at_top_right,rgba(14,165,233,0.15),transparent_24%),linear-gradient(180deg,#0a1630_0%,#07111f_45%,#050b16_100%)]" />
-        <div className="absolute left-[-8rem] top-24 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl" />
-        <div className="absolute right-[-4rem] top-40 h-80 w-80 rounded-full bg-indigo-500/10 blur-3xl" />
-        <div className="absolute inset-x-0 top-0 h-64 bg-[linear-gradient(180deg,rgba(148,163,184,0.08),transparent)]" />
-        <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(40,41,126,0.08),transparent_30%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.08),transparent_24%),linear-gradient(180deg,#fbfcff_0%,#f7f8fb_52%,#f4f6fb_100%)]" />
+        <div className="absolute left-[-8rem] top-24 h-72 w-72 rounded-full bg-indigo-200/30 blur-3xl" />
+        <div className="absolute right-[-4rem] top-40 h-80 w-80 rounded-full bg-sky-200/30 blur-3xl" />
+        <div className="absolute inset-x-0 top-0 h-64 bg-[linear-gradient(180deg,rgba(255,255,255,0.65),transparent)]" />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(16,20,38,0.22) 1px, transparent 1px), linear-gradient(90deg, rgba(16,20,38,0.22) 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
       </div>
 
       <section className="relative mx-auto flex max-w-7xl flex-col gap-8 px-6 py-14 md:py-16">
-        <div className="overflow-hidden rounded-[40px] border border-white/10 bg-[linear-gradient(145deg,rgba(9,20,40,0.9),rgba(4,10,22,0.95))] p-8 shadow-[0_40px_120px_rgba(2,6,23,0.6)] md:p-10">
+        <div className="overflow-hidden rounded-[40px] border border-[var(--brand-border)] bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(248,250,255,0.95))] p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)] md:p-10">
           <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-3xl space-y-4">
-              <p className="text-xs font-medium uppercase tracking-[0.34em] text-cyan-200/70">
+              <p className="text-xs font-medium uppercase tracking-[0.34em] text-[#5b62d6]">
                 KreyAI Internal Ops
               </p>
               <div className="space-y-3">
-                <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-white md:text-5xl">
+                <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-[#101426] md:text-5xl">
                   Operational view for jobs, balances, and support actions.
                 </h1>
-                <p className="max-w-2xl text-sm leading-7 text-slate-300 md:text-base">
+                <p className="max-w-2xl text-sm leading-7 text-[var(--brand-muted)] md:text-base">
                   Keep an eye on processing health, inspect customer balances, and resolve credit issues without leaving the dashboard.
                 </p>
               </div>
@@ -619,27 +619,27 @@ export default async function OpsPage({
 
             {tab === "jobs" && data && (
               <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[420px]">
-                <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
                     Viewer
                   </p>
-                  <p className="mt-2 truncate text-sm font-medium text-white">
+                  <p className="mt-2 truncate text-sm font-medium text-[#101426]">
                     {getViewerLabel(data.viewer)}
                   </p>
                 </div>
-                <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
                     Plan
                   </p>
-                  <p className="mt-2 text-sm font-medium capitalize text-cyan-100">
+                  <p className="mt-2 text-sm font-medium capitalize text-[#28297e]">
                     {data.viewer.plan || "unknown"}
                   </p>
                 </div>
-                <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
                     Active Slice
                   </p>
-                  <p className="mt-2 text-sm font-medium text-white">
+                  <p className="mt-2 text-sm font-medium text-[#101426]">
                     {filteredSummary ? `${filteredSummary.recent_jobs_count} jobs` : "—"}
                   </p>
                 </div>
@@ -654,13 +654,13 @@ export default async function OpsPage({
               href={jobsHref}
               className={`rounded-[28px] border px-5 py-5 transition ${
                 tab === "jobs"
-                  ? "border-cyan-300/40 bg-[linear-gradient(135deg,rgba(56,189,248,0.16),rgba(37,99,235,0.14))] shadow-[0_18px_50px_rgba(14,165,233,0.12)]"
-                  : "border-white/10 bg-white/5 hover:bg-white/10"
+                  ? "border-[var(--brand-border-strong)] bg-[linear-gradient(135deg,rgba(243,244,255,0.96),rgba(236,244,255,0.96))] shadow-[0_18px_50px_rgba(40,41,126,0.08)]"
+                  : "border-[var(--brand-border)] bg-white hover:bg-[#fafbff]"
               }`}
             >
-              <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">Tab</p>
-              <h2 className="mt-2 text-lg font-semibold text-white">Jobs</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Tab</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#101426]">Jobs</h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
                 Queue health, throughput, routing mix, and recent execution details.
               </p>
             </a>
@@ -669,13 +669,13 @@ export default async function OpsPage({
               href={billingHref}
               className={`rounded-[28px] border px-5 py-5 transition ${
                 tab === "billing"
-                  ? "border-cyan-300/40 bg-[linear-gradient(135deg,rgba(56,189,248,0.16),rgba(37,99,235,0.14))] shadow-[0_18px_50px_rgba(14,165,233,0.12)]"
-                  : "border-white/10 bg-white/5 hover:bg-white/10"
+                  ? "border-[var(--brand-border-strong)] bg-[linear-gradient(135deg,rgba(243,244,255,0.96),rgba(236,244,255,0.96))] shadow-[0_18px_50px_rgba(40,41,126,0.08)]"
+                  : "border-[var(--brand-border)] bg-white hover:bg-[#fafbff]"
               }`}
             >
-              <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">Tab</p>
-              <h2 className="mt-2 text-lg font-semibold text-white">Billing</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Tab</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#101426]">Billing</h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
                 Customer balances, ledger history, manual adjustments, and dispute resolution.
               </p>
             </a>
@@ -683,7 +683,7 @@ export default async function OpsPage({
 
           <a
             href={tab === "billing" ? billingHref : jobsHref}
-            className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+            className="inline-flex items-center justify-center rounded-full border border-[var(--brand-border)] bg-white px-5 py-3 text-sm font-medium text-[#101426] transition hover:bg-[#fafbff]"
           >
             Refresh now
           </a>
@@ -707,10 +707,10 @@ export default async function OpsPage({
                 <select
                   name="status"
                   defaultValue={filters.status}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                  className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
                 >
                   {STATUS_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value} className="bg-slate-950 text-white">
+                    <option key={option.value} value={option.value} className="bg-white text-[#101426]">
                       {option.label}
                     </option>
                   ))}
@@ -725,7 +725,7 @@ export default async function OpsPage({
                   name="language"
                   defaultValue={filters.language}
                   placeholder="en, fr, ht..."
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                  className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] placeholder:text-[#8b92ab] outline-none transition focus:border-[var(--brand-border-strong)]"
                 />
               </label>
 
@@ -737,7 +737,7 @@ export default async function OpsPage({
                   name="email"
                   defaultValue={filters.email}
                   placeholder="billy@kreyai.com"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                  className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] placeholder:text-[#8b92ab] outline-none transition focus:border-[var(--brand-border-strong)]"
                 />
               </label>
 
@@ -748,10 +748,10 @@ export default async function OpsPage({
                 <select
                   name="limit"
                   defaultValue={String(filters.limit)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                  className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
                 >
                   {LIMIT_OPTIONS.map((option) => (
-                    <option key={option} value={option} className="bg-slate-950 text-white">
+                    <option key={option} value={option} className="bg-white text-[#101426]">
                       {option}
                     </option>
                   ))}
@@ -761,13 +761,13 @@ export default async function OpsPage({
               <div className="flex items-end gap-3">
                 <button
                   type="submit"
-                  className="w-full rounded-2xl bg-[linear-gradient(135deg,#38bdf8,#2563eb)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(37,99,235,0.35)] transition hover:brightness-110"
+                  className="w-full rounded-2xl bg-[#28297e] px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(40,41,126,0.16)] transition hover:bg-[#17195b]"
                 >
                   Apply
                 </button>
                 <a
                   href="/ops?tab=jobs"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-medium text-slate-200 transition hover:bg-white/10"
+                  className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-center text-sm font-medium text-[#101426] transition hover:bg-[#fafbff]"
                 >
                   Reset
                 </a>
@@ -796,14 +796,14 @@ export default async function OpsPage({
                     name="billing_email"
                     defaultValue={billingEmail}
                     placeholder="name@company.com"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60 focus:bg-white/10"
+                    className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] placeholder:text-[#8b92ab] outline-none transition focus:border-[var(--brand-border-strong)]"
                   />
                 </label>
 
                 <div className="flex items-end gap-3">
                   <button
                     type="submit"
-                    className="rounded-2xl bg-[linear-gradient(135deg,#38bdf8,#2563eb)] px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(37,99,235,0.35)] transition hover:brightness-110"
+                    className="rounded-2xl bg-[#28297e] px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(40,41,126,0.16)] transition hover:bg-[#17195b]"
                   >
                     Load account
                   </button>
@@ -812,13 +812,13 @@ export default async function OpsPage({
             </SectionShell>
 
             {billingNotice ? (
-              <div className="rounded-[28px] border border-emerald-400/25 bg-emerald-400/10 px-6 py-5 text-sm text-emerald-100 shadow-[0_20px_60px_rgba(16,185,129,0.18)]">
+              <div className="rounded-[28px] border border-emerald-200 bg-emerald-50 px-6 py-5 text-sm text-emerald-800 shadow-[0_18px_40px_rgba(16,185,129,0.08)]">
                 {billingNotice}
               </div>
             ) : null}
 
             {(billingError || billingLookupError) ? (
-              <div className="rounded-[28px] border border-rose-400/25 bg-rose-400/10 px-6 py-5 text-sm text-rose-100 shadow-[0_20px_60px_rgba(136,19,55,0.22)]">
+              <div className="rounded-[28px] border border-rose-200 bg-rose-50 px-6 py-5 text-sm text-rose-700 shadow-[0_18px_40px_rgba(190,24,93,0.08)]">
                 {billingError || billingLookupError}
               </div>
             ) : null}
@@ -834,41 +834,41 @@ export default async function OpsPage({
                 </div>
 
                 <div className="grid gap-5 xl:grid-cols-[1.05fr,0.95fr]">
-                  <div className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,39,0.88),rgba(7,12,24,0.94))] p-6 shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
+                  <div className="rounded-[34px] border border-[var(--brand-border)] bg-white p-6 shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
                     <div className="space-y-2">
-                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">Account</p>
-                      <h2 className="text-2xl font-semibold tracking-tight text-white">{billingData.email}</h2>
-                      <p className="text-sm leading-6 text-slate-400">
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Account</p>
+                      <h2 className="text-2xl font-semibold tracking-tight text-[#101426]">{billingData.email}</h2>
+                      <p className="text-sm leading-6 text-[var(--brand-muted)]">
                         Stripe customer: {billingData.account.stripe_customer_id || "Not linked"} • Last updated {formatDate(billingData.account.updated_at || undefined)}
                       </p>
                     </div>
 
                     <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                      <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4">
-                        <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Access decision</p>
-                        <p className="mt-2 text-lg font-semibold text-white">
+                      <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">Access decision</p>
+                        <p className="mt-2 text-lg font-semibold text-[#101426]">
                           {billingData.access_decision.allowed ? "Allowed" : "Blocked"}
                         </p>
-                        <p className="mt-1 text-sm text-slate-400">
+                        <p className="mt-1 text-sm text-[var(--brand-muted)]">
                           {billingData.access_decision.reason.replaceAll("_", " ")}
                         </p>
                       </div>
-                      <div className="rounded-3xl border border-white/10 bg-white/5 px-5 py-4">
-                        <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Partner plan</p>
-                        <p className="mt-2 text-lg font-semibold text-white">
+                      <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">Partner plan</p>
+                        <p className="mt-2 text-lg font-semibold text-[#101426]">
                           {billingData.partner_access?.active ? "Active" : "No"}
                         </p>
-                        <p className="mt-1 text-sm text-slate-400">
+                        <p className="mt-1 text-sm text-[var(--brand-muted)]">
                           Available now: {billingData.access_decision.available_credits} min
                         </p>
                       </div>
                     </div>
 
-                    <form action={applyBillingAdjustment} className="mt-6 space-y-4 rounded-[28px] border border-white/10 bg-white/5 p-5">
+                    <form action={applyBillingAdjustment} className="mt-6 space-y-4 rounded-[28px] border border-[var(--brand-border)] bg-[#fafbff] p-5">
                       <input type="hidden" name="email" value={billingData.email} />
                       <div className="space-y-2">
-                        <p className="text-xs font-medium uppercase tracking-[0.18em] text-cyan-200/70">Manual adjustment</p>
-                        <p className="text-sm leading-6 text-slate-400">
+                        <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#5b62d6]">Manual adjustment</p>
+                        <p className="text-sm leading-6 text-[var(--brand-muted)]">
                           Use grant for goodwill, refund for restored minutes, and debit when reversing a mistaken balance.
                         </p>
                       </div>
@@ -879,7 +879,7 @@ export default async function OpsPage({
                           <select
                             name="action"
                             defaultValue="grant"
-                            className="w-full rounded-2xl border border-white/10 bg-[#07111f] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-300/60"
+                            className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
                           >
                             <option value="grant">Grant credits</option>
                             <option value="refund">Refund credits</option>
@@ -895,7 +895,7 @@ export default async function OpsPage({
                             step="1"
                             name="minutes"
                             placeholder="30"
-                            className="w-full rounded-2xl border border-white/10 bg-[#07111f] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60"
+                            className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] placeholder:text-[#8b92ab] outline-none transition focus:border-[var(--brand-border-strong)]"
                           />
                         </label>
                       </div>
@@ -906,33 +906,33 @@ export default async function OpsPage({
                           name="notes"
                           rows={3}
                           placeholder="Support adjustment for customer dispute, manual restoration after issue, courtesy grant..."
-                          className="w-full rounded-2xl border border-white/10 bg-[#07111f] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-300/60"
+                          className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] placeholder:text-[#8b92ab] outline-none transition focus:border-[var(--brand-border-strong)]"
                         />
                       </label>
 
                       <button
                         type="submit"
-                        className="rounded-2xl bg-[linear-gradient(135deg,#38bdf8,#2563eb)] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(37,99,235,0.35)] transition hover:brightness-110"
+                        className="rounded-2xl bg-[#28297e] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(40,41,126,0.16)] transition hover:bg-[#17195b]"
                       >
                         Apply adjustment
                       </button>
                     </form>
                   </div>
 
-                  <div className="overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,39,0.88),rgba(7,12,24,0.94))] shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
-                    <div className="border-b border-white/10 px-6 py-6">
-                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">Ledger</p>
-                      <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Transaction history</h2>
-                      <p className="mt-2 text-sm leading-6 text-slate-400">
+                  <div className="overflow-hidden rounded-[34px] border border-[var(--brand-border)] bg-white shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
+                    <div className="border-b border-[var(--brand-border)] px-6 py-6">
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Ledger</p>
+                      <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#101426]">Transaction history</h2>
+                      <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
                         Every credit change is recorded here, including purchases, starter grants, debits, refunds, and manual ops adjustments.
                       </p>
                     </div>
 
                     {billingData.ledger.length === 0 ? (
                       <div className="px-6 py-14 text-center">
-                        <div className="mx-auto max-w-md rounded-[28px] border border-dashed border-white/10 bg-white/[0.03] px-6 py-10">
-                          <p className="text-lg font-medium text-white">No transactions yet</p>
-                          <p className="mt-3 text-sm leading-6 text-slate-400">
+                        <div className="mx-auto max-w-md rounded-[28px] border border-dashed border-[var(--brand-border)] bg-[#fbfcff] px-6 py-10">
+                          <p className="text-lg font-medium text-[#101426]">No transactions yet</p>
+                          <p className="mt-3 text-sm leading-6 text-[var(--brand-muted)]">
                             This customer has no ledger entries yet beyond the current account snapshot.
                           </p>
                         </div>
@@ -940,7 +940,7 @@ export default async function OpsPage({
                     ) : (
                       <div className="overflow-x-auto">
                         <table className="min-w-full text-left text-sm">
-                          <thead className="bg-white/[0.03] text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                          <thead className="bg-[#f8f9fd] text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
                             <tr>
                               <th className="px-6 py-4 font-medium">When</th>
                               <th className="px-4 py-4 font-medium">Type</th>
@@ -949,27 +949,27 @@ export default async function OpsPage({
                               <th className="px-6 py-4 font-medium">Details</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-white/5">
+                          <tbody className="divide-y divide-[var(--brand-border)]">
                             {billingData.ledger.map((entry) => (
-                              <tr key={entry.id} className="align-top transition hover:bg-white/[0.03]">
-                                <td className="px-6 py-5 text-slate-200">{formatDate(entry.created_at)}</td>
+                              <tr key={entry.id} className="align-top transition hover:bg-[#fafbff]">
+                                <td className="px-6 py-5 text-[#3a425d]">{formatDate(entry.created_at)}</td>
                                 <td className="px-4 py-5">
-                                  <div className="font-medium text-white">{entry.entry_type.replaceAll("_", " ")}</div>
-                                  <div className="mt-1 text-xs text-slate-500">{entry.source || "—"}</div>
+                                  <div className="font-medium text-[#101426]">{entry.entry_type.replaceAll("_", " ")}</div>
+                                  <div className="mt-1 text-xs text-[#7a8098]">{entry.source || "—"}</div>
                                 </td>
-                                <td className={`px-4 py-5 font-medium ${entry.delta_minutes >= 0 ? "text-emerald-200" : "text-rose-200"}`}>
+                                <td className={`px-4 py-5 font-medium ${entry.delta_minutes >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
                                   {formatDelta(entry.delta_minutes)}
                                 </td>
-                                <td className="px-4 py-5 text-slate-200">{entry.balance_after_minutes} min</td>
+                                <td className="px-4 py-5 text-[#3a425d]">{entry.balance_after_minutes} min</td>
                                 <td className="px-6 py-5">
-                                  <div className="text-slate-200">{entry.description || "—"}</div>
+                                  <div className="text-[#3a425d]">{entry.description || "—"}</div>
                                   {"approved_by" in (entry.metadata || {}) ? (
-                                    <div className="mt-1 text-xs text-slate-500">
+                                    <div className="mt-1 text-xs text-[#7a8098]">
                                       By {String(entry.metadata?.approved_by || "ops")}
                                     </div>
                                   ) : null}
                                   {"notes" in (entry.metadata || {}) && String(entry.metadata?.notes || "").trim() ? (
-                                    <div className="mt-1 text-xs leading-5 text-slate-500">
+                                    <div className="mt-1 text-xs leading-5 text-[#7a8098]">
                                       {String(entry.metadata?.notes || "")}
                                     </div>
                                   ) : null}
@@ -988,7 +988,7 @@ export default async function OpsPage({
         )}
 
         {tab === "jobs" && error && (
-          <div className="rounded-[28px] border border-rose-400/25 bg-rose-400/10 px-6 py-5 text-sm text-rose-100 shadow-[0_20px_60px_rgba(136,19,55,0.22)]">
+          <div className="rounded-[28px] border border-rose-200 bg-rose-50 px-6 py-5 text-sm text-rose-700 shadow-[0_18px_40px_rgba(190,24,93,0.08)]">
             {error}
           </div>
         )}
@@ -1042,15 +1042,15 @@ export default async function OpsPage({
             </div>
 
             <div className="grid gap-5 xl:grid-cols-[320px,minmax(0,1fr)]">
-              <div className="rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,39,0.88),rgba(7,12,24,0.94))] p-6 shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
+              <div className="rounded-[34px] border border-[var(--brand-border)] bg-white p-6 shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
                 <div className="space-y-2">
-                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">
                     System State
                   </p>
-                  <h2 className="text-2xl font-semibold tracking-tight text-white">
+                  <h2 className="text-2xl font-semibold tracking-tight text-[#101426]">
                     Status counts
                   </h2>
-                  <p className="text-sm leading-6 text-slate-400">
+                  <p className="text-sm leading-6 text-[var(--brand-muted)]">
                     Global counts stay unfiltered so you always have system-wide context while drilling into a slice.
                   </p>
                 </div>
@@ -1062,30 +1062,30 @@ export default async function OpsPage({
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(10,20,39,0.88),rgba(7,12,24,0.94))] shadow-[0_28px_90px_rgba(2,6,23,0.48)]">
-                <div className="flex flex-col gap-3 border-b border-white/10 px-6 py-6 md:flex-row md:items-end md:justify-between">
+              <div className="overflow-hidden rounded-[34px] border border-[var(--brand-border)] bg-white shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
+                <div className="flex flex-col gap-3 border-b border-[var(--brand-border)] px-6 py-6 md:flex-row md:items-end md:justify-between">
                   <div className="space-y-2">
-                    <p className="text-xs font-medium uppercase tracking-[0.22em] text-cyan-200/70">
+                    <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">
                       Recent Jobs
                     </p>
-                    <h2 className="text-2xl font-semibold tracking-tight text-white">
+                    <h2 className="text-2xl font-semibold tracking-tight text-[#101426]">
                       Filtered queue slice
                     </h2>
-                    <p className="text-sm leading-6 text-slate-400">
+                    <p className="text-sm leading-6 text-[var(--brand-muted)]">
                       Narrow by status, language, and customer email to isolate bad runs quickly.
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
-                    Showing <span className="font-semibold text-white">{filteredJobs.length}</span> of{" "}
-                    <span className="font-semibold text-white">{data.jobs.length}</span> fetched jobs
+                  <div className="rounded-2xl border border-[var(--brand-border)] bg-[#fbfcff] px-4 py-3 text-sm text-[var(--brand-muted)]">
+                    Showing <span className="font-semibold text-[#101426]">{filteredJobs.length}</span> of{" "}
+                    <span className="font-semibold text-[#101426]">{data.jobs.length}</span> fetched jobs
                   </div>
                 </div>
 
                 {filteredJobs.length === 0 ? (
                   <div className="px-6 py-14 text-center">
-                    <div className="mx-auto max-w-md rounded-[28px] border border-dashed border-white/10 bg-white/[0.03] px-6 py-10">
-                      <p className="text-lg font-medium text-white">No jobs matched this slice</p>
-                      <p className="mt-3 text-sm leading-6 text-slate-400">
+                    <div className="mx-auto max-w-md rounded-[28px] border border-dashed border-[var(--brand-border)] bg-[#fbfcff] px-6 py-10">
+                      <p className="text-lg font-medium text-[#101426]">No jobs matched this slice</p>
+                      <p className="mt-3 text-sm leading-6 text-[var(--brand-muted)]">
                         Try loosening one of the filters or reset back to the full dashboard view.
                       </p>
                     </div>
@@ -1093,7 +1093,7 @@ export default async function OpsPage({
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="min-w-full text-left text-sm">
-                      <thead className="bg-white/[0.03] text-[11px] uppercase tracking-[0.2em] text-slate-400">
+                      <thead className="bg-[#f8f9fd] text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
                         <tr>
                           <th className="px-6 py-4 font-medium">Job</th>
                           <th className="px-4 py-4 font-medium">Status</th>
@@ -1105,17 +1105,17 @@ export default async function OpsPage({
                           <th className="px-6 py-4 font-medium">Updated</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/5">
+                      <tbody className="divide-y divide-[var(--brand-border)]">
                         {filteredJobs.map((job) => (
                           <tr
                             key={job.job_id}
-                            className="align-top transition hover:bg-white/[0.03]"
+                            className="align-top transition hover:bg-[#fafbff]"
                           >
                             <td className="px-6 py-5">
                               <div className="space-y-1.5">
-                                <div className="font-semibold text-white">{job.job_id}</div>
-                                <div className="text-xs text-slate-400">{job.email || "—"}</div>
-                                <div className="max-w-md text-xs leading-5 text-slate-500">
+                                <div className="font-semibold text-[#101426]">{job.job_id}</div>
+                                <div className="text-xs text-[#7a8098]">{job.email || "—"}</div>
+                                <div className="max-w-md text-xs leading-5 text-[#7a8098]">
                                   {job.status_message || "—"}
                                 </div>
                               </div>
@@ -1141,39 +1141,39 @@ export default async function OpsPage({
                                     {job.processing_tier || "unknown"}
                                   </span>
                                 </div>
-                                <div className="text-xs leading-5 text-slate-400">
+                                <div className="text-xs leading-5 text-[#7a8098]">
                                   {job.worker_job_region || "—"} • {job.speaker_mode || "—"}
                                 </div>
-                                <div className="text-xs leading-5 text-slate-500">
+                                <div className="text-xs leading-5 text-[#7a8098]">
                                   {job.routing_reason || "No routing note"}
                                 </div>
                               </div>
                             </td>
                             <td className="px-4 py-5">
                               <div className="min-w-32">
-                                <div className="mb-2 flex items-center justify-between text-xs text-slate-400">
+                                <div className="mb-2 flex items-center justify-between text-xs text-[#7a8098]">
                                   <span>{job.progress}%</span>
                                   <span>{job.attempts || 0} tries</span>
                                 </div>
-                                <div className="h-2.5 overflow-hidden rounded-full bg-white/10">
+                                <div className="h-2.5 overflow-hidden rounded-full bg-[rgba(40,41,126,0.12)]">
                                   <div
-                                    className="h-2.5 rounded-full bg-[linear-gradient(90deg,#38bdf8,#2563eb)]"
+                                    className="h-2.5 rounded-full bg-[linear-gradient(90deg,#28297e,#5a66dc)]"
                                     style={{ width: `${job.progress}%` }}
                                   />
                                 </div>
                               </div>
                             </td>
-                            <td className="px-4 py-5 text-slate-200">
+                            <td className="px-4 py-5 text-[#3a425d]">
                               {getDisplayLanguage(job)}
                             </td>
-                            <td className="px-4 py-5 text-slate-200">
+                            <td className="px-4 py-5 text-[#3a425d]">
                               {formatSeconds(job.audio_duration_seconds)}
                             </td>
                             <td className="px-4 py-5">
-                              <div className="text-slate-100">
+                              <div className="text-[#101426]">
                                 {formatSeconds(job.processing_time_seconds)}
                               </div>
-                              <div className="mt-1 text-xs text-slate-500">
+                              <div className="mt-1 text-xs text-[#7a8098]">
                                 Cost{" "}
                                 {typeof job.estimated_cost_usd === "number"
                                   ? `$${job.estimated_cost_usd.toFixed(2)}`
@@ -1181,10 +1181,10 @@ export default async function OpsPage({
                               </div>
                             </td>
                             <td className="px-6 py-5">
-                              <div className="text-slate-200">
+                              <div className="text-[#3a425d]">
                                 {formatDate(job.updated_at || job.created_at)}
                               </div>
-                              <div className="mt-1 text-xs text-slate-500">
+                              <div className="mt-1 text-xs text-[#7a8098]">
                                 Done {formatDate(job.completed_at)}
                               </div>
                             </td>
