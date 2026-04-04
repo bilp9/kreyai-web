@@ -4,6 +4,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import Analytics from "./analytics";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kreyai.com"),
@@ -60,9 +61,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
   return (
     <html lang="en">
       <body className="bg-[var(--background)] text-[var(--foreground)] antialiased">
+        <Analytics measurementId={measurementId} />
         <header className="sticky top-0 z-50 border-b border-[var(--brand-border)] bg-[rgba(248,250,252,0.86)] backdrop-blur-xl">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
             <Link href="/" className="flex items-center">
