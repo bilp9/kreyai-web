@@ -11,6 +11,10 @@ type JobStatus = {
   attempts?: number;
   completed_at?: string;
   files_deleted_at?: string;
+  language?: string;
+  language_final?: string;
+  language_requested?: string;
+  requires_diarization?: boolean;
 };
 
 export default function JobPage() {

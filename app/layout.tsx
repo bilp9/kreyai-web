@@ -9,20 +9,44 @@ import Analytics from "./analytics";
 export const metadata: Metadata = {
   metadataBase: new URL("https://kreyai.com"),
   title: {
-    default: "KreyAI | Audio Transcription With Speaker Labels and Credits",
+    default: "KreyAI | Haitian Creole & Multilingual Audio Transcription",
     template: "%s | KreyAI",
   },
   description:
-    "KreyAI turns audio into clean transcripts, subtitles, and speaker-labeled outputs for interviews, podcasts, meetings, and multilingual recordings.",
+    "KreyAI builds Haitian Creole and multilingual language tools, including transcription workflows and Adwaz writing assistance.",
   keywords: [
+    "haitian creole transcription",
+    "haitian creole writing assistant",
+    "haitian creole grammar checker",
+    "Adwaz",
+    "KreyAI Adwaz",
+    "kreyol transcription",
+    "kreyol audio transcription",
+    "transcription kreyol",
+    "transkripsyon kreyol",
+    "transcription audio francais",
+    "transcription francaise",
+    "transcripcion de audio en espanol",
+    "transcripcion en espanol",
+    "transcricao de audio em portugues",
+    "transcricao em portugues",
+    "French transcription",
+    "Spanish transcription",
+    "Portuguese transcription",
     "audio transcription",
     "speaker labeled transcription",
     "multilingual transcription",
+    "AI transcription",
+    "speech to text",
+    "subtitle generator",
+    "SRT export",
+    "VTT export",
     "podcast transcript",
     "interview transcription",
+    "journalism transcription",
+    "legal transcription",
+    "research transcription",
     "meeting transcription",
-    "subtitle export",
-    "haitian creole transcription",
   ],
   alternates: {
     canonical: "/",
@@ -31,9 +55,11 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://kreyai.com",
     siteName: "KreyAI",
-    title: "KreyAI | Audio Transcription With Speaker Labels and Credits",
+    title: "KreyAI | Haitian Creole & Multilingual Audio Transcription",
     description:
-      "Transcribe interviews, podcasts, meetings, and real conversations with clean exports and speaker-labeled premium output.",
+      "Language tools for Haitian Creole and multilingual work, including transcription, subtitle exports, speaker labels, and Adwaz writing assistance.",
+    locale: "en_US",
+    alternateLocale: ["fr_FR", "ht_HT", "es_ES", "pt_PT"],
     images: [
       {
         url: "/og-kreyai.jpg",
@@ -44,16 +70,89 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: "summary",
-    title: "KreyAI | Audio Transcription With Speaker Labels and Credits",
+    card: "summary_large_image",
+    title: "KreyAI | Haitian Creole & Multilingual Audio Transcription",
     description:
-      "Clean transcripts, subtitle exports, and speaker-labeled premium output for real-world audio.",
+      "Haitian Creole and multilingual language tools from KreyAI, including transcription and Adwaz writing assistance.",
     images: ["/og-kreyai.jpg"],
   },
   robots: {
     index: true,
     follow: true,
   },
+  other: {
+    "content-language": "en, fr, ht, es, pt",
+    "available-languages": "English, French, Haitian Creole, Spanish, Portuguese",
+    "target-languages": "French, Haitian Creole, Spanish, Portuguese",
+    "language-support":
+      "French transcription, Haitian Creole transcription, Spanish transcription, Portuguese transcription",
+  },
+};
+
+const ORGANIZATION_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "KreyAI",
+  legalName: "KreyAI Technologies LLC",
+  url: "https://kreyai.com",
+  logo: "https://kreyai.com/icon.svg",
+  email: "support@kreyai.com",
+  sameAs: ["https://kreyai.com"],
+};
+
+const SOFTWARE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "KreyAI",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: "https://kreyai.com",
+  description:
+    "Web-based language software for Haitian Creole and multilingual workflows, including transcription, subtitles, speaker-labeled transcripts, and Adwaz writing assistance.",
+  inLanguage: ["en", "fr", "ht", "es", "pt"],
+  availableLanguage: [
+    {
+      "@type": "Language",
+      name: "English",
+      alternateName: "en",
+    },
+    {
+      "@type": "Language",
+      name: "French",
+      alternateName: "fr",
+    },
+    {
+      "@type": "Language",
+      name: "Haitian Creole",
+      alternateName: "ht",
+    },
+    {
+      "@type": "Language",
+      name: "Spanish",
+      alternateName: "es",
+    },
+    {
+      "@type": "Language",
+      name: "Portuguese",
+      alternateName: "pt",
+    },
+  ],
+  offers: {
+    "@type": "Offer",
+    priceCurrency: "USD",
+    price: "0",
+    description: "One-time starter allowance with prepaid transcription credit packs available.",
+  },
+  featureList: [
+    "Haitian Creole transcription",
+    "Multilingual transcription",
+    "Speaker-labeled transcripts",
+    "TXT and DOCX transcript downloads",
+    "SRT and VTT subtitle exports",
+    "7-day file availability",
+    "No-training privacy policy",
+    "Adwaz Haitian Creole writing assistant",
+  ],
 };
 
 export default function RootLayout({
@@ -67,13 +166,18 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[var(--background)] text-[var(--foreground)] antialiased">
         <Analytics measurementId={measurementId} />
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([ORGANIZATION_SCHEMA, SOFTWARE_SCHEMA]) }}
+        />
         <header className="sticky top-0 z-50 border-b border-[var(--brand-border)] bg-[rgba(248,250,252,0.86)] backdrop-blur-xl">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
             <Link href="/" className="flex items-center">
               <div className="logo-container">
                 <Image src="/icon.svg" alt="KreyAI logo" width={52} height={52} className="logo-icon" priority />
                 <div className="logo-text">
-                  <h1>Kreyai</h1>
+                  <h1>KreyAI</h1>
                   <p>Beyond transcription.</p>
                 </div>
               </div>
@@ -85,6 +189,9 @@ export default function RootLayout({
               </Link>
               <Link href="/pricing" className="transition hover:text-[#13172b]">
                 Pricing
+              </Link>
+              <Link href="/adwaz" className="transition hover:text-[#13172b]">
+                Adwaz
               </Link>
               <Link href="/billing" className="transition hover:text-[#13172b]">
                 Billing
@@ -112,6 +219,9 @@ export default function RootLayout({
               </Link>
               <Link href="/billing" className="transition hover:text-[#13172b]">
                 Billing
+              </Link>
+              <Link href="/adwaz" className="transition hover:text-[#13172b]">
+                Adwaz
               </Link>
               <Link href="/faq" className="transition hover:text-[#13172b]">
                 FAQ

@@ -22,12 +22,13 @@ type BillingConfig = {
 type BalanceResponse = {
   email: string;
   balance_minutes: number;
-  total_purchased_minutes: number;
+  total_purchased_minutes?: number;
   total_granted_minutes?: number;
-  total_consumed_minutes: number;
-  total_refunded_minutes: number;
-  stripe_customer_id?: string | null;
+  total_consumed_minutes?: number;
+  total_refunded_minutes?: number;
 };
+
+const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/i;
 
 export default function BillingClient() {
   const params = useSearchParams();
@@ -47,6 +48,20 @@ export default function BillingClient() {
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const highlightedPackId = useMemo(() => selectedPack?.toLowerCase() ?? null, [selectedPack]);
+  const normalizedEmail = email.trim().toLowerCase();
+  const hasValidEmail = EMAIL_PATTERN.test(normalizedEmail);
+  const uploadHref = useMemo(() => {
+    const uploadParams = new URLSearchParams();
+    if (hasValidEmail) {
+      uploadParams.set("email", normalizedEmail);
+    }
+    if (jobId && jobToken) {
+      uploadParams.set("job", jobId);
+      uploadParams.set("t", jobToken);
+    }
+    const query = uploadParams.toString();
+    return query ? `/upload?${query}` : "/upload";
+  }, [hasValidEmail, jobId, jobToken, normalizedEmail]);
 
   useEffect(() => {
     if (!apiBase) {
@@ -61,6 +76,7 @@ export default function BillingClient() {
       }
       const data = (await res.json()) as BillingConfig;
       setConfig(data);
+      setError(null);
     }
 
     void loadConfig().catch((err: unknown) => {
@@ -95,16 +111,20 @@ export default function BillingClient() {
   }, [apiBase, email, jobId, jobToken]);
 
   useEffect(() => {
-    if (!email || !apiBase) {
+    if (!normalizedEmail || !apiBase || !hasValidEmail) {
       setBalance(null);
       return;
     }
 
     let active = true;
+    const timeoutId = window.setTimeout(() => {
+      void loadBalance();
+    }, 350);
+
     async function loadBalance() {
       setLoadingBalance(true);
       try {
-        const res = await fetch(`${apiBase}/api/billing/balance?email=${encodeURIComponent(email)}`, {
+        const res = await fetch(`${apiBase}/api/billing/balance?email=${encodeURIComponent(normalizedEmail)}`, {
           cache: "no-store",
         });
         if (!res.ok) {
@@ -113,6 +133,7 @@ export default function BillingClient() {
         const data = (await res.json()) as BalanceResponse;
         if (active) {
           setBalance(data);
+          setError(null);
         }
       } catch (err: unknown) {
         if (active) {
@@ -125,19 +146,19 @@ export default function BillingClient() {
       }
     }
 
-    void loadBalance();
     return () => {
       active = false;
+      window.clearTimeout(timeoutId);
     };
-  }, [apiBase, email, success]);
+  }, [apiBase, normalizedEmail, hasValidEmail, success]);
 
   async function startCheckout(packId: string) {
     if (!apiBase) {
       setError("API base URL not configured.");
       return;
     }
-    if (!email.trim()) {
-      setError("Enter your email to continue.");
+    if (!hasValidEmail) {
+      setError("Enter a valid email to continue.");
       return;
     }
 
@@ -148,7 +169,7 @@ export default function BillingClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email,
+          email: normalizedEmail,
           pack_id: packId,
           job_id: jobId,
           job_token: jobToken,
@@ -203,20 +224,28 @@ export default function BillingClient() {
             className="brand-input w-full rounded-2xl border-slate-200 px-4 py-3.5 outline-none"
           />
           <p className="text-xs leading-5 text-[var(--brand-muted)]">
-            Enter any customer email to check the available minute balance for that account.
+            Enter a full email address to check the available minute balance for that account.
           </p>
         </label>
 
         <div className="surface-muted rounded-2xl px-5 py-4">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#717a99]">Balance</p>
           <p className="mt-2 text-3xl font-semibold tracking-tight text-[#13172b]">
-            {loadingBalance ? "…" : balance ? `${balance.balance_minutes} min` : "0 min"}
+            {loadingBalance ? "…" : balance ? `${balance.balance_minutes} min` : hasValidEmail ? "0 min" : "—"}
           </p>
           <p className="mt-1 text-sm text-[var(--brand-muted)]">Available for future uploads under this email.</p>
-          {balance ? (
+          {typeof balance?.total_purchased_minutes === "number" || typeof balance?.total_granted_minutes === "number" ? (
             <p className="mt-2 text-xs leading-5 text-[var(--brand-blue)]">
-              Purchased: {balance.total_purchased_minutes} min. Starter grant: {balance.total_granted_minutes ?? 0} min.
+              Purchased: {balance?.total_purchased_minutes ?? 0} min. Starter grant: {balance?.total_granted_minutes ?? 0} min.
             </p>
+          ) : null}
+          {balance ? (
+            <Link
+              href={uploadHref}
+              className="mt-4 inline-flex rounded-full border border-[var(--brand-border)] bg-white px-4 py-2 text-sm font-medium text-[#13172b] transition hover:border-[#13172b]"
+            >
+              Start a new request
+            </Link>
           ) : null}
         </div>
       </div>

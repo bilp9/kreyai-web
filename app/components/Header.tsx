@@ -11,7 +11,7 @@ export default function Header() {
           {/* If your logo is an SVG with whitespace, bump size and make it optically bigger */}
           <Image
             src="/logo.png"          // <-- adjust if it's /logo.svg
-            alt="Kreyai"
+            alt="KreyAI"
             width={140}              // <-- bigger than before
             height={36}
             priority

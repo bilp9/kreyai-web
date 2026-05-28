@@ -3,11 +3,32 @@ import { Suspense } from "react";
 import BillingClient from "./billing-client";
 
 export const metadata: Metadata = {
-  title: "Billing Policy",
+  title: "Billing & Credit Balance",
   description:
-    "Buy KreyAI transcription credits, review billing terms, and manage prepaid minute balances for future uploads.",
+    "Buy KreyAI transcription credits, check your prepaid minute balance, and review billing terms for multilingual audio transcription.",
+  keywords: [
+    "KreyAI billing",
+    "transcription credits",
+    "prepaid transcription minutes",
+    "AI transcription billing",
+    "French transcription credits",
+    "Haitian Creole transcription credits",
+    "Spanish transcription credits",
+    "Portuguese transcription credits",
+  ],
   alternates: {
     canonical: "/billing",
+  },
+  openGraph: {
+    title: "KreyAI Billing & Credit Balance",
+    description:
+      "Manage prepaid transcription credits and review billing terms for KreyAI audio transcription.",
+    url: "/billing",
+    alternateLocale: ["fr_FR", "ht_HT", "es_ES", "pt_PT"],
+  },
+  other: {
+    "content-language": "en, fr, ht, es, pt",
+    "target-languages": "French, Haitian Creole, Spanish, Portuguese",
   },
 };
 
@@ -19,6 +40,7 @@ const BILLING_SECTIONS = [
       "Users purchase credits in advance.",
       "Credits are used to process audio files.",
       "Credits are deducted based on the duration of the audio submitted.",
+      "Haitian Creole beta jobs are charged at the same standard credit rate as other supported languages.",
     ],
   },
   {
@@ -50,7 +72,8 @@ const BILLING_SECTIONS = [
     items: [
       "Unused credits may be eligible for a refund, at our discretion.",
       "Used credits are non-refundable, as processing has already occurred.",
-      "In cases of technical errors or service issues, we may restore credits or issue a refund.",
+      "In cases of verified technical errors or severe service issues, including missing sections or repetition loops, we may restore credits, retry the job, or issue a refund.",
+      "Haitian Creole beta transcripts are drafts for review, so ordinary transcription imperfections are not automatic refunds.",
       "Refunds may be issued to the original payment method or as account credits.",
     ],
   },

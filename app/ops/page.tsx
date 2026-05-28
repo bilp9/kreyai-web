@@ -24,6 +24,14 @@ type OpsJob = {
   created_at?: string;
   updated_at?: string;
   completed_at?: string;
+  scheduled_delete_at?: string | null;
+  auto_deleted_at?: string | null;
+  files_deleted_at?: string | null;
+  deleted_blob_count?: number;
+  storage_status?: string;
+  storage_objects_present?: boolean;
+  last_storage_check_at?: string | null;
+  retention_source?: string;
   audio_duration_seconds?: number | null;
   processing_time_seconds?: number | null;
   estimated_cost_usd?: number | null;
@@ -36,6 +44,21 @@ type OpsJob = {
   worker_job_name?: string;
   worker_job_region?: string;
   routing_reason?: string;
+  dispatch_error?: string;
+  diarization_status?: string;
+  diarization_error?: string;
+  diarization_segments_count?: number;
+  speaker_labeled_segments_count?: number;
+  content_type?: string;
+  file_size_bytes?: number | null;
+  download_time_seconds?: number | null;
+  diarization_time_seconds?: number | null;
+  transcription_time_seconds?: number | null;
+  alignment_time_seconds?: number | null;
+  output_time_seconds?: number | null;
+  ht_review_updated_at?: string | null;
+  ht_review_model?: string | null;
+  ht_review_approved_at?: string | null;
 };
 
 type OpsFilters = {
@@ -43,6 +66,8 @@ type OpsFilters = {
   status?: string | null;
   language?: string | null;
   email?: string | null;
+  date_from?: string | null;
+  date_to?: string | null;
 };
 
 type OpsDashboardResponse = {
@@ -64,6 +89,8 @@ type OpsDashboardResponse = {
     status_counts: Record<string, number>;
     lane_counts: Record<string, number>;
     tier_counts: Record<string, number>;
+    ht_jobs_count?: number;
+    processing_jobs_count?: number;
   };
   jobs: OpsJob[];
 };
@@ -109,6 +136,52 @@ type OpsBillingResponse = {
     active?: boolean;
   };
   ledger: OpsBillingLedgerEntry[];
+};
+
+type HTReviewChunk = {
+  index: number;
+  raw_text: string;
+  corrected_text: string;
+  change_notes?: string;
+  needs_human_review?: boolean;
+};
+
+type OpsHTReviewResponse = {
+  viewer: {
+    id: string;
+    email?: string;
+  };
+  job_id: string;
+  language?: string;
+  status?: string;
+  raw_text?: string | null;
+  corrected_text?: string | null;
+  approved_text?: string | null;
+  default_prompt: string;
+  ht_review_status?: string | null;
+  ht_review_error?: string | null;
+  ht_review_requested_at?: string | null;
+  ht_review_updated_at?: string | null;
+  ht_review_model?: string | null;
+  ht_review_approved_at?: string | null;
+  review_meta?: {
+    model?: string;
+    prompt?: string;
+    chunks?: HTReviewChunk[];
+  } | null;
+};
+
+type HTReviewRow = {
+  key: string;
+  rawText: string;
+  cleanedText: string;
+  notes?: string;
+  needsHumanReview?: boolean;
+};
+
+type ReviewDiffToken = {
+  text: string;
+  changed: boolean;
 };
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -161,18 +234,171 @@ function formatDelta(value?: number | null): string {
   return `${value > 0 ? "+" : ""}${value} min`;
 }
 
-function getViewerLabel(viewer: OpsDashboardResponse["viewer"]): string {
-  const email = normalizeText(viewer.email) ? viewer.email! : "";
-  if (email) {
-    return email;
+function formatLabel(value?: string | null): string {
+  const normalized = (value ?? "").trim();
+  if (!normalized) {
+    return "—";
+  }
+  return normalized.replaceAll("_", " ");
+}
+
+function splitReviewBlocks(text?: string | null): string[] {
+  return String(text || "")
+    .split(/\n{2,}/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function splitReviewUnits(text?: string | null): string[] {
+  const value = String(text || "").trim();
+  if (!value) return [];
+
+  const speakerBlocks = value
+    .split(/(?=^SPEAKER_\d+\s+\(\d{2}:\d{2}:\d{2}\))/gm)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  const blocks = speakerBlocks.length > 1 ? speakerBlocks : splitReviewBlocks(value);
+  return blocks.length ? blocks : [value];
+}
+
+function buildPairedReviewRows(
+  rawText: string | null | undefined,
+  cleanedText: string | null | undefined,
+  keyPrefix: string,
+  notes?: string,
+  needsHumanReview?: boolean,
+): HTReviewRow[] {
+  const rawUnits = splitReviewUnits(rawText);
+  const cleanedUnits = splitReviewUnits(cleanedText);
+  const maxLength = Math.max(rawUnits.length, cleanedUnits.length);
+
+  return Array.from({ length: maxLength }, (_, index) => ({
+    key: `${keyPrefix}-${index}`,
+    rawText: rawUnits[index] || "",
+    cleanedText: cleanedUnits[index] || "",
+    notes: index === 0 ? notes : undefined,
+    needsHumanReview,
+  })).filter((row) => row.rawText || row.cleanedText);
+}
+
+function tokenizeForDiff(text: string): string[] {
+  return text.match(/\s+|[^\s]+/g) || [];
+}
+
+function normalizeDiffToken(token: string): string {
+  return token.trim().toLocaleLowerCase();
+}
+
+function buildChangedTokenSet(rawTokens: string[], cleanedTokens: string[]): Set<number> {
+  const rawWords = rawTokens
+    .map((token, index) => ({ token, index }))
+    .filter(({ token }) => token.trim());
+  const cleanedWords = cleanedTokens
+    .map((token, index) => ({ token, index }))
+    .filter(({ token }) => token.trim());
+  const rows = rawWords.length + 1;
+  const cols = cleanedWords.length + 1;
+  const dp = Array.from({ length: rows }, () => Array<number>(cols).fill(0));
+
+  for (let row = rawWords.length - 1; row >= 0; row -= 1) {
+    for (let col = cleanedWords.length - 1; col >= 0; col -= 1) {
+      if (normalizeDiffToken(rawWords[row].token) === normalizeDiffToken(cleanedWords[col].token)) {
+        dp[row][col] = dp[row + 1][col + 1] + 1;
+      } else {
+        dp[row][col] = Math.max(dp[row + 1][col], dp[row][col + 1]);
+      }
+    }
   }
 
-  const name = (viewer.name ?? "").trim();
-  if (name) {
-    return name;
+  const unchangedCleanedIndexes = new Set<number>();
+  let row = 0;
+  let col = 0;
+  while (row < rawWords.length && col < cleanedWords.length) {
+    if (normalizeDiffToken(rawWords[row].token) === normalizeDiffToken(cleanedWords[col].token)) {
+      unchangedCleanedIndexes.add(cleanedWords[col].index);
+      row += 1;
+      col += 1;
+    } else if (dp[row + 1][col] >= dp[row][col + 1]) {
+      row += 1;
+    } else {
+      col += 1;
+    }
   }
 
-  return "Authenticated user";
+  const changed = new Set<number>();
+  cleanedWords.forEach(({ index }) => {
+    if (!unchangedCleanedIndexes.has(index)) {
+      changed.add(index);
+    }
+  });
+  return changed;
+}
+
+function buildReviewDiff(rawText: string, cleanedText: string): ReviewDiffToken[] {
+  const cleanedTokens = tokenizeForDiff(cleanedText);
+  if (!rawText.trim() || !cleanedText.trim()) {
+    return cleanedTokens.map((text) => ({ text, changed: false }));
+  }
+
+  const changedIndexes = buildChangedTokenSet(tokenizeForDiff(rawText), cleanedTokens);
+  return cleanedTokens.map((text, index) => ({
+    text,
+    changed: changedIndexes.has(index),
+  }));
+}
+
+function renderHighlightedReviewText(rawText: string, cleanedText: string): ReactNode {
+  const diff = buildReviewDiff(rawText, cleanedText);
+  if (!diff.length) return "—";
+
+  return diff.map((token, index) => {
+    if (!token.changed) {
+      return <span key={index}>{token.text}</span>;
+    }
+    return (
+      <mark
+        key={index}
+        className="rounded bg-amber-100 px-0.5 py-0.5 text-amber-950 ring-1 ring-inset ring-amber-200"
+      >
+        {token.text}
+      </mark>
+    );
+  });
+}
+
+function buildReviewRows(reviewData?: OpsHTReviewResponse): HTReviewRow[] {
+  if (!reviewData) return [];
+
+  const chunks = reviewData.review_meta?.chunks || [];
+  if (chunks.length) {
+    return chunks.flatMap((chunk, index) =>
+      buildPairedReviewRows(
+        chunk.raw_text,
+        chunk.corrected_text,
+        `chunk-${chunk.index}-${index}`,
+        chunk.change_notes,
+        chunk.needs_human_review,
+      ),
+    );
+  }
+
+  return buildPairedReviewRows(reviewData.raw_text, reviewData.corrected_text, "block");
+}
+
+function getRetentionTone(status?: string) {
+  switch (normalizeText(status)) {
+    case "available":
+      return "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200";
+    case "customer_deleted":
+      return "bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-200";
+    case "expired_deleted":
+      return "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200";
+    case "missing":
+      return "bg-orange-50 text-orange-700 ring-1 ring-inset ring-orange-200";
+    default:
+      return "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200";
+  }
 }
 
 function getStatusTone(status?: string) {
@@ -219,6 +445,8 @@ function buildDashboardUrl(filters: {
   status?: string;
   language?: string;
   email?: string;
+  date_from?: string;
+  date_to?: string;
 }) {
   const params = new URLSearchParams();
   params.set("limit", String(filters.limit));
@@ -231,6 +459,12 @@ function buildDashboardUrl(filters: {
   if (filters.email) {
     params.set("email", filters.email);
   }
+  if (filters.date_from) {
+    params.set("date_from", filters.date_from);
+  }
+  if (filters.date_to) {
+    params.set("date_to", filters.date_to);
+  }
   return `/ops/dashboard?${params.toString()}`;
 }
 
@@ -241,15 +475,24 @@ function buildBillingUrl(email: string) {
   return `/ops/billing?${params.toString()}`;
 }
 
+function buildHTReviewUrl(jobId: string) {
+  return `/ops/jobs/${encodeURIComponent(jobId)}/ht-review`;
+}
+
 function buildOpsPageHref(options: {
   tab?: string;
   limit?: number;
   status?: string;
   language?: string;
   email?: string;
+  dateFrom?: string;
+  dateTo?: string;
   billingEmail?: string;
   billingNotice?: string;
   billingError?: string;
+  reviewJobId?: string;
+  reviewNotice?: string;
+  reviewError?: string;
 }) {
   const params = new URLSearchParams();
 
@@ -268,6 +511,12 @@ function buildOpsPageHref(options: {
   if (options.email) {
     params.set("email", options.email);
   }
+  if (options.dateFrom) {
+    params.set("date_from", options.dateFrom);
+  }
+  if (options.dateTo) {
+    params.set("date_to", options.dateTo);
+  }
   if (options.billingEmail) {
     params.set("billing_email", options.billingEmail);
   }
@@ -276,6 +525,15 @@ function buildOpsPageHref(options: {
   }
   if (options.billingError) {
     params.set("billing_error", options.billingError);
+  }
+  if (options.reviewJobId) {
+    params.set("review_job_id", options.reviewJobId);
+  }
+  if (options.reviewNotice) {
+    params.set("review_notice", options.reviewNotice);
+  }
+  if (options.reviewError) {
+    params.set("review_error", options.reviewError);
   }
 
   const query = params.toString();
@@ -287,6 +545,8 @@ async function getDashboardData(filters: {
   status?: string;
   language?: string;
   email?: string;
+  date_from?: string;
+  date_to?: string;
 }): Promise<{ data?: OpsDashboardResponse; error?: string }> {
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
   const apiKey = process.env.KREYAI_OPS_API_KEY;
@@ -355,6 +615,40 @@ async function getBillingData(email: string): Promise<{ data?: OpsBillingRespons
   }
 }
 
+async function getHTReviewData(jobId: string): Promise<{ data?: OpsHTReviewResponse; error?: string }> {
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const apiKey = process.env.KREYAI_OPS_API_KEY;
+
+  if (!apiBase) {
+    return { error: "NEXT_PUBLIC_API_BASE_URL is not configured." };
+  }
+
+  if (!apiKey) {
+    return { error: "KREYAI_OPS_API_KEY is not configured for the ops dashboard." };
+  }
+
+  try {
+    const res = await fetch(`${apiBase}${buildHTReviewUrl(jobId)}`, {
+      cache: "no-store",
+      headers: {
+        "X-API-Key": apiKey,
+      },
+    });
+
+    if (!res.ok) {
+      return { error: `HT review request failed (${res.status}).` };
+    }
+
+    return {
+      data: (await res.json()) as OpsHTReviewResponse,
+    };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Unable to load HT review view.",
+    };
+  }
+}
+
 function applyJobFilters(
   jobs: OpsJob[],
   filters: {
@@ -362,6 +656,8 @@ function applyJobFilters(
     status?: string;
     language?: string;
     email?: string;
+    date_from?: string;
+    date_to?: string;
   },
 ): OpsJob[] {
   const filtered = jobs.filter((job) => {
@@ -369,7 +665,7 @@ function applyJobFilters(
       return false;
     }
 
-    if (filters.language && normalizeText(job.language) !== normalizeText(filters.language)) {
+    if (filters.language && normalizeText(getDisplayLanguage(job)) !== normalizeText(filters.language)) {
       return false;
     }
 
@@ -432,6 +728,8 @@ function summarizeJobs(jobs: OpsJob[]) {
     avg_realtime_factor: average(realtimeValues),
     lane_counts: countBy(jobs.map((job) => job.execution_lane)),
     tier_counts: countBy(jobs.map((job) => job.processing_tier)),
+    ht_jobs_count: jobs.filter((job) => normalizeText(getDisplayLanguage(job)) === "ht").length,
+    processing_jobs_count: jobs.filter((job) => normalizeText(job.status) === "processing").length,
   };
 }
 
@@ -558,11 +856,90 @@ export default async function OpsPage({
     redirect(`/ops?tab=billing&billing_email=${encodeURIComponent(email)}&billing_notice=${encodeURIComponent(`Applied ${action} of ${minutes} minutes.`)}`);
   }
 
+  async function runHTReview(formData: FormData) {
+    "use server";
+
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiKey = process.env.KREYAI_OPS_API_KEY;
+    const jobId = getSingleParam(formData.get("job_id")?.toString());
+    const model = getSingleParam(formData.get("model")?.toString());
+    const prompt = getSingleParam(formData.get("prompt")?.toString());
+
+    if (!apiBase || !apiKey) {
+      redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_error=${encodeURIComponent("Ops HT review is not configured.")}`);
+    }
+
+    const res = await fetch(`${apiBase}/ops/jobs/${encodeURIComponent(jobId)}/ht-review/run`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+      },
+      body: JSON.stringify({
+        model: model || undefined,
+        prompt: prompt || undefined,
+      }),
+    });
+
+    if (!res.ok) {
+      let detail = "Unable to run HT review.";
+      try {
+        const payload = (await res.json()) as { detail?: string };
+        if (typeof payload.detail === "string" && payload.detail) {
+          detail = payload.detail;
+        }
+      } catch {}
+      redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_error=${encodeURIComponent(detail)}`);
+    }
+
+    redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_notice=${encodeURIComponent("HT review started. Refresh this page shortly to load the cleaned draft.")}`);
+  }
+
+  async function approveHTReview(formData: FormData) {
+    "use server";
+
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const apiKey = process.env.KREYAI_OPS_API_KEY;
+    const jobId = getSingleParam(formData.get("job_id")?.toString());
+    const approvedText = getSingleParam(formData.get("approved_text")?.toString());
+
+    if (!apiBase || !apiKey) {
+      redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_error=${encodeURIComponent("Ops HT review is not configured.")}`);
+    }
+
+    const res = await fetch(`${apiBase}/ops/jobs/${encodeURIComponent(jobId)}/ht-review/approve`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": apiKey,
+      },
+      body: JSON.stringify({
+        approved_text: approvedText,
+      }),
+    });
+
+    if (!res.ok) {
+      let detail = "Unable to save approved transcript.";
+      try {
+        const payload = (await res.json()) as { detail?: string };
+        if (typeof payload.detail === "string" && payload.detail) {
+          detail = payload.detail;
+        }
+      } catch {}
+      redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_error=${encodeURIComponent(detail)}`);
+    }
+
+    redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_notice=${encodeURIComponent("Approved transcript saved.")}`);
+  }
+
   const resolvedParams = await searchParams;
   const tab = getSingleParam(resolvedParams.tab) || "jobs";
   const billingEmail = getSingleParam(resolvedParams.billing_email);
   const billingNotice = getSingleParam(resolvedParams.billing_notice);
   const billingError = getSingleParam(resolvedParams.billing_error);
+  const reviewJobId = getSingleParam(resolvedParams.review_job_id);
+  const reviewNotice = getSingleParam(resolvedParams.review_notice);
+  const reviewError = getSingleParam(resolvedParams.review_error);
 
   const limitParam = Number.parseInt(getSingleParam(resolvedParams.limit), 10);
   const filters = {
@@ -570,6 +947,8 @@ export default async function OpsPage({
     status: getSingleParam(resolvedParams.status),
     language: getSingleParam(resolvedParams.language),
     email: getSingleParam(resolvedParams.email),
+    date_from: getSingleParam(resolvedParams.date_from),
+    date_to: getSingleParam(resolvedParams.date_to),
   };
 
   const { data, error } = await getDashboardData(filters);
@@ -578,16 +957,26 @@ export default async function OpsPage({
   const billingResult = billingEmail ? await getBillingData(billingEmail) : { data: undefined, error: undefined };
   const billingData = billingResult.data;
   const billingLookupError = billingResult.error;
+  const reviewResult = reviewJobId ? await getHTReviewData(reviewJobId) : { data: undefined, error: undefined };
+  const reviewData = reviewResult.data;
+  const reviewLookupError = reviewResult.error;
+  const reviewRows = buildReviewRows(reviewData);
   const jobsHref = buildOpsPageHref({
     tab: "jobs",
     limit: filters.limit,
     status: filters.status,
     language: filters.language,
     email: filters.email,
+    dateFrom: filters.date_from,
+    dateTo: filters.date_to,
   });
   const billingHref = buildOpsPageHref({
     tab: "billing",
     billingEmail,
+  });
+  const reviewHref = buildOpsPageHref({
+    tab: "review",
+    reviewJobId,
   });
 
   return (
@@ -621,26 +1010,28 @@ export default async function OpsPage({
               <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[420px]">
                 <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
                   <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
-                    Viewer
-                  </p>
-                  <p className="mt-2 truncate text-sm font-medium text-[#101426]">
-                    {getViewerLabel(data.viewer)}
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
-                    Plan
-                  </p>
-                  <p className="mt-2 text-sm font-medium capitalize text-[#28297e]">
-                    {data.viewer.plan || "unknown"}
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
-                    Active Slice
+                    Mode
                   </p>
                   <p className="mt-2 text-sm font-medium text-[#101426]">
-                    {filteredSummary ? `${filteredSummary.recent_jobs_count} jobs` : "—"}
+                    Internal ops console
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
+                    Scope
+                  </p>
+                  <p className="mt-2 text-sm font-medium text-[#28297e]">
+                    {filters.date_from || filters.date_to
+                      ? `${filters.date_from || "…"} to ${filters.date_to || "…"}`
+                      : "All available dates"}
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] px-5 py-4">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#7a8098]">
+                    Refreshed
+                  </p>
+                  <p className="mt-2 text-sm font-medium text-[#101426]">
+                    {formatDate(new Date().toISOString())}
                   </p>
                 </div>
               </div>
@@ -649,7 +1040,7 @@ export default async function OpsPage({
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-3">
             <a
               href={jobsHref}
               className={`rounded-[28px] border px-5 py-5 transition ${
@@ -679,10 +1070,25 @@ export default async function OpsPage({
                 Customer balances, ledger history, manual adjustments, and dispute resolution.
               </p>
             </a>
+
+            <a
+              href={reviewHref}
+              className={`rounded-[28px] border px-5 py-5 transition ${
+                tab === "review"
+                  ? "border-[var(--brand-border-strong)] bg-[linear-gradient(135deg,rgba(243,244,255,0.96),rgba(236,244,255,0.96))] shadow-[0_18px_50px_rgba(40,41,126,0.08)]"
+                  : "border-[var(--brand-border)] bg-white hover:bg-[#fafbff]"
+              }`}
+            >
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Tab</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#101426]">HT Review</h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
+                Compare raw transcript output with an OpenAI-corrected Haitian Creole version and save an approved final.
+              </p>
+            </a>
           </div>
 
           <a
-            href={tab === "billing" ? billingHref : jobsHref}
+            href={tab === "billing" ? billingHref : tab === "review" ? reviewHref : jobsHref}
             className="inline-flex items-center justify-center rounded-full border border-[var(--brand-border)] bg-white px-5 py-3 text-sm font-medium text-[#101426] transition hover:bg-[#fafbff]"
           >
             Refresh now
@@ -697,7 +1103,7 @@ export default async function OpsPage({
           >
             <form
               method="GET"
-              className="grid gap-4 md:grid-cols-2 xl:grid-cols-5"
+              className="grid gap-4 md:grid-cols-2 xl:grid-cols-7"
             >
               <input type="hidden" name="tab" value="jobs" />
               <label className="space-y-2 text-sm">
@@ -738,6 +1144,30 @@ export default async function OpsPage({
                   defaultValue={filters.email}
                   placeholder="billy@kreyai.com"
                   className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] placeholder:text-[#8b92ab] outline-none transition focus:border-[var(--brand-border-strong)]"
+                />
+              </label>
+
+              <label className="space-y-2 text-sm">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                  Date From
+                </span>
+                <input
+                  type="date"
+                  name="date_from"
+                  defaultValue={filters.date_from || ""}
+                  className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
+                />
+              </label>
+
+              <label className="space-y-2 text-sm">
+                <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+                  Date To
+                </span>
+                <input
+                  type="date"
+                  name="date_to"
+                  defaultValue={filters.date_to || ""}
+                  className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
                 />
               </label>
 
@@ -987,6 +1417,165 @@ export default async function OpsPage({
           </section>
         )}
 
+        {tab === "review" && (
+          <section className="space-y-6">
+            <SectionShell
+              eyebrow="HT Review"
+              title="LLM-assisted Haitian Creole cleanup"
+              description="Run an OpenAI cleanup pass for a Haitian Creole job, compare raw and corrected text side by side, then save your approved version."
+            >
+              <form action={runHTReview} className="grid gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <label className="space-y-2 text-sm">
+                    <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Job ID</span>
+                    <input
+                      name="job_id"
+                      defaultValue={reviewJobId}
+                      placeholder="job-ABC123"
+                      className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] placeholder:text-[#8b92ab] outline-none transition focus:border-[var(--brand-border-strong)]"
+                    />
+                  </label>
+                  <label className="space-y-2 text-sm">
+                    <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Model</span>
+                    <input
+                      name="model"
+                      defaultValue={reviewData?.review_meta?.model || "gpt-4o-mini"}
+                      className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
+                    />
+                  </label>
+                </div>
+
+                <label className="space-y-2 text-sm">
+                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Prompt</span>
+                  <textarea
+                    name="prompt"
+                    rows={8}
+                    defaultValue={reviewData?.review_meta?.prompt || reviewData?.default_prompt || ""}
+                    className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
+                  />
+                </label>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="submit"
+                    className="rounded-2xl bg-[#28297e] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(40,41,126,0.16)] transition hover:bg-[#17195b]"
+                  >
+                    {reviewData?.ht_review_status === "running" ? "HT Review Running…" : "Run HT Review"}
+                  </button>
+                </div>
+              </form>
+            </SectionShell>
+
+            {reviewNotice ? (
+              <div className="rounded-[28px] border border-emerald-200 bg-emerald-50 px-6 py-5 text-sm text-emerald-800 shadow-[0_18px_40px_rgba(16,185,129,0.08)]">
+                {reviewNotice}
+              </div>
+            ) : null}
+
+            {(reviewError || reviewLookupError) ? (
+              <div className="rounded-[28px] border border-rose-200 bg-rose-50 px-6 py-5 text-sm text-rose-700 shadow-[0_18px_40px_rgba(190,24,93,0.08)]">
+                {reviewError || reviewLookupError}
+              </div>
+            ) : null}
+
+            {reviewData ? (
+              <>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <BillingMetricCard label="Job" value={reviewData.job_id} />
+                  <BillingMetricCard label="Language" value={reviewData.language || "—"} />
+                  <BillingMetricCard label="Status" value={reviewData.status || "—"} />
+                </div>
+
+                {reviewData.ht_review_status ? (
+                  <div className="rounded-[28px] border border-sky-200 bg-sky-50 px-6 py-5 text-sm text-sky-900 shadow-[0_18px_40px_rgba(59,130,246,0.08)]">
+                    Review status: {reviewData.ht_review_status}
+                    {reviewData.ht_review_requested_at ? ` • requested ${formatDate(reviewData.ht_review_requested_at || undefined)}` : ""}
+                    {reviewData.ht_review_error ? ` • error: ${reviewData.ht_review_error}` : ""}
+                  </div>
+                ) : null}
+
+                {reviewRows.length ? (
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Review rows</p>
+                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <span className="h-3 w-3 rounded bg-amber-100 ring-1 ring-inset ring-amber-200" />
+                        Highlighted text differs from raw
+                      </div>
+                    </div>
+                    {reviewRows.map((row, index) => (
+                      <div
+                        key={row.key}
+                        className="rounded-[34px] border border-[var(--brand-border)] bg-white p-6 shadow-[0_22px_60px_rgba(15,23,42,0.06)]"
+                      >
+                        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                          <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">
+                            Row {index + 1}
+                          </p>
+                          {row.needsHumanReview ? (
+                            <span className="rounded-full border border-amber-300 bg-amber-100 px-3 py-1 text-xs font-medium text-amber-900">
+                              Needs extra review
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="grid gap-5 xl:grid-cols-2">
+                          <div className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] p-5">
+                            <p className="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">Raw</p>
+                            <pre className="mt-4 whitespace-pre-wrap text-sm leading-7 text-[#101426]">{row.rawText || "—"}</pre>
+                          </div>
+                          <div className="rounded-3xl border border-emerald-200 bg-[#fbfcff] p-5">
+                            <p className="text-xs font-medium uppercase tracking-[0.22em] text-emerald-700">LLM corrected</p>
+                            <pre className="mt-4 whitespace-pre-wrap text-sm leading-7 text-[#101426]">
+                              {row.cleanedText ? renderHighlightedReviewText(row.rawText, row.cleanedText) : "—"}
+                            </pre>
+                          </div>
+                        </div>
+                        {row.notes ? (
+                          <p className="mt-4 text-sm leading-6 text-slate-600">{row.notes}</p>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid gap-5 xl:grid-cols-2">
+                    <div className="rounded-[34px] border border-[var(--brand-border)] bg-white p-6 shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Raw transcript</p>
+                      <pre className="mt-4 max-h-[720px] overflow-auto whitespace-pre-wrap rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] p-5 text-sm leading-7 text-[#101426]">{reviewData.raw_text || "No raw transcript found."}</pre>
+                    </div>
+
+                    <div className="rounded-[34px] border border-[var(--brand-border)] bg-white p-6 shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">LLM corrected</p>
+                      <pre className="mt-4 max-h-[720px] overflow-auto whitespace-pre-wrap rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] p-5 text-sm leading-7 text-[#101426]">{reviewData.corrected_text || "Run HT review to generate a corrected version."}</pre>
+                    </div>
+                  </div>
+                )}
+
+                <SectionShell
+                  eyebrow="Approval"
+                  title="Approved final transcript"
+                  description="Use the corrected version as a starting point, make manual edits, and save the approved transcript as a separate artifact."
+                >
+                  <form action={approveHTReview} className="space-y-4">
+                    <input type="hidden" name="job_id" value={reviewData.job_id} />
+                    <textarea
+                      name="approved_text"
+                      rows={20}
+                      defaultValue={reviewData.approved_text || reviewData.corrected_text || reviewData.raw_text || ""}
+                      className="w-full rounded-3xl border border-[var(--brand-border)] bg-white px-4 py-4 text-sm leading-7 text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-2xl bg-[#28297e] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(40,41,126,0.16)] transition hover:bg-[#17195b]"
+                    >
+                      Save Approved Transcript
+                    </button>
+                  </form>
+                </SectionShell>
+              </>
+            ) : null}
+          </section>
+        )}
+
         {tab === "jobs" && error && (
           <div className="rounded-[28px] border border-rose-200 bg-rose-50 px-6 py-5 text-sm text-rose-700 shadow-[0_18px_40px_rgba(190,24,93,0.08)]">
             {error}
@@ -1012,9 +1601,9 @@ export default async function OpsPage({
                 detail={`Realtime factor ${formatPercent(filteredSummary.avg_realtime_factor)}`}
               />
               <MetricCard
-                label="Current Scope"
-                value={filters.status ? filters.status.replaceAll("_", " ") : "All jobs"}
-                detail={filters.email ? `Email contains "${filters.email}"` : "No email slice applied"}
+                label="In Flight"
+                value={filteredSummary.processing_jobs_count || 0}
+                detail={`${filteredSummary.ht_jobs_count || 0} HT jobs in current slice`}
               />
             </div>
 
@@ -1102,6 +1691,7 @@ export default async function OpsPage({
                           <th className="px-4 py-4 font-medium">Language</th>
                           <th className="px-4 py-4 font-medium">Audio</th>
                           <th className="px-4 py-4 font-medium">Processing</th>
+                          <th className="px-4 py-4 font-medium">Retention</th>
                           <th className="px-6 py-4 font-medium">Updated</th>
                         </tr>
                       </thead>
@@ -1142,11 +1732,24 @@ export default async function OpsPage({
                                   </span>
                                 </div>
                                 <div className="text-xs leading-5 text-[#7a8098]">
-                                  {job.worker_job_region || "—"} • {job.speaker_mode || "—"}
+                                  {job.worker_job_name || "—"} • {job.worker_job_region || "—"}
+                                </div>
+                                <div className="text-xs leading-5 text-[#7a8098]">
+                                  Speaker {job.speaker_mode || "—"} • Diarization {job.diarization_status || (job.requires_diarization ? "required" : "off")}
                                 </div>
                                 <div className="text-xs leading-5 text-[#7a8098]">
                                   {job.routing_reason || "No routing note"}
                                 </div>
+                                {job.diarization_error ? (
+                                  <div className="text-xs leading-5 text-rose-700">
+                                    Diarization error: {job.diarization_error}
+                                  </div>
+                                ) : null}
+                                {job.dispatch_error ? (
+                                  <div className="text-xs leading-5 text-rose-700">
+                                    Dispatch error: {job.dispatch_error}
+                                  </div>
+                                ) : null}
                               </div>
                             </td>
                             <td className="px-4 py-5">
@@ -1178,6 +1781,49 @@ export default async function OpsPage({
                                 {typeof job.estimated_cost_usd === "number"
                                   ? `$${job.estimated_cost_usd.toFixed(2)}`
                                   : "—"}
+                              </div>
+                              <div className="mt-1 text-xs text-[#7a8098]">
+                                Download {formatSeconds(job.download_time_seconds)} • Transcribe {formatSeconds(job.transcription_time_seconds)}
+                              </div>
+                              <div className="mt-1 text-xs text-[#7a8098]">
+                                Align {formatSeconds(job.alignment_time_seconds)} • Output {formatSeconds(job.output_time_seconds)}
+                              </div>
+                              {job.ht_review_updated_at ? (
+                                <div className="mt-1 text-xs text-[#7a8098]">
+                                  HT review {job.ht_review_model || "LLM"} at {formatDate(job.ht_review_updated_at || undefined)}
+                                </div>
+                              ) : null}
+                            </td>
+                            <td className="px-4 py-5">
+                              <div className="space-y-2">
+                                <span
+                                  className={`inline-flex rounded-full px-3 py-1 text-xs font-medium capitalize ${getRetentionTone(job.storage_status)}`}
+                                >
+                                  {formatLabel(job.storage_status)}
+                                </span>
+                                <div className="text-xs leading-5 text-[#7a8098]">
+                                  Available until {formatDate(job.scheduled_delete_at || undefined)}
+                                </div>
+                                <div className="text-xs leading-5 text-[#7a8098]">
+                                  Source {formatLabel(job.retention_source)}
+                                  {typeof job.deleted_blob_count === "number" ? ` • ${job.deleted_blob_count} blobs` : ""}
+                                </div>
+                                <div className="text-xs leading-5 text-[#7a8098]">
+                                  Objects present {job.storage_objects_present ? "Yes" : "No"}
+                                </div>
+                                {job.files_deleted_at ? (
+                                  <div className="text-xs leading-5 text-[#7a8098]">
+                                    Customer deleted {formatDate(job.files_deleted_at)}
+                                  </div>
+                                ) : null}
+                                {job.auto_deleted_at ? (
+                                  <div className="text-xs leading-5 text-[#7a8098]">
+                                    Auto deleted {formatDate(job.auto_deleted_at)}
+                                  </div>
+                                ) : null}
+                                <div className="text-xs leading-5 text-[#7a8098]">
+                                  Checked {formatDate(job.last_storage_check_at || undefined)}
+                                </div>
                               </div>
                             </td>
                             <td className="px-6 py-5">

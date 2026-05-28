@@ -2,11 +2,34 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Pricing",
+  title: "Transcription Pricing",
   description:
-    "See KreyAI prepaid credit packs, one-time starter allowance, and how transcription minutes are priced for standard and premium jobs.",
+    "See KreyAI prepaid transcription pricing for Haitian Creole and multilingual audio. Adwaz writing assistance is currently a separate private beta.",
+  keywords: [
+    "transcription pricing",
+    "Haitian Creole transcription pricing",
+    "AI transcription credits",
+    "speaker labeled transcription pricing",
+    "subtitle transcription pricing",
+    "French transcription pricing",
+    "Spanish transcription pricing",
+    "Portuguese transcription pricing",
+    "Haitian Creole transcription credits",
+    "Adwaz pricing",
+  ],
   alternates: {
     canonical: "/pricing",
+  },
+  openGraph: {
+    title: "KreyAI Transcription Pricing",
+    description:
+      "Simple prepaid credits for Haitian Creole and multilingual transcription. No subscriptions, no seats, no expiring credits.",
+    url: "/pricing",
+    alternateLocale: ["fr_FR", "ht_HT", "es_ES", "pt_PT"],
+  },
+  other: {
+    "content-language": "en, fr, ht, es, pt",
+    "target-languages": "French, Haitian Creole, Spanish, Portuguese",
   },
 };
 
@@ -59,8 +82,10 @@ const HOW_CREDITS_WORK = [
   "KreyAI uses a prepaid credit system.",
   "New emails receive a one-time 30-minute starter allowance to test the product.",
   "Credits are deducted based on the duration of the audio you submit.",
+  "Haitian Creole beta jobs are billed at the same standard credit rate as other supported languages.",
   "Credits are only the public pricing model. There are no subscriptions or seat licenses.",
   "Credits do not expire and can be used anytime.",
+  "Adwaz writing assistance is currently a separate private beta and is not charged against transcription credits.",
 ];
 
 const PAYMENT_POLICY = [
@@ -72,7 +97,8 @@ const PAYMENT_POLICY = [
 const REFUND_POLICY = [
   "Unused credits may be eligible for a refund at our discretion.",
   "Used credits are non-refundable once processing has occurred.",
-  "In cases of technical issues or service errors, KreyAI may restore credits or issue a refund.",
+  "In cases of verified technical issues or severe service errors, including missing sections or repetition loops, KreyAI may restore credits, retry the job, or issue a refund.",
+  "Haitian Creole beta transcripts are drafts for review, so ordinary transcription imperfections are not automatic refunds.",
 ];
 
 export default function PricingPage() {
@@ -140,6 +166,20 @@ export default function PricingPage() {
           <p className="mt-5 text-sm leading-7 text-[#7a8098]">
             Final turnaround and transcript quality still depend on audio quality, speaker overlap, and source language mix.
           </p>
+        </div>
+
+        <div className="surface-callout mt-10 rounded-[28px] p-7">
+          <h2 className="text-2xl font-semibold tracking-tight text-[var(--brand-blue-deep)]">Adwaz private beta</h2>
+          <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
+            Adwaz, the Haitian Creole writing assistant from KreyAI, is currently in private beta. It is separate from
+            transcription credits while we test correction quality, vocabulary review, and user workflows.
+          </p>
+          <Link
+            href="/adwaz"
+            className="mt-5 inline-flex rounded-2xl brand-button px-5 py-3 text-sm font-semibold"
+          >
+            Open Adwaz beta
+          </Link>
         </div>
 
         <div className="surface-panel mt-10 rounded-[30px] p-7">

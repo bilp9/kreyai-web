@@ -5,8 +5,20 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/pricing", "/faq", "/privacy", "/terms", "/billing"],
-        disallow: ["/upload", "/verify", "/ops", "/jobs/"],
+        allow: [
+          "/",
+          "/about",
+          "/haitian-creole-transcription",
+          "/french-transcription",
+          "/spanish-transcription",
+          "/portuguese-transcription",
+          "/pricing",
+          "/faq",
+          "/privacy",
+          "/terms",
+          "/billing",
+        ],
+        disallow: ["/upload", "/verify", "/recover", "/ops", "/jobs/"],
       },
     ],
     sitemap: "https://kreyai.com/sitemap.xml",

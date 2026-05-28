@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Read the KreyAI terms covering transcription use, credits, payments, refunds, file retention, and service limitations.",
+    "Read the KreyAI terms covering transcription, Adwaz writing assistance, credits, payments, refunds, retention, and service limitations.",
   alternates: {
     canonical: "/terms",
   },
@@ -13,7 +13,7 @@ const TERMS_SECTIONS = [
   {
     title: "1. Overview",
     items: [
-      "KreyAI provides transcription and language-processing services for audio content.",
+      "KreyAI provides transcription and language-processing services, including audio transcription and Adwaz writing assistance.",
       "By accessing or using KreyAI, you agree to comply with these Terms of Service.",
     ],
   },
@@ -67,6 +67,7 @@ const TERMS_SECTIONS = [
     items: [
       "Transcriptions may contain errors or inaccuracies.",
       "Language detection, speaker identification, and formatting are not guaranteed to be perfect.",
+      "Adwaz writing suggestions may contain errors, miss valid forms, or flag words that require human review.",
     ],
     calloutTitle: "Users are responsible for reviewing and verifying outputs before relying on them.",
     calloutItems: [],
@@ -92,9 +93,12 @@ const TERMS_SECTIONS = [
     items: [
       "KreyAI uses a prepaid credit model for public access to paid transcription services.",
       "Credits are purchased in advance, deducted based on submitted audio duration, and do not expire unless stated otherwise at purchase.",
+      "Haitian Creole beta jobs are charged at the same standard credit rate as other supported languages.",
       "Used credits are generally non-refundable once processing has occurred.",
       "Unused credits may be eligible for refunds or account credit at KreyAI's discretion.",
-      "If a job fails because of a verified service issue, KreyAI may restore credits, retry processing, or issue a refund or account credit.",
+      "If a job fails because of a verified service issue, including missing sections or repetition loops, KreyAI may restore credits, retry processing, or issue a refund or account credit.",
+      "Haitian Creole beta transcripts are drafts for review, so ordinary transcription imperfections are not automatic refunds.",
+      "Adwaz private beta is separate from transcription credits unless otherwise stated.",
       "Prices may change from time to time, but pricing changes apply only to future purchases.",
     ],
   },

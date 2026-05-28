@@ -2,6 +2,7 @@
 
 import { startTransition, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type LanguageOption = {
   code: string;
@@ -56,8 +57,82 @@ const PRICING_ITEMS = [
   },
 ];
 
+const INDUSTRY_SOLUTIONS = [
+  {
+    title: "Journalism & Media",
+    description:
+      "Get clean, speaker-labeled transcripts for interviews and podcasts within minutes. Subtitle exports help make video content accessible faster.",
+  },
+  {
+    title: "Legal & Government",
+    description:
+      "Private by design for sensitive work, with automatic 7-day deletion and a strict no-training policy so your data stays yours.",
+  },
+  {
+    title: "Education & Research",
+    description:
+      "Transcribe lectures, oral histories, and field research with care, even when participants move between languages or dialects.",
+  },
+];
+
+const SECURITY_ITEMS = [
+  {
+    title: "Zero-training policy",
+    description: "We never use your audio or transcripts to train AI models. Your intellectual property remains private.",
+  },
+  {
+    title: "Automatic deletion",
+    description:
+      "Files stay in secure active storage for 7 days, long enough to finish your work, then are scheduled for deletion.",
+  },
+  {
+    title: "Anonymous workflow",
+    description:
+      "No traditional login means less personal data collected. Enter your email, upload your file, and get to work.",
+  },
+];
+
+const LANGUAGE_PAGES = [
+  {
+    title: "Haitian Creole",
+    href: "/haitian-creole-transcription",
+    description: "Beta Kreyòl draft transcripts, subtitles, and speaker labels.",
+  },
+  {
+    title: "French",
+    href: "/french-transcription",
+    description: "French audio transcripts and subtitle exports.",
+  },
+  {
+    title: "Spanish",
+    href: "/spanish-transcription",
+    description: "Spanish interviews, podcasts, meetings, and lectures.",
+  },
+  {
+    title: "Portuguese",
+    href: "/portuguese-transcription",
+    description: "Portuguese transcript and subtitle outputs.",
+  },
+];
+
+const PRODUCT_FAMILY = [
+  {
+    title: "KreyAI Transcription",
+    href: "/",
+    description: "Audio-to-text workflows for transcripts, subtitles, speaker labels, and multilingual recordings.",
+    status: "Public",
+  },
+  {
+    title: "Adwaz",
+    href: "/adwaz",
+    description: "Haitian Creole writing assistance for spelling, accents, grammar patterns, and explainable review.",
+    status: "Private beta",
+  },
+];
+
 const FALLBACK_LANGUAGE_OPTIONS: LanguageOption[] = [
   { code: "en", label: "English" },
+  { code: "ht", label: "Haitian Creole" },
   { code: "es", label: "Spanish" },
   { code: "fr", label: "French" },
   { code: "pt", label: "Portuguese" },
@@ -233,12 +308,12 @@ export default function Home() {
 
             <div className="max-w-3xl space-y-8">
               <h1 className="text-6xl leading-[0.95] font-bold tracking-[-0.05em] text-[#101426] md:text-8xl">
-                Kreyai
+                KreyAI
                 <span className="mt-4 block text-[#28297e] opacity-90">Beyond transcription.</span>
               </h1>
 
               <p className="max-w-xl text-lg leading-relaxed text-slate-500 md:text-xl">
-                Kreyai is built for interviews in the field, podcasts, journalism, meetings, and real conversations.
+                KreyAI is built for interviews in the field, podcasts, journalism, meetings, and real conversations.
                 Clean transcripts you can use without reworking.
               </p>
 
@@ -344,6 +419,37 @@ export default function Home() {
 
       <section className="mx-auto max-w-6xl px-6 py-18 md:py-24">
         <div className="max-w-2xl">
+          <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#28297e]">Product family</p>
+          <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#101426] md:text-5xl">
+            Practical language tools under one roof.
+          </h2>
+          <p className="mt-5 text-sm leading-7 text-[var(--brand-muted)]">
+            KreyAI starts with transcription and expands into writing support through Adwaz, a focused Haitian Creole
+            assistant powered by the same language-services mindset.
+          </p>
+        </div>
+
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {PRODUCT_FAMILY.map((item) => (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="brand-card rounded-[28px] p-6"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <h3 className="text-xl font-semibold tracking-[-0.03em] text-[#101426]">{item.title}</h3>
+                <span className="rounded-full bg-[var(--brand-blue-soft)] px-3 py-1 text-xs font-semibold text-[var(--brand-blue)]">
+                  {item.status}
+                </span>
+              </div>
+              <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">{item.description}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-18 md:py-24">
+        <div className="max-w-2xl">
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#28297e]">How it works</p>
           <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#101426] md:text-5xl">
             A simple flow, without the clutter.
@@ -361,7 +467,82 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-6 pb-18 md:grid-cols-[0.9fr_1.1fr] md:pb-24">
+      <section className="mx-auto max-w-6xl px-6 pb-18 md:pb-24">
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+          <div className="max-w-xl">
+            <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#28297e]">Industry solutions</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#101426] md:text-5xl">
+              Built for the people who need every word to hold up.
+            </h2>
+            <p className="mt-5 text-sm leading-7 text-[var(--brand-muted)]">
+              KreyAI supports real working audio: interviews, public records, lectures, research sessions, and
+              multilingual conversations where context matters.
+            </p>
+          </div>
+
+          <div className="grid gap-5">
+            {INDUSTRY_SOLUTIONS.map((item) => (
+              <article key={item.title} className="brand-card rounded-[28px] p-6">
+                <h3 className="text-xl font-semibold tracking-[-0.03em] text-[#101426]">{item.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">{item.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-[var(--brand-border)] bg-white/70">
+        <div className="mx-auto grid max-w-6xl gap-10 px-6 py-18 md:py-24 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+            <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#28297e]">Security & privacy</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-[#101426] md:text-5xl">
+              Your data is a guest, not a product.
+            </h2>
+            <p className="mt-5 text-sm leading-7 text-[var(--brand-muted)]">
+              Security should not be a premium feature. KreyAI is designed to process your files for transcription,
+              keep them available briefly, and avoid collecting more personal data than the workflow needs.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-1">
+            {SECURITY_ITEMS.map((item) => (
+              <article key={item.title} className="rounded-[28px] border border-[var(--brand-border)] bg-white p-6">
+                <h3 className="text-lg font-semibold tracking-[-0.02em] text-[#101426]">{item.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">{item.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-18 md:py-24">
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+          <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#28297e]">Languages</p>
+          <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#101426] md:text-4xl">
+            Supported transcription languages.
+          </h2>
+          </div>
+          <p className="max-w-md text-sm leading-7 text-[var(--brand-muted)]">
+            KreyAI is built for multilingual audio, with focused support pages for common transcription workflows.
+          </p>
+        </div>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {LANGUAGE_PAGES.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-[22px] border border-[var(--brand-border)] bg-white/75 p-5 transition hover:border-[var(--brand-border-strong)] hover:bg-white"
+            >
+              <h3 className="text-base font-semibold tracking-[-0.02em] text-[#101426]">{item.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">{item.description}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-6xl gap-8 px-6 py-18 md:grid-cols-[0.9fr_1.1fr] md:py-24">
         <article className="rounded-[34px] border border-[var(--brand-border)] bg-white px-7 py-8 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-[#28297e]">Pricing</p>
           <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[#101426]">Simple by design.</h2>

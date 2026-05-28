@@ -10,7 +10,7 @@ function unauthorizedResponse() {
   });
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const username = process.env.OPS_DASHBOARD_USERNAME?.trim();
   const password = process.env.OPS_DASHBOARD_PASSWORD?.trim();
 

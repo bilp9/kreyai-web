@@ -7,14 +7,16 @@ import { useRouter } from "next/navigation";
 
 type UploadStage = "idle" | "preparing" | "uploading" | "finalizing" | "done";
 type SpeakerMode = "single" | "multi" | "unsure";
+const LONG_HT_MINUTES = 10;
+const LONG_HT_SECONDS = LONG_HT_MINUTES * 60;
 
 type BalanceResponse = {
   email: string;
   balance_minutes: number;
-  total_purchased_minutes: number;
+  total_purchased_minutes?: number;
   total_granted_minutes?: number;
-  total_consumed_minutes: number;
-  total_refunded_minutes: number;
+  total_consumed_minutes?: number;
+  total_refunded_minutes?: number;
 };
 
 export default function UploadClient() {
@@ -37,7 +39,10 @@ export default function UploadClient() {
   const [uploadPercent, setUploadPercent] = useState(0);
   const [uploadStage, setUploadStage] = useState<UploadStage>("idle");
   const [speakerMode, setSpeakerMode] = useState<SpeakerMode>("single");
+  const [speakerModeTouched, setSpeakerModeTouched] = useState(false);
   const [jobEmail, setJobEmail] = useState("");
+  const [jobLanguage, setJobLanguage] = useState("");
+  const [fileDurationSeconds, setFileDurationSeconds] = useState<number | null>(null);
   const [balance, setBalance] = useState<BalanceResponse | null>(null);
   const [loadingBalance, setLoadingBalance] = useState(false);
 
@@ -62,9 +67,13 @@ export default function UploadClient() {
         return;
       }
 
-      const data = (await res.json()) as { email?: string };
-      if (active && data.email) {
-        setJobEmail(data.email);
+      const data = (await res.json()) as { email?: string; language?: string; language_requested?: string; language_final?: string };
+      if (active) {
+        if (data.email) {
+          setJobEmail(data.email);
+        }
+        const language = (data.language_final || data.language || data.language_requested || "").toLowerCase();
+        setJobLanguage(language);
       }
     }
 
@@ -73,6 +82,48 @@ export default function UploadClient() {
       active = false;
     };
   }, [apiBase, jobId, token]);
+
+  useEffect(() => {
+    if (!file) {
+      setFileDurationSeconds(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    const media = document.createElement(file.type.startsWith("video/") ? "video" : "audio");
+    media.preload = "metadata";
+
+    const cleanup = () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+
+    media.onloadedmetadata = () => {
+      const duration = Number.isFinite(media.duration) ? media.duration : null;
+      setFileDurationSeconds(duration);
+      cleanup();
+    };
+
+    media.onerror = () => {
+      setFileDurationSeconds(null);
+      cleanup();
+    };
+
+    media.src = objectUrl;
+
+    return () => {
+      cleanup();
+    };
+  }, [file]);
+
+  const isHtJob = jobLanguage === "ht";
+  const isLongHt = isHtJob && typeof fileDurationSeconds === "number" && fileDurationSeconds >= LONG_HT_SECONDS;
+
+  useEffect(() => {
+    if (!isLongHt || speakerModeTouched) {
+      return;
+    }
+    setSpeakerMode("single");
+  }, [isLongHt, speakerModeTouched]);
 
   useEffect(() => {
     if (!apiBase || !jobEmail) {
@@ -354,6 +405,11 @@ export default function UploadClient() {
                   <span className="block pt-1 text-xs text-[#717a99]">
                     {(file.size / (1024 * 1024)).toFixed(1)} MB
                   </span>
+                  {typeof fileDurationSeconds === "number" ? (
+                    <span className="block pt-1 text-xs text-[#717a99]">
+                      Approx. duration: {(fileDurationSeconds / 60).toFixed(1)} min
+                    </span>
+                  ) : null}
                 </div>
               )}
             </div>
@@ -366,15 +422,27 @@ export default function UploadClient() {
               <div>
                 <p className="text-sm font-semibold text-[#13172b]">Speakers</p>
                 <p className="mt-1 text-sm leading-6 text-[var(--brand-muted)]">
-                  Choose speaker labels for interviews, meetings, and conversations. For one-person recordings, a clean
-                  transcript is usually the best fit.
+                  Choose speaker labels for interviews, meetings, and conversations. For one-person recordings, a
+                  simpler draft transcript is usually the best fit.
                 </p>
+                {isHtJob ? (
+                  <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
+                    Haitian Creole is currently in beta. It is billed at the standard credit rate and outputs should be
+                    reviewed, especially for noisy, long, or code-switched audio.
+                  </p>
+                ) : null}
               </div>
 
               <div className="grid gap-3">
                 {[
-                  ["single", "One speaker", "Returns a clean transcript without speaker labels."],
-                  ["multi", "More than one speaker", "Adds speaker labels to make conversations easier to follow."],
+                  ["single", "One speaker", "Returns a draft transcript without speaker labels."],
+                  [
+                    "multi",
+                    "More than one speaker",
+                    isHtJob
+                      ? "Adds speaker labels to make conversations easier to follow. Multi-speaker Haitian Creole is beta and may need extra review."
+                      : "Adds speaker labels to make conversations easier to follow.",
+                  ],
                   ["unsure", "Not sure", "We will treat it like a conversation to help keep the result readable."],
                 ].map(([value, label, description]) => (
                   <label
@@ -386,7 +454,10 @@ export default function UploadClient() {
                       name="speaker_mode"
                       value={value}
                       checked={speakerMode === value}
-                      onChange={() => setSpeakerMode(value as SpeakerMode)}
+                      onChange={() => {
+                        setSpeakerMode(value as SpeakerMode);
+                        setSpeakerModeTouched(true);
+                      }}
                       disabled={loading || success || !jobId || !token}
                       className="mt-1 h-4 w-4 border-slate-300 text-indigo-600 focus:ring-indigo-500"
                     />
@@ -399,6 +470,18 @@ export default function UploadClient() {
                   </label>
                 ))}
               </div>
+
+              {isLongHt ? (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                  Long Haitian Creole detected. Default recommendation is <span className="font-medium">One speaker</span>.
+                  {speakerMode === "multi" || speakerMode === "unsure" ? (
+                    <span className="block mt-2">
+                      Multi-speaker long-form Haitian Creole is in beta. It may be slower and should be reviewed more
+                      carefully than the single-speaker path.
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
 
             {error && (

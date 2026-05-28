@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Review how KreyAI handles uploaded audio, generated transcripts, billing records, retention, and deletion under the service privacy policy.",
+    "Review how KreyAI handles uploaded audio, generated transcripts, Adwaz writing review text, billing records, retention, and deletion.",
   alternates: {
     canonical: "/privacy",
   },
@@ -16,8 +16,9 @@ const PRIVACY_SECTIONS = [
     items: [
       "User-provided information: email address for job access and delivery, audio files you upload, and optional metadata you provide.",
       "Generated data: transcripts and output files generated from your uploads, along with processing metadata such as duration, language detection, and timestamps.",
+      "Adwaz beta text: text you submit for writing review is processed to return corrections and is not saved by default.",
       "Billing information: transaction and purchase metadata needed to confirm credit purchases, process refunds, prevent abuse, and support billing operations.",
-      "Technical data: basic system logs like request timestamps and job IDs, plus error logs used for debugging and service reliability.",
+      "Technical data: basic system logs like request timestamps and job IDs, plus privacy-safe Adwaz review metadata such as text length, word count, issue count, latency, and optional feedback reports.",
       "We do not collect unnecessary personal data.",
     ],
   },
@@ -27,6 +28,7 @@ const PRIVACY_SECTIONS = [
     items: [
       "Process and transcribe your audio files.",
       "Generate downloadable outputs such as TXT, DOCX, and SRT files.",
+      "Review Haitian Creole writing in Adwaz and return correction suggestions.",
       "Deliver job results and notifications.",
       "Process payments, credit purchases, refunds, and fraud-prevention checks.",
       "Maintain system performance and reliability.",
@@ -46,6 +48,7 @@ const PRIVACY_SECTIONS = [
       "KreyAI does not keep customer files for ongoing operational access after that 7-day period.",
       "If you need access again after 7 days, you must submit a new job.",
       "Temporary processing data is deleted once jobs are completed or expired.",
+      "Adwaz beta review text is not stored by default; privacy-safe telemetry and optional feedback reports may be retained for quality and reliability review.",
       "Logs may be retained longer for operational and security purposes, but do not contain your file content.",
     ],
   },

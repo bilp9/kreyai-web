@@ -1,19 +1,63 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "FAQ",
+  title: "Haitian Creole Transcription FAQ",
   description:
-    "Read common questions about KreyAI transcription accuracy, credits, file privacy, speaker labels, downloads, and supported formats.",
+    "Read common questions about KreyAI transcription, Adwaz Haitian Creole writing assistance, multilingual accuracy, credits, file privacy, and subtitle exports.",
+  keywords: [
+    "Haitian Creole transcription FAQ",
+    "KreyAI FAQ",
+    "transcription privacy",
+    "speaker labels",
+    "subtitle export formats",
+    "mobile audio transcription",
+    "French transcription FAQ",
+    "Haitian Creole transcription FAQ",
+    "Spanish transcription FAQ",
+    "Portuguese transcription FAQ",
+    "transkripsyon kreyol FAQ",
+    "transcription audio francais FAQ",
+    "transcripcion de audio en espanol FAQ",
+    "transcricao de audio em portugues FAQ",
+    "Adwaz FAQ",
+    "Haitian Creole writing assistant FAQ",
+  ],
   alternates: {
     canonical: "/faq",
+  },
+  openGraph: {
+    title: "KreyAI Haitian Creole Transcription FAQ",
+    description:
+      "Answers about Haitian Creole transcription, Adwaz writing assistance, subtitle exports, privacy, credits, speaker labels, and mobile uploads.",
+    url: "/faq",
+    alternateLocale: ["fr_FR", "ht_HT", "es_ES", "pt_PT"],
+  },
+  other: {
+    "content-language": "en, fr, ht, es, pt",
+    "target-languages": "French, Haitian Creole, Spanish, Portuguese",
   },
 };
 
 const FAQS = [
   {
-    question: "What is Kreyai?",
+    question: "What is KreyAI?",
     answer:
-      "Kreyai is a transcription platform designed to produce accurate, structured, and multilingual transcripts from audio files.",
+      "KreyAI builds language tools for Haitian Creole and multilingual work. The main public product is transcription; Adwaz is the private-beta writing assistant for Haitian Creole.",
+  },
+  {
+    question: "What is Adwaz?",
+    answer:
+      "Adwaz is KreyAI's Haitian Creole writing assistant. It reviews text for spelling, accents, grammar patterns, unknown words, and explainable correction suggestions.",
+  },
+  {
+    question: "Is Adwaz included in transcription credits?",
+    answer:
+      "No. During private beta, Adwaz is separate from KreyAI transcription credits. Pricing and account features for Adwaz will be decided after quality testing.",
+  },
+  {
+    question: "Does Adwaz store my writing?",
+    answer:
+      "Adwaz sends text to the Adwaz API for review, but submitted text is not saved by default during private beta. We track privacy-safe metadata and optional feedback reports to improve quality.",
   },
   {
     question: "How does it work?",
@@ -27,7 +71,7 @@ const FAQS = [
   },
   {
     question: "Do I need to create an account?",
-    answer: "No. Kreyai works without accounts.",
+    answer: "No. KreyAI works without accounts.",
     bullets: [
       "Your email is used only to access your files.",
       "Your email is used only to track your usage and credits.",
@@ -35,7 +79,7 @@ const FAQS = [
   },
   {
     question: "How does pricing work?",
-    answer: "Kreyai uses a credit-based system:",
+    answer: "KreyAI uses a credit-based system:",
     bullets: [
       "New emails receive a one-time 30-minute starter allowance.",
       "You can purchase additional minutes as needed.",
@@ -56,7 +100,7 @@ const FAQS = [
   },
   {
     question: "How accurate are the transcriptions?",
-    answer: "Kreyai uses advanced AI to generate transcripts, but accuracy may vary depending on:",
+    answer: "KreyAI uses advanced AI to generate transcripts, but accuracy may vary depending on:",
     bullets: [
       "Audio quality.",
       "Background noise.",
@@ -68,7 +112,12 @@ const FAQS = [
   {
     question: "Do you support multiple languages?",
     answer:
-      "Yes. Kreyai supports multiple languages, and we expand public language availability carefully as quality reaches our bar.",
+      "Yes. KreyAI supports multiple languages, and we expand public language availability carefully as quality reaches our bar.",
+  },
+  {
+    question: "How does KreyAI handle Haitian Creole differently?",
+    answer:
+      "Haitian Creole support is in beta. KreyAI aims to preserve Kreyòl speech and code-switching as a useful draft for review instead of translating or over-cleaning the transcript.",
   },
   {
     question: "Are my files private?",
@@ -85,7 +134,7 @@ const FAQS = [
   },
   {
     question: "What file formats do you support?",
-    answer: "Kreyai supports common audio formats such as:",
+    answer: "KreyAI supports common audio formats such as:",
     bullets: [
       "MP3.",
       "WAV.",
@@ -95,13 +144,18 @@ const FAQS = [
   },
   {
     question: "What formats can I download?",
-    answer: "You can download your transcripts in multiple formats, including:",
+    answer: "You can download transcripts for editing and subtitle files for video production, including:",
     bullets: [
       "TXT.",
       "DOCX.",
       "SRT / VTT.",
       "HTML.",
     ],
+  },
+  {
+    question: "Can I use KreyAI on my mobile device?",
+    answer:
+      "Yes. KreyAI is web-based and responsive, so you can upload audio recorded on your phone directly from the field.",
   },
   {
     question: "What happens if my job fails?",
@@ -118,9 +172,31 @@ const FAQS = [
   },
 ];
 
+function buildAnswerText(item: (typeof FAQS)[number]): string {
+  return [item.answer, item.steps?.join(" "), item.bullets?.join(" "), item.closing].filter(Boolean).join(" ");
+}
+
+const FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: buildAnswerText(item),
+    },
+  })),
+};
+
 export default function FAQPage() {
   return (
     <main className="page-shell text-[#13172b]">
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
+      />
       <section className="page-wrap-narrow">
         <div className="page-header">
           <p className="page-eyebrow">FAQ</p>
@@ -130,11 +206,16 @@ export default function FAQPage() {
 
         <div className="mt-14 grid gap-5">
           {FAQS.map((item) => (
-            <article
+            <details
               key={item.question}
-              className="surface-panel rounded-[28px] p-6"
+              className="surface-panel group rounded-[28px] p-6"
             >
-              <h2 className="text-xl font-semibold tracking-tight">{item.question}</h2>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-xl font-semibold tracking-tight">
+                <span>{item.question}</span>
+                <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[var(--brand-blue-soft)] text-base text-[var(--brand-blue)] group-open:rotate-45">
+                  +
+                </span>
+              </summary>
               {item.answer ? (
                 <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">{item.answer}</p>
               ) : null}
@@ -163,7 +244,7 @@ export default function FAQPage() {
               {item.closing ? (
                 <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">{item.closing}</p>
               ) : null}
-            </article>
+            </details>
           ))}
         </div>
 
