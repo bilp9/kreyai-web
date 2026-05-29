@@ -50,6 +50,14 @@ interface FeedbackDraft {
   context: string;
 }
 
+interface ReviewSuggestion {
+  id: string;
+  issue: CorrectionIssue;
+  issues: CorrectionIssue[];
+  repeatCount: number;
+  isGroupedUnknown: boolean;
+}
+
 const SAMPLE_TEXT = "mwen tap ale lekol ye men profese a pat vini";
 const PERSONAL_DICTIONARY_KEY = "adwaz.personalDictionary.v1";
 const BETA_ACCESS_KEY = "adwaz.betaAccess.v1";
@@ -115,6 +123,15 @@ function replaceIssueInText(text: string, issue: CorrectionIssue) {
     issue.replacement +
     text.slice(fallbackIndex + issue.original.length)
   );
+}
+
+function unknownWordKey(issue: CorrectionIssue) {
+  return issue.category === "unknown_word" ? issue.original.trim().toLocaleLowerCase() : "";
+}
+
+function isSameUnknownWord(issue: CorrectionIssue, target: CorrectionIssue) {
+  const key = unknownWordKey(issue);
+  return Boolean(key) && key === unknownWordKey(target);
 }
 
 function issueTone(issue: CorrectionIssue) {
@@ -221,11 +238,51 @@ export default function AdwazClient() {
     if (issueFilter === "all") return issues;
     return issues.filter((issue) => issue.category === issueFilter);
   }, [issueFilter, issues]);
-  const pageCount = Math.max(1, Math.ceil(filteredIssues.length / ISSUES_PER_PAGE));
+  const reviewSuggestions = useMemo(() => {
+    const grouped = new Map<string, ReviewSuggestion>();
+    const next: ReviewSuggestion[] = [];
+
+    filteredIssues.forEach((issue) => {
+      const key = unknownWordKey(issue);
+
+      if (!key) {
+        next.push({
+          id: issue.id,
+          issue,
+          issues: [issue],
+          repeatCount: 1,
+          isGroupedUnknown: false,
+        });
+        return;
+      }
+
+      const groupId = `unknown:${key}`;
+      const existing = grouped.get(groupId);
+
+      if (existing) {
+        existing.issues.push(issue);
+        existing.repeatCount = existing.issues.length;
+        return;
+      }
+
+      const group = {
+        id: groupId,
+        issue,
+        issues: [issue],
+        repeatCount: 1,
+        isGroupedUnknown: true,
+      };
+      grouped.set(groupId, group);
+      next.push(group);
+    });
+
+    return next;
+  }, [filteredIssues]);
+  const pageCount = Math.max(1, Math.ceil(reviewSuggestions.length / ISSUES_PER_PAGE));
   const currentPage = Math.min(issuePage, pageCount - 1);
-  const pageStart = filteredIssues.length === 0 ? 0 : currentPage * ISSUES_PER_PAGE + 1;
-  const pageEnd = Math.min(filteredIssues.length, (currentPage + 1) * ISSUES_PER_PAGE);
-  const visibleIssues = filteredIssues.slice(
+  const pageStart = reviewSuggestions.length === 0 ? 0 : currentPage * ISSUES_PER_PAGE + 1;
+  const pageEnd = Math.min(reviewSuggestions.length, (currentPage + 1) * ISSUES_PER_PAGE);
+  const visibleSuggestions = reviewSuggestions.slice(
     currentPage * ISSUES_PER_PAGE,
     (currentPage + 1) * ISSUES_PER_PAGE,
   );
@@ -373,7 +430,11 @@ export default function AdwazClient() {
   };
 
   const dismissIssue = (issue: CorrectionIssue) => {
-    setIssues((current) => current.filter((item) => item.id !== issue.id));
+    setIssues((current) =>
+      unknownWordKey(issue)
+        ? current.filter((item) => !isSameUnknownWord(item, issue))
+        : current.filter((item) => item.id !== issue.id),
+    );
     setActiveIssueId(null);
     setFeedbackDraft(null);
   };
@@ -525,7 +586,49 @@ export default function AdwazClient() {
       nextFilter === "all"
         ? issues
         : issues.filter((item) => item.category === nextFilter);
-    const nextIndex = nextIssues.findIndex((item) => item.id === issue.id);
+    const nextReviewSuggestions = (() => {
+      const grouped = new Map<string, ReviewSuggestion>();
+      const next: ReviewSuggestion[] = [];
+
+      nextIssues.forEach((item) => {
+        const key = unknownWordKey(item);
+
+        if (!key) {
+          next.push({
+            id: item.id,
+            issue: item,
+            issues: [item],
+            repeatCount: 1,
+            isGroupedUnknown: false,
+          });
+          return;
+        }
+
+        const groupId = `unknown:${key}`;
+        const existing = grouped.get(groupId);
+
+        if (existing) {
+          existing.issues.push(item);
+          existing.repeatCount = existing.issues.length;
+          return;
+        }
+
+        const group = {
+          id: groupId,
+          issue: item,
+          issues: [item],
+          repeatCount: 1,
+          isGroupedUnknown: true,
+        };
+        grouped.set(groupId, group);
+        next.push(group);
+      });
+
+      return next;
+    })();
+    const nextIndex = nextReviewSuggestions.findIndex((item) =>
+      unknownWordKey(issue) ? item.issues.some((candidate) => isSameUnknownWord(candidate, issue)) : item.id === issue.id,
+    );
 
     if (nextIndex === -1) {
       setActiveIssueId(issue.id);
@@ -631,7 +734,11 @@ export default function AdwazClient() {
           : "Thanks. Added to the beta review queue.",
       );
       if (issue) {
-        setIssues((current) => current.filter((item) => item.id !== issue.id));
+        setIssues((current) =>
+          unknownWordKey(issue)
+            ? current.filter((item) => !isSameUnknownWord(item, issue))
+            : current.filter((item) => item.id !== issue.id),
+        );
         setActiveIssueId(null);
       }
       setFeedbackDraft(null);
@@ -1035,15 +1142,15 @@ export default function AdwazClient() {
 
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                     <p className="text-xs font-medium text-[var(--brand-muted)]">
-                      {filteredIssues.length > 0
-                        ? `Showing ${pageStart}-${pageEnd} of ${filteredIssues.length}`
+                      {reviewSuggestions.length > 0
+                        ? `Showing ${pageStart}-${pageEnd} of ${reviewSuggestions.length} cards`
                         : "No suggestions in this category"}
                     </p>
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => changeIssuePage(currentPage - 1)}
-                        disabled={currentPage === 0 || filteredIssues.length === 0}
+                        disabled={currentPage === 0 || reviewSuggestions.length === 0}
                         className="rounded-lg border border-[var(--brand-border)] bg-white px-3 py-2 text-xs font-semibold text-[#101426] disabled:cursor-not-allowed disabled:opacity-45"
                       >
                         Previous
@@ -1051,7 +1158,7 @@ export default function AdwazClient() {
                       <button
                         type="button"
                         onClick={() => changeIssuePage(currentPage + 1)}
-                        disabled={currentPage >= pageCount - 1 || filteredIssues.length === 0}
+                        disabled={currentPage >= pageCount - 1 || reviewSuggestions.length === 0}
                         className="rounded-lg border border-[var(--brand-border)] bg-white px-3 py-2 text-xs font-semibold text-[#101426] disabled:cursor-not-allowed disabled:opacity-45"
                       >
                         Next
@@ -1093,7 +1200,7 @@ export default function AdwazClient() {
                     Paste or type Haitian Creole text to see orthography, grammar, and style guidance.
                   </p>
                 </div>
-              ) : filteredIssues.length === 0 ? (
+              ) : reviewSuggestions.length === 0 ? (
                 <div className="flex h-full min-h-72 flex-col items-center justify-center px-6 text-center">
                   <p className="text-sm font-semibold text-[#101426]">No suggestions in this category.</p>
                   <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
@@ -1102,16 +1209,23 @@ export default function AdwazClient() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {visibleIssues.map((issue) => (
+                  {visibleSuggestions.map((suggestion) => {
+                    const issue = suggestion.issue;
+                    const isActive = suggestion.issues.some((item) => item.id === activeIssueId);
+
+                    return (
                     <div
-                      key={issue.id}
+                      key={suggestion.id}
                       ref={(element) => {
-                        issueCardRefs.current[issue.id] = element;
+                        issueCardRefs.current[suggestion.id] = element;
+                        suggestion.issues.forEach((item) => {
+                          issueCardRefs.current[item.id] = element;
+                        });
                       }}
                       onMouseEnter={() => previewIssue(issue)}
                       onFocus={() => previewIssue(issue)}
                       className={`rounded-lg border bg-white p-4 shadow-sm outline-none ${
-                        activeIssueId === issue.id
+                        isActive
                           ? "border-[var(--brand-blue)] ring-4 ring-[rgba(40,41,126,0.1)]"
                           : "border-[var(--brand-border)]"
                       }`}
@@ -1137,6 +1251,11 @@ export default function AdwazClient() {
                           {issue.category}
                         </span>
                       </div>
+                      {suggestion.isGroupedUnknown && suggestion.repeatCount > 1 ? (
+                        <p className="mt-3 text-xs font-semibold uppercase tracking-[0.1em] text-amber-700">
+                          Appears {suggestion.repeatCount} times in this text
+                        </p>
+                      ) : null}
 
                       <p className="mt-3 text-sm font-semibold leading-6 text-[#101426]">{issue.message}</p>
                       <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">{issue.explanation}</p>
@@ -1169,7 +1288,7 @@ export default function AdwazClient() {
                           onClick={() => dismissIssue(issue)}
                           className="rounded-lg border border-[var(--brand-border)] bg-white px-3 py-2 text-sm font-semibold text-[#101426]"
                         >
-                          Dismiss
+                          {suggestion.isGroupedUnknown && suggestion.repeatCount > 1 ? "Dismiss all" : "Dismiss"}
                         </button>
                         {issue.category === "unknown_word" ? (
                           <button
@@ -1177,7 +1296,7 @@ export default function AdwazClient() {
                             onClick={() => saveWord(issue)}
                             className="rounded-lg border border-[var(--brand-border)] bg-white px-3 py-2 text-sm font-semibold text-[#101426]"
                           >
-                            Save word
+                            {suggestion.repeatCount > 1 ? "Save word + clear all" : "Save word"}
                           </button>
                         ) : null}
                         <button
@@ -1197,7 +1316,8 @@ export default function AdwazClient() {
                       </div>
                       {feedbackDraft?.issue?.id === issue.id ? renderFeedbackForm(`adwaz-${issue.id}`) : null}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
