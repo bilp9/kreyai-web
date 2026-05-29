@@ -1296,7 +1296,7 @@ export default function AdwazClient() {
                             onClick={() => saveWord(issue)}
                             className="rounded-lg border border-[var(--brand-border)] bg-white px-3 py-2 text-sm font-semibold text-[#101426]"
                           >
-                            {suggestion.repeatCount > 1 ? "Save word + clear all" : "Save word"}
+                            {suggestion.repeatCount > 1 ? "Add to my dictionary + clear all" : "Add to my dictionary"}
                           </button>
                         ) : null}
                         <button
@@ -1311,7 +1311,7 @@ export default function AdwazClient() {
                           }
                           className="rounded-lg border border-[var(--brand-border)] bg-white px-3 py-2 text-sm font-semibold text-[#101426]"
                         >
-                          Report
+                          {issue.category === "unknown_word" ? "Report valid word" : "Report issue"}
                         </button>
                       </div>
                       {feedbackDraft?.issue?.id === issue.id ? renderFeedbackForm(`adwaz-${issue.id}`) : null}
