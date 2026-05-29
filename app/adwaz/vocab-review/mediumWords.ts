@@ -23,32 +23,6 @@ export const MEDIUM_WORD_CANDIDATES: MediumWordCandidate[] = [
     ]
   },
   {
-    "word": "youri",
-    "count": 41,
-    "confidence": "medium",
-    "confidenceScore": 0.68,
-    "source": "repeated_creole_shape_unapproved",
-    "preferredVariant": "",
-    "contexts": [
-      "Medicine on Air Bonjou, bonjou tout moun. Non pa m se Youri Encelotti Louis. Jodi a, mwen kontan avèk nou avèk yo",
-      "nne Camp-Perrin. Se yon plezi pou m avèk nou jodi a. Youri:Bon bagay. Bon bagay. Mèsi Hergie. Mwen panse m ap a",
-      "ki travay ou ap fè nan sistèm sante a? Gerson: Mèsi Youri. M ap di mèsi a tout kòlèg ki avèk nou jodi a e mwen"
-    ]
-  },
-  {
-    "word": "gerson",
-    "count": 28,
-    "confidence": "medium",
-    "confidenceScore": 0.68,
-    "source": "repeated_creole_shape_unapproved",
-    "preferredVariant": "",
-    "contexts": [
-      "è m yon bèl ekip. Mwen gen Chevalier Hergie, mwen gen Gerson Moras. Nou gen Johane Josema e nou gen Maximien Woodl",
-      "on bagay. Mèsi Hergie. Mwen panse m ap ancehene avèk Gerson. Gerson, èske ou ka di nou kiyès ou ye epi ki travay",
-      ". Mèsi Hergie. Mwen panse m ap ancehene avèk Gerson. Gerson, èske ou ka di nou kiyès ou ye epi ki travay ou ap fè"
-    ]
-  },
-  {
     "word": "etsetera",
     "count": 12,
     "confidence": "medium",
@@ -257,19 +231,6 @@ export const MEDIUM_WORD_CANDIDATES: MediumWordCandidate[] = [
     ]
   },
   {
-    "word": "usaid",
-    "count": 6,
-    "confidence": "medium",
-    "confidenceScore": 0.68,
-    "source": "repeated_creole_shape_unapproved",
-    "preferredVariant": "",
-    "contexts": [
-      "npil èd, sitou sou koze finansman nan pwogram VIH yo, USAID avèk PEPFAR, yo koupe yon pil fon sou yon seri de pwo",
-      "ki soti nan peyi Etazini atravè diferan òganizasyon: USAID, PEPFAR e pwogram gouvènman ameriken etsetera. Mete k",
-      "a a. Paske aprè analiz ak aprè enfòmasyon mwen jwenn, USAID se li menm ki te patenè majorite òganizasyon entènasy"
-    ]
-  },
-  {
     "word": "disponiblite",
     "count": 5,
     "confidence": "medium",
@@ -332,19 +293,6 @@ export const MEDIUM_WORD_CANDIDATES: MediumWordCandidate[] = [
       "nm tou.Yon sèl chanm kay ki gen sèt moun, e medikaman otomatikman yo pa vle moun konnen. Medikaman se yon sekrè. Nou ko",
       "oti nan yon sitiyasyon konsa pou l ap pran medikaman, otomatikman li vini yon pwoblèm pou li, li pa gen kote pou l kach",
       "nm ki pwofesyonèl sante k ap viv nan sitiyasyon sa a. Otomatikman lè yo fè sa, yon moun ki te deja konnen ke li gen pou"
-    ]
-  },
-  {
-    "word": "psikològ",
-    "count": 5,
-    "confidence": "medium",
-    "confidenceScore": 0.72,
-    "source": "accented_repeated_unapproved",
-    "preferredVariant": "",
-    "contexts": [
-      "ral gen pou l jwenn nou, se Maximen Woodley ki se yon psikològ k ap travay nan Nos Petits Freres Et Soeurs Haiti. M",
-      "nse jis anvan nou reponn, nou genyen Maxime Houdelet, psikològ, ki rejwenn nou. Avèk nou? E èske ou ka jis di nou e",
-      "k nou. Non pa m se Maxime Houdelet [unsure] e mwen se psikològ. E sa ki enpòtan, nan sa ki enpòtan an Ayiti, nou kon"
     ]
   },
   {
@@ -803,19 +751,6 @@ export const MEDIUM_WORD_CANDIDATES: MediumWordCandidate[] = [
     ]
   },
   {
-    "word": "josema",
-    "count": 3,
-    "confidence": "medium",
-    "confidenceScore": 0.68,
-    "source": "repeated_creole_shape_unapproved",
-    "preferredVariant": "",
-    "contexts": [
-      "evalier Hergie, mwen gen Gerson Moras. Nou gen Johane Josema e nou gen Maximien Woodley ki ap gen pou l jwenn nou",
-      "ut moun. Mwen kontan la avèk nou. Non pa m se Johanne Josema. Mwen se yon doktè. Mwen ap travay kòm responsab fòma",
-      "e gen avèk nou Maxime Houdelet ki se psikològ, Johane Josema ki se medsen, Hergie ki se medsen e Gerson ki se kòdo"
-    ]
-  },
-  {
     "word": "leka",
     "count": 3,
     "confidence": "medium",
@@ -826,19 +761,6 @@ export const MEDIUM_WORD_CANDIDATES: MediumWordCandidate[] = [
       "prive a, si m byen konprann? Hergie: Egzatman, se pa leka nan Leta. Si nou ale nan yon lòt pwen, kòm si nan kad",
       "e tèt nou, e ke nou ka espere yon lavi miyò. Si se pa leka, nou gen yon bon tan toujou n ap viv nan fason sa a,",
       "t nou e ke nou ka espere yon lavi ki pi bon. Si se pa leka, si nou gen yon bon tan toujou n ap viv nan fason sa"
-    ]
-  },
-  {
-    "word": "malnitrisyon",
-    "count": 3,
-    "confidence": "medium",
-    "confidenceScore": 0.68,
-    "source": "repeated_creole_shape_unapproved",
-    "preferredVariant": "",
-    "contexts": [
-      "nan Nò peyi a kòm doktè, patikilyèman nan kad pwogram malnitrisyon pou ti moun piti. Donk, yon fwa ankò, mwen kontan la",
-      "m t ap di l nan kòmansman an, mwen travay nan pwogram malnitrisyon pou ti moun ak fanm ansent tou. Donk, nou plis ou moi",
-      "li pa t ka kenbe kò l. Yo te panse se te yon pwoblèm malnitrisyon. Yo rakonte nou ke se yon lè li t ap sot lekòl, li te"
     ]
   },
   {
@@ -878,19 +800,6 @@ export const MEDIUM_WORD_CANDIDATES: MediumWordCandidate[] = [
       "t al nan prive, sòf ke nan prive li pral peye chanm, parkont nan Leta li pa peye chanm. Men sèvis yo ka vini menm",
       "un ki ka peye ki al la, e ke lajan antre pou prive a, parkont piblik la se avèk yon ti kras bidjè ke Leta mete pou",
       "wòl politik etranjè a genyen sou sistèm sante nou an. Parkont, èske gen moun ki vle ale avan, mwen menm mwen lanse"
-    ]
-  },
-  {
-    "word": "pepfar",
-    "count": 3,
-    "confidence": "medium",
-    "confidenceScore": 0.68,
-    "source": "repeated_creole_shape_unapproved",
-    "preferredVariant": "",
-    "contexts": [
-      "tou sou koze finansman nan pwogram VIH yo, USAID avèk PEPFAR, yo koupe yon pil fon sou yon seri de pwogram an Ayit",
-      "i nan peyi Etazini atravè diferan òganizasyon: USAID, PEPFAR e pwogram gouvènman ameriken etsetera. Mete kounye a",
-      "i nan peyi Etazini atravè diferan òganizasyon: USAID, PEPFAR e pwogram gouvènman ameriken etsetera. Mete kounye a"
     ]
   },
   {
@@ -995,19 +904,6 @@ export const MEDIUM_WORD_CANDIDATES: MediumWordCandidate[] = [
       "moun yo tou, li bwè yon ti dlo. Donk genyen reyalite vilnerabilite tout yon fanmi, se tout yon kominote ki grangou, se t",
       "gram sa yo e ki mete sistèm nan nan yon sitiyasyon de vilnerabilite, tououni a jenou nèt. Donk, sa se yon sitiyasyon ki v",
       "gram sa yo e ki mete sistèm nan nan yon sitiyasyon de vilnerabilite, tououni a jenou nèt. Donk, sa se yon sitiyasyon ki v"
-    ]
-  },
-  {
-    "word": "woodley",
-    "count": 3,
-    "confidence": "medium",
-    "confidenceScore": 0.68,
-    "source": "repeated_creole_shape_unapproved",
-    "preferredVariant": "",
-    "contexts": [
-      "erson Moras. Nou gen Johane Josema e nou gen Maximien Woodley ki ap gen pou l jwenn nou yon ti kras pi ta pou vin m",
-      "òm dènye moun ki pral gen pou l jwenn nou, se Maximen Woodley ki se yon psikològ k ap travay nan Nos Petits Freres",
-      "yo ap bay yo ye tou senpleman. Youri: Yeah. Mwen wè Woodley vle ajoute. Wi, pou m fè swiv ak menm sa Johane ansa"
     ]
   },
   {
