@@ -911,14 +911,14 @@ export default function AdwazClient() {
                 aria-hidden="true"
               />
               <div>
-                <p className="page-eyebrow">Private beta</p>
+                <p className="page-eyebrow">Adwaz access</p>
                 <h1 className="mt-2 text-4xl font-semibold tracking-normal text-[#101426]">
                   Adwaz
                 </h1>
               </div>
             </div>
             <p className="mt-4 text-base leading-7 text-[var(--brand-muted)]">
-              Write Haitian Creole with confidence. Adwaz is currently open to invited beta testers.
+              Write Haitian Creole with confidence. Enter your access code to open the Adwaz writing review workspace.
             </p>
 
             <form
@@ -929,25 +929,26 @@ export default function AdwazClient() {
               }}
             >
               <label className="sr-only" htmlFor="adwaz-beta-code">
-                Beta access code
+                Adwaz access code
               </label>
               <input
                 id="adwaz-beta-code"
                 value={betaCode}
                 onChange={(event) => setBetaCode(event.target.value)}
                 className="brand-input min-h-12 flex-1 rounded-lg px-4 py-3 text-base"
-                placeholder="Enter beta access code"
+                placeholder="Enter access code"
                 autoComplete="off"
               />
               <button type="submit" className="rounded-lg brand-button px-5 py-3 text-sm font-semibold">
-                Enter beta
+                Open Adwaz
               </button>
             </form>
             {betaAccessError ? (
               <p className="mt-3 text-sm font-medium text-rose-700">{betaAccessError}</p>
             ) : null}
             <p className="mt-4 text-sm leading-6 text-[var(--brand-muted)]">
-              Please avoid testing with sensitive legal, medical, financial, or personal documents during the private beta.
+              Avoid submitting sensitive legal, medical, financial, or personal documents unless your workflow has been
+              approved for that use.
             </p>
           </div>
         </div>
@@ -978,7 +979,8 @@ export default function AdwazClient() {
               Write Haitian Creole with confidence. Asistan entèlijan pou ekri pi byen an kreyòl.
             </p>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--brand-muted)]">
-              Private beta: text is sent to the Adwaz API for review and is not saved by default. Feedback reports may include the correction, your note, and a short excerpt you choose.
+              Text is sent to the Adwaz API for review and is not saved by default. Feedback reports may include the
+              correction, your note, and a short excerpt you choose.
             </p>
           </div>
 

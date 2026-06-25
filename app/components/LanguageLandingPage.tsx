@@ -80,7 +80,7 @@ export default function LanguageLandingPage({
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--brand-muted)]">{content.lede}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/" className="brand-button inline-flex justify-center rounded-2xl px-6 py-3.5 text-sm font-semibold">
+            <Link href="/transcription" className="brand-button inline-flex justify-center rounded-2xl px-6 py-3.5 text-sm font-semibold">
               Start transcription
             </Link>
             <Link

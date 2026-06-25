@@ -9,11 +9,11 @@ import Analytics from "./analytics";
 export const metadata: Metadata = {
   metadataBase: new URL("https://kreyai.com"),
   title: {
-    default: "KreyAI | Haitian Creole & Multilingual Audio Transcription",
+    default: "KreyAI | Practical Language Tools",
     template: "%s | KreyAI",
   },
   description:
-    "KreyAI builds Haitian Creole and multilingual language tools, including transcription workflows and Adwaz writing assistance.",
+    "KreyAI builds practical software for transcription, translation, media review, writing support, and multilingual workflows.",
   keywords: [
     "haitian creole transcription",
     "haitian creole writing assistant",
@@ -47,6 +47,12 @@ export const metadata: Metadata = {
     "legal transcription",
     "research transcription",
     "meeting transcription",
+    "translation software",
+    "CAT tool",
+    "media review software",
+    "subtitle review software",
+    "KreyAI Dekk",
+    "aTelier CAT tool",
   ],
   alternates: {
     canonical: "/",
@@ -55,9 +61,9 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://kreyai.com",
     siteName: "KreyAI",
-    title: "KreyAI | Haitian Creole & Multilingual Audio Transcription",
+    title: "KreyAI | Practical Language Tools",
     description:
-      "Language tools for Haitian Creole and multilingual work, including transcription, subtitle exports, speaker labels, and Adwaz writing assistance.",
+      "Practical software for transcription, translation, media review, writing support, and multilingual workflows.",
     locale: "en_US",
     alternateLocale: ["fr_FR", "ht_HT", "es_ES", "pt_PT"],
     images: [
@@ -71,9 +77,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "KreyAI | Haitian Creole & Multilingual Audio Transcription",
+    title: "KreyAI | Practical Language Tools",
     description:
-      "Haitian Creole and multilingual language tools from KreyAI, including transcription and Adwaz writing assistance.",
+      "Software for transcription, translation, media review, writing support, and multilingual workflows.",
     images: ["/og-kreyai.jpg"],
   },
   robots: {
@@ -108,7 +114,7 @@ const SOFTWARE_SCHEMA = {
   operatingSystem: "Web",
   url: "https://kreyai.com",
   description:
-    "Web-based language software for Haitian Creole and multilingual workflows, including transcription, subtitles, speaker-labeled transcripts, and Adwaz writing assistance.",
+    "Language workflow software for transcription, translation, writing support, media review, and multilingual work.",
   inLanguage: ["en", "fr", "ht", "es", "pt"],
   availableLanguage: [
     {
@@ -152,6 +158,9 @@ const SOFTWARE_SCHEMA = {
     "7-day file availability",
     "No-training privacy policy",
     "Adwaz Haitian Creole writing assistant",
+    "KreyAI Dekk local media review",
+    "aTelier translation workbench",
+    "Translation memory and terminology management",
   ],
 };
 
@@ -178,17 +187,23 @@ export default function RootLayout({
                 <Image src="/icon.svg" alt="KreyAI logo" width={52} height={52} className="logo-icon" priority />
                 <div className="logo-text">
                   <h1>KreyAI</h1>
-                  <p>Beyond transcription.</p>
+                  <p>Language workflow software.</p>
                 </div>
               </div>
             </Link>
 
             <nav className="hidden items-center gap-8 text-sm font-medium text-[var(--brand-muted)] md:flex">
+              <Link href="/products" className="transition hover:text-[#13172b]">
+                Products
+              </Link>
               <Link href="/about" className="transition hover:text-[#13172b]">
                 About
               </Link>
               <Link href="/pricing" className="transition hover:text-[#13172b]">
                 Pricing
+              </Link>
+              <Link href="/dekk" className="transition hover:text-[#13172b]">
+                Dekk
               </Link>
               <Link href="/adwaz" className="transition hover:text-[#13172b]">
                 Adwaz
@@ -206,16 +221,25 @@ export default function RootLayout({
                 Terms
               </Link>
               <Link
-                href="/"
+                href="/transcription"
                 className="rounded-full brand-button px-4 py-2 transition"
               >
-                Start
+                Start transcription
               </Link>
             </nav>
 
             <nav className="flex w-full flex-wrap gap-4 border-t border-[var(--brand-border)] pt-3 text-sm font-medium text-[var(--brand-muted)] md:hidden">
+              <Link href="/products" className="transition hover:text-[#13172b]">
+                Products
+              </Link>
               <Link href="/about" className="transition hover:text-[#13172b]">
                 About
+              </Link>
+              <Link href="/transcription" className="transition hover:text-[#13172b]">
+                Transcription
+              </Link>
+              <Link href="/dekk" className="transition hover:text-[#13172b]">
+                Dekk
               </Link>
               <Link href="/billing" className="transition hover:text-[#13172b]">
                 Billing
@@ -244,6 +268,9 @@ export default function RootLayout({
           <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6 text-sm text-[var(--brand-muted)] md:flex-row md:items-center md:justify-between">
             <p>© 2026 KreyAI Technologies LLC. All rights reserved.</p>
             <nav className="flex flex-wrap items-center gap-5">
+              <Link href="/products" className="transition hover:text-[#13172b]">
+                Products
+              </Link>
               <Link href="/about" className="transition hover:text-[#13172b]">
                 About
               </Link>

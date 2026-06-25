@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Read the KreyAI terms covering transcription, Adwaz writing assistance, credits, payments, refunds, retention, and service limitations.",
+    "Read the KreyAI terms covering transcription, Adwaz writing assistance, KreyAI Dekk desktop software, credits, payments, refunds, retention, and service limitations.",
   alternates: {
     canonical: "/terms",
   },
@@ -14,6 +14,7 @@ const TERMS_SECTIONS = [
     title: "1. Overview",
     items: [
       "KreyAI provides transcription and language-processing services, including audio transcription and Adwaz writing assistance.",
+      "KreyAI may also provide desktop software such as KreyAI Dekk for local media playback and transcript review workflows.",
       "By accessing or using KreyAI, you agree to comply with these Terms of Service.",
     ],
   },
@@ -93,17 +94,31 @@ const TERMS_SECTIONS = [
     items: [
       "KreyAI uses a prepaid credit model for public access to paid transcription services.",
       "Credits are purchased in advance, deducted based on submitted audio duration, and do not expire unless stated otherwise at purchase.",
-      "Haitian Creole beta jobs are charged at the same standard credit rate as other supported languages.",
+      "Haitian Creole jobs are charged at the same standard credit rate as other supported languages.",
       "Used credits are generally non-refundable once processing has occurred.",
       "Unused credits may be eligible for refunds or account credit at KreyAI's discretion.",
       "If a job fails because of a verified service issue, including missing sections or repetition loops, KreyAI may restore credits, retry processing, or issue a refund or account credit.",
-      "Haitian Creole beta transcripts are drafts for review, so ordinary transcription imperfections are not automatic refunds.",
-      "Adwaz private beta is separate from transcription credits unless otherwise stated.",
+      "Haitian Creole transcripts are drafts for review, so ordinary transcription imperfections are not automatic refunds.",
+      "Adwaz is separate from transcription credits unless otherwise stated.",
+      "KreyAI Dekk desktop software is separate from transcription credits unless otherwise stated.",
+      "KreyAI Dekk desktop licenses may be offered as Personal, Business, or Team licenses. A Team license may be handled manually by quote or invoice.",
+      "Unless otherwise stated at purchase, a KreyAI Dekk one-time license includes the current major version and minor updates for that version.",
       "Prices may change from time to time, but pricing changes apply only to future purchases.",
     ],
   },
   {
-    title: "10. Payment Processing",
+    title: "10. KreyAI Dekk Desktop Software",
+    items: [
+      "KreyAI Dekk is licensed, not sold.",
+      "You may use KreyAI Dekk only for lawful media review workflows and only with files you have the right to access and use.",
+      "The desktop app is designed for local playback and does not upload audio or video files to KreyAI.",
+      "Global hotkeys and pedal workflows may require operating system permissions such as macOS Accessibility permission.",
+      "KreyAI Dekk is provided as is, without a guarantee that it will be error-free, uninterrupted, or suitable for every workflow.",
+      "Additional desktop license terms may be included with the app package as an End-User License Agreement.",
+    ],
+  },
+  {
+    title: "11. Payment Processing",
     items: [
       "Payments are processed by third-party payment providers such as Stripe.",
       "By completing a purchase, you authorize KreyAI and its payment processors to charge the selected amount, applicable taxes, and related fees.",
@@ -111,7 +126,7 @@ const TERMS_SECTIONS = [
     ],
   },
   {
-    title: "11. Termination",
+    title: "12. Termination",
     intro: "We reserve the right to:",
     items: [
       "Suspend or terminate access to the service at any time.",
@@ -119,20 +134,20 @@ const TERMS_SECTIONS = [
     ],
   },
   {
-    title: "12. Changes to the Terms",
+    title: "13. Changes to the Terms",
     items: [
       "We may update these Terms of Service from time to time.",
       "Continued use of the service after updates constitutes acceptance of the revised terms.",
     ],
   },
   {
-    title: "13. Governing Law",
+    title: "14. Governing Law",
     items: [
       "These Terms are governed by the laws of the State of Arizona, without regard to conflict of law principles.",
     ],
   },
   {
-    title: "14. Contact",
+    title: "15. Contact",
     items: [
       "For questions regarding these Terms, email support@kreyai.com.",
     ],
@@ -150,7 +165,7 @@ export default function TermsPage() {
             Welcome to KreyAI. By using our services, you agree to these terms. If you do not agree, please do not use
             the service.
           </p>
-          <p className="page-meta">Effective Date: March 26, 2026</p>
+          <p className="page-meta">Effective Date: June 19, 2026</p>
         </div>
 
         <div className="mt-14 grid gap-5">

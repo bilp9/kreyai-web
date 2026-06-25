@@ -7,6 +7,9 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: [
           "/",
+          "/products",
+          "/dekk",
+          "/transcription",
           "/about",
           "/haitian-creole-transcription",
           "/french-transcription",

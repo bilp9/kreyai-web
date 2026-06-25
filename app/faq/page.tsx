@@ -42,7 +42,7 @@ const FAQS = [
   {
     question: "What is KreyAI?",
     answer:
-      "KreyAI builds language tools for Haitian Creole and multilingual work. The main public product is transcription; Adwaz is the private-beta writing assistant for Haitian Creole.",
+      "KreyAI builds language tools for Haitian Creole and multilingual work, including transcription, Adwaz writing review, and Dekk local media review.",
   },
   {
     question: "What is Adwaz?",
@@ -52,12 +52,12 @@ const FAQS = [
   {
     question: "Is Adwaz included in transcription credits?",
     answer:
-      "No. During private beta, Adwaz is separate from KreyAI transcription credits. Pricing and account features for Adwaz will be decided after quality testing.",
+      "No. Adwaz is separate from KreyAI transcription credits because it serves a different writing-review workflow.",
   },
   {
     question: "Does Adwaz store my writing?",
     answer:
-      "Adwaz sends text to the Adwaz API for review, but submitted text is not saved by default during private beta. We track privacy-safe metadata and optional feedback reports to improve quality.",
+      "Adwaz sends text to the Adwaz API for review, but submitted text is not saved by default. We track privacy-safe metadata and optional feedback reports to improve quality.",
   },
   {
     question: "How does it work?",
@@ -117,7 +117,7 @@ const FAQS = [
   {
     question: "How does KreyAI handle Haitian Creole differently?",
     answer:
-      "Haitian Creole support is in beta. KreyAI aims to preserve Kreyòl speech and code-switching as a useful draft for review instead of translating or over-cleaning the transcript.",
+      "KreyAI aims to preserve Kreyòl speech and code-switching as a useful draft for review instead of translating or over-cleaning the transcript.",
   },
   {
     question: "Are my files private?",

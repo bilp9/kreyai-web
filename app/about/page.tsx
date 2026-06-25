@@ -1,59 +1,57 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About KreyAI Language Tools",
+  title: "About KreyAI",
   description:
-    "Learn how KreyAI supports Haitian Creole, multilingual transcription, Adwaz writing assistance, private workflows, and useful language outputs.",
-  keywords: [
-    "about KreyAI",
-    "Haitian Creole transcription company",
-    "underrepresented language transcription",
-    "multilingual speech to text",
-    "French speech to text",
-    "Haitian Creole speech to text",
-    "Spanish speech to text",
-    "Portuguese speech to text",
-    "transcription audio francais",
-    "transkripsyon kreyol",
-    "transcripcion de audio en espanol",
-    "transcricao de audio em portugues",
-    "private AI transcription",
-    "Adwaz Haitian Creole writing assistant",
-    "Haitian Creole writing tool",
-  ],
+    "KreyAI builds practical software for language professionals across transcription, translation, writing review, media playback, and multilingual workflows.",
   alternates: {
     canonical: "/about",
   },
   openGraph: {
-    title: "About KreyAI Haitian Creole Language Tools",
+    title: "About KreyAI",
     description:
-      "KreyAI builds private language-aware tools for Haitian Creole, including transcription and Adwaz writing assistance.",
+      "KreyAI builds practical software for translators, transcriptionists, reviewers, writers, researchers, educators, and multilingual teams.",
     url: "/about",
-    alternateLocale: ["fr_FR", "ht_HT", "es_ES", "pt_PT"],
-  },
-  other: {
-    "content-language": "en, fr, ht, es, pt",
-    "target-languages": "French, Haitian Creole, Spanish, Portuguese",
   },
 };
 
 const PRODUCT_POINTS = [
-  "KreyAI transcription for audio, subtitles, speaker labels, and transcript exports",
-  "Adwaz private beta for Haitian Creole writing review, spelling, grammar, and orthography",
-  "A shared privacy posture: process the work, avoid unnecessary retention, and never use customer content for model training",
+  {
+    name: "aTelier",
+    description:
+      "A translation workbench for modern linguists, with translation memory, terminology, side-by-side editing, QA checks, and AI-assisted suggestions.",
+  },
+  {
+    name: "Dekk",
+    description:
+      "Local media playback and review software built for transcription, subtitling, timecode review, and linguistic media workflows.",
+  },
+  {
+    name: "Adwaz",
+    description:
+      "A Haitian Creole writing assistant for grammar, spelling, style suggestions, consistency checks, and dictionary-supported review.",
+  },
+  {
+    name: "KreyAI Transcription",
+    description:
+      "AI transcription and speech-to-text for audio and video files, with speaker labels, subtitles, and export-ready text.",
+  },
 ];
 
 const APPROACH_POINTS = [
-  "clear paragraph structure",
-  "optional speaker labeling",
-  "support for multilingual and mixed-language audio",
-  "export formats suited for subtitles and production workflows",
+  "Focused tools instead of bloated platforms",
+  "Professional language technology that is more accessible and affordable",
+  "Support for multilingual and mixed-language workflows",
+  "Human judgment stays in control of the final result",
+  "Local-first workflows whenever files do not need to leave the device",
 ];
 
-const PRIVACY_POINTS = [
-  "Files are stored in active storage for up to 7 days to allow re-download, then scheduled for automatic deletion.",
-  "Audio and transcripts are never used to train AI models.",
-  "The email-based workflow avoids traditional account creation and reduces unnecessary personal data collection.",
+const AUDIENCES = [
+  "Translators and localization teams",
+  "Interpreters and transcriptionists",
+  "Researchers, journalists, and educators",
+  "Writers, reviewers, and multilingual organizations",
 ];
 
 export default function AboutPage() {
@@ -61,46 +59,65 @@ export default function AboutPage() {
     <main className="page-shell text-[#13172b]">
       <section className="page-wrap-narrow">
         <div className="page-header">
-          <p className="page-eyebrow">About</p>
-          <h1 className="page-title">Language tools for every voice.</h1>
+          <p className="page-eyebrow">About KreyAI</p>
+          <h1 className="page-title">Practical software for language professionals.</h1>
           <p className="page-lede">
-            KreyAI was founded to bridge the gap in language technology for Haitian Creole, underrepresented
-            languages, and real-world multilingual communication.
+            KreyAI supports transcription, translation, writing review, media playback, and multilingual workflows.
           </p>
         </div>
 
         <div className="mt-14 grid gap-5">
           <section className="surface-panel rounded-[28px] p-7">
-            <h2 className="text-2xl font-semibold tracking-tight">About KreyAI</h2>
+            <h2 className="text-2xl font-semibold tracking-tight">What KreyAI Builds</h2>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              KreyAI is a language technology company building practical tools for Haitian Creole and multilingual
-              work. The first product is transcription for audio, subtitles, and speaker-labeled transcripts. Adwaz is
-              the private-beta writing assistant for Haitian Creole.
+              KreyAI builds practical software for people who work with language every day. We started with
+              transcription, but the mission is broader: make professional language technology more useful, more
+              accessible, and more affordable.
             </p>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              Most services struggle when language moves outside a narrow mainstream pattern. We build KreyAI products
-              to preserve meaning, structure, and cultural context for journalists, legal professionals, researchers,
-              educators, creators, interpreters, translators, and community organizations.
+              Whether you are a translator, interpreter, transcriptionist, researcher, journalist, educator, or
+              localization team, KreyAI aims to provide tools that fit the way language work actually happens.
             </p>
           </section>
 
           <section className="surface-panel rounded-[28px] p-7">
-            <h2 className="text-2xl font-semibold tracking-tight">Product Family</h2>
-            <ul className="mt-5 space-y-3 text-sm leading-7 text-[var(--brand-muted)]">
-              {PRODUCT_POINTS.map((item) => (
-                <li key={item} className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--brand-blue)]" />
-                  <span>{item}</span>
-                </li>
+            <h2 className="text-2xl font-semibold tracking-tight">Who We Build For</h2>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {AUDIENCES.map((item) => (
+                <p key={item} className="surface-muted rounded-2xl px-5 py-4 text-sm text-[var(--brand-muted)]">
+                  {item}
+                </p>
               ))}
-            </ul>
+            </div>
+          </section>
+
+          <section className="surface-panel rounded-[28px] p-7">
+            <h2 className="text-2xl font-semibold tracking-tight">Our Products</h2>
+            <div className="mt-5 grid gap-4">
+              {PRODUCT_POINTS.map((item) => (
+                <article key={item.name} className="surface-muted rounded-[22px] p-5">
+                  <h3 className="text-lg font-semibold tracking-tight text-[#13172b]">{item.name}</h3>
+                  <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">{item.description}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="surface-panel rounded-[28px] p-7">
+            <h2 className="text-2xl font-semibold tracking-tight">Why KreyAI Exists</h2>
+            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
+              Language work often crosses tools and formats. A project may begin as audio, become a transcript, move
+              into translation, require media review, and finish as polished writing. Many existing tools are either
+              too generic, too expensive, or too disconnected from the actual workflow.
+            </p>
+            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
+              KreyAI was created to build software that stays closer to the work: clear interfaces, practical outputs,
+              multilingual awareness, and workflows where people remain in control.
+            </p>
           </section>
 
           <section className="surface-panel rounded-[28px] p-7">
             <h2 className="text-2xl font-semibold tracking-tight">Our Approach</h2>
-            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              KreyAI focuses on producing language output that is not only accurate, but usable.
-            </p>
             <ul className="mt-5 space-y-3 text-sm leading-7 text-[var(--brand-muted)]">
               {APPROACH_POINTS.map((item) => (
                 <li key={item} className="flex gap-3">
@@ -109,49 +126,17 @@ export default function AboutPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-5 text-sm leading-7 text-[var(--brand-muted)]">
-              The goal is simple: output that feels considered, not raw.
-            </p>
           </section>
 
           <section className="surface-panel rounded-[28px] p-7">
             <h2 className="text-2xl font-semibold tracking-tight">Privacy by Design</h2>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              Your data is a guest, not a product. We take a minimal and respectful approach to user data because
-              sensitive audio deserves careful handling by default.
-            </p>
-            <ul className="mt-5 space-y-3 text-sm leading-7 text-[var(--brand-muted)]">
-              {PRIVACY_POINTS.map((item) => (
-                <li key={item} className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--brand-blue)]" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-5 text-sm leading-7 text-[var(--brand-muted)]">
-              KreyAI is built to process your data, not retain it.
-            </p>
-          </section>
-
-          <section className="surface-panel rounded-[28px] p-7">
-            <h2 className="text-2xl font-semibold tracking-tight">Why KreyAI Exists</h2>
-            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              Language is nuanced. Transcription tools often overlook that nuance, especially when multiple languages are involved.
+              Sensitive audio, transcripts, translation projects, and language review data deserve careful handling by
+              default. KreyAI products are designed to process your work, not turn it into a product.
             </p>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              KreyAI is an attempt to move closer to how language is actually used, with a focus on clarity,
-              structure, and real-world application.
-            </p>
-          </section>
-
-          <section className="surface-panel rounded-[28px] p-7">
-            <h2 className="text-2xl font-semibold tracking-tight">Built With Intention</h2>
-            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              KreyAI is developed with input from real-world language experience across translation,
-              interpretation, and multilingual communication.
-            </p>
-            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              It is still evolving, and feedback plays an important role in shaping what comes next.
+              We keep data collection minimal, avoid using customer audio or transcript data to train AI models, and
+              prefer local workflows when files do not need to leave the device.
             </p>
           </section>
         </div>
@@ -159,12 +144,19 @@ export default function AboutPage() {
         <div className="surface-panel mt-12 rounded-[30px] p-7">
           <h2 className="text-2xl font-semibold tracking-tight">Get in touch</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--brand-muted)]">
-            If you have feedback or questions, feel free to reach out at{" "}
-            <a className="font-medium text-[#13172b] underline decoration-[var(--brand-border)] underline-offset-4" href="mailto:hello@kreyai.com">
-              hello@kreyai.com
-            </a>
-            .
+            Questions, feedback, or product ideas? We&apos;d love to hear from you.
           </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link href="/products" className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+              View products
+            </Link>
+            <a
+              className="inline-flex rounded-2xl border border-[#d6dbea] bg-white px-5 py-3 text-sm font-semibold text-[#101426] hover:border-[#bfc7de]"
+              href="mailto:hello@kreyai.com"
+            >
+              Contact KreyAI
+            </a>
+          </div>
         </div>
       </section>
     </main>

@@ -155,9 +155,11 @@ type OpsHTReviewResponse = {
   language?: string;
   status?: string;
   raw_text?: string | null;
+  clean_text?: string | null;
   corrected_text?: string | null;
   approved_text?: string | null;
   default_prompt: string;
+  llm_review_enabled?: boolean;
   ht_review_status?: string | null;
   ht_review_error?: string | null;
   ht_review_requested_at?: string | null;
@@ -383,7 +385,7 @@ function buildReviewRows(reviewData?: OpsHTReviewResponse): HTReviewRow[] {
     );
   }
 
-  return buildPairedReviewRows(reviewData.raw_text, reviewData.corrected_text, "block");
+  return buildPairedReviewRows(reviewData.raw_text, reviewData.corrected_text || reviewData.clean_text, "block");
 }
 
 function getRetentionTone(status?: string) {
@@ -892,7 +894,7 @@ export default async function OpsPage({
       redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_error=${encodeURIComponent(detail)}`);
     }
 
-    redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_notice=${encodeURIComponent("HT review started. Refresh this page shortly to load the cleaned draft.")}`);
+    redirect(`/ops?tab=review&review_job_id=${encodeURIComponent(jobId)}&review_notice=${encodeURIComponent("Optional HT review started. Refresh this page shortly to load the reviewed draft.")}`);
   }
 
   async function approveHTReview(formData: FormData) {
@@ -1082,7 +1084,7 @@ export default async function OpsPage({
               <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Tab</p>
               <h2 className="mt-2 text-lg font-semibold text-[#101426]">HT Review</h2>
               <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
-                Compare raw transcript output with an OpenAI-corrected Haitian Creole version and save an approved final.
+                Compare raw transcript output with deterministic clean Haitian Creole output and save an approved final.
               </p>
             </a>
           </div>
@@ -1421,8 +1423,8 @@ export default async function OpsPage({
           <section className="space-y-6">
             <SectionShell
               eyebrow="HT Review"
-              title="LLM-assisted Haitian Creole cleanup"
-              description="Run an OpenAI cleanup pass for a Haitian Creole job, compare raw and corrected text side by side, then save your approved version."
+              title="Deterministic Haitian Creole cleanup"
+              description="Review raw and clean transcript artifacts generated without LLM cleanup, then save an approved version when needed."
             >
               <form action={runHTReview} className="grid gap-4">
                 <div className="grid gap-4 md:grid-cols-2">
@@ -1440,27 +1442,31 @@ export default async function OpsPage({
                     <input
                       name="model"
                       defaultValue={reviewData?.review_meta?.model || "gpt-4o-mini"}
+                      disabled={!reviewData?.llm_review_enabled}
                       className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
                     />
                   </label>
                 </div>
 
-                <label className="space-y-2 text-sm">
-                  <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Prompt</span>
-                  <textarea
-                    name="prompt"
-                    rows={8}
-                    defaultValue={reviewData?.review_meta?.prompt || reviewData?.default_prompt || ""}
-                    className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
-                  />
-                </label>
+                {reviewData?.llm_review_enabled ? (
+                  <label className="space-y-2 text-sm">
+                    <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Prompt</span>
+                    <textarea
+                      name="prompt"
+                      rows={8}
+                      defaultValue={reviewData?.review_meta?.prompt || reviewData?.default_prompt || ""}
+                      className="w-full rounded-2xl border border-[var(--brand-border)] bg-white px-4 py-3 text-sm text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
+                    />
+                  </label>
+                ) : null}
 
                 <div className="flex flex-wrap gap-3">
                   <button
                     type="submit"
-                    className="rounded-2xl bg-[#28297e] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(40,41,126,0.16)] transition hover:bg-[#17195b]"
+                    disabled={!reviewData?.llm_review_enabled}
+                    className="rounded-2xl bg-[#28297e] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(40,41,126,0.16)] transition hover:bg-[#17195b] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none"
                   >
-                    {reviewData?.ht_review_status === "running" ? "HT Review Running…" : "Run HT Review"}
+                    {reviewData?.ht_review_status === "running" ? "HT Review Running..." : "Run Optional LLM Review"}
                   </button>
                 </div>
               </form>
@@ -1524,7 +1530,7 @@ export default async function OpsPage({
                             <pre className="mt-4 whitespace-pre-wrap text-sm leading-7 text-[#101426]">{row.rawText || "—"}</pre>
                           </div>
                           <div className="rounded-3xl border border-emerald-200 bg-[#fbfcff] p-5">
-                            <p className="text-xs font-medium uppercase tracking-[0.22em] text-emerald-700">LLM corrected</p>
+                            <p className="text-xs font-medium uppercase tracking-[0.22em] text-emerald-700">Clean</p>
                             <pre className="mt-4 whitespace-pre-wrap text-sm leading-7 text-[#101426]">
                               {row.cleanedText ? renderHighlightedReviewText(row.rawText, row.cleanedText) : "—"}
                             </pre>
@@ -1544,8 +1550,8 @@ export default async function OpsPage({
                     </div>
 
                     <div className="rounded-[34px] border border-[var(--brand-border)] bg-white p-6 shadow-[0_22px_60px_rgba(15,23,42,0.06)]">
-                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">LLM corrected</p>
-                      <pre className="mt-4 max-h-[720px] overflow-auto whitespace-pre-wrap rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] p-5 text-sm leading-7 text-[#101426]">{reviewData.corrected_text || "Run HT review to generate a corrected version."}</pre>
+                      <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Clean transcript</p>
+                      <pre className="mt-4 max-h-[720px] overflow-auto whitespace-pre-wrap rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] p-5 text-sm leading-7 text-[#101426]">{reviewData.corrected_text || reviewData.clean_text || "No clean transcript found."}</pre>
                     </div>
                   </div>
                 )}
@@ -1553,14 +1559,14 @@ export default async function OpsPage({
                 <SectionShell
                   eyebrow="Approval"
                   title="Approved final transcript"
-                  description="Use the corrected version as a starting point, make manual edits, and save the approved transcript as a separate artifact."
+                  description="Use the clean version as a starting point, make manual edits, and save the approved transcript as a separate artifact."
                 >
                   <form action={approveHTReview} className="space-y-4">
                     <input type="hidden" name="job_id" value={reviewData.job_id} />
                     <textarea
                       name="approved_text"
                       rows={20}
-                      defaultValue={reviewData.approved_text || reviewData.corrected_text || reviewData.raw_text || ""}
+                      defaultValue={reviewData.approved_text || reviewData.corrected_text || reviewData.clean_text || reviewData.raw_text || ""}
                       className="w-full rounded-3xl border border-[var(--brand-border)] bg-white px-4 py-4 text-sm leading-7 text-[#101426] outline-none transition focus:border-[var(--brand-border-strong)]"
                     />
                     <button
@@ -1790,7 +1796,7 @@ export default async function OpsPage({
                               </div>
                               {job.ht_review_updated_at ? (
                                 <div className="mt-1 text-xs text-[#7a8098]">
-                                  HT review {job.ht_review_model || "LLM"} at {formatDate(job.ht_review_updated_at || undefined)}
+                                  Optional HT review {job.ht_review_model || "LLM"} at {formatDate(job.ht_review_updated_at || undefined)}
                                 </div>
                               ) : null}
                             </td>
