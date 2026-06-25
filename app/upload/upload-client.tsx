@@ -500,7 +500,7 @@ export default function UploadClient() {
                 ) : null}
                 <div className="mt-3">
                   <Link
-                    href={`/billing?job=${encodeURIComponent(jobId ?? "")}&t=${encodeURIComponent(token ?? "")}&email=${encodeURIComponent(jobEmail)}`}
+                    href={`/transcription/billing?job=${encodeURIComponent(jobId ?? "")}&t=${encodeURIComponent(token ?? "")}&email=${encodeURIComponent(jobEmail)}`}
                     className="font-medium underline underline-offset-4"
                   >
                     Buy credits and return to upload

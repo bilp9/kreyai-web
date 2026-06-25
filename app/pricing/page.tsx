@@ -104,7 +104,7 @@ export default function PricingPage() {
 
               <div className="mt-6">
                 <Link
-                  href={pack.id === "free" ? "/transcription" : `/billing?pack=${encodeURIComponent(pack.id)}`}
+                  href={pack.id === "free" ? "/transcription" : `/transcription/billing?pack=${encodeURIComponent(pack.id)}`}
                   className="brand-button inline-flex w-full items-center justify-center rounded-2xl px-5 py-3.5 text-sm font-semibold"
                 >
                   {pack.id === "free" ? "Start free" : `Buy ${pack.name}`}

@@ -19,7 +19,7 @@ export default function robots(): MetadataRoute.Robots {
           "/faq",
           "/privacy",
           "/terms",
-          "/billing",
+          "/transcription/billing",
         ],
         disallow: ["/upload", "/verify", "/recover", "/ops", "/jobs/"],
       },

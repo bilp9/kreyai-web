@@ -167,7 +167,7 @@ export default function TranscriptionClient() {
           <div className="surface-callout mt-8 rounded-[24px] p-5">
             <p className="text-sm leading-7 text-[var(--brand-blue-deep)]">
               Need to buy minutes or check your balance? Visit{" "}
-              <Link href="/billing" className="font-semibold underline underline-offset-4">
+              <Link href="/transcription/billing" className="font-semibold underline underline-offset-4">
                 Billing
               </Link>{" "}
               and enter your email.

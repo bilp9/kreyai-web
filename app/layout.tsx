@@ -208,7 +208,7 @@ export default function RootLayout({
               <Link href="/adwaz" className="transition hover:text-[#13172b]">
                 Adwaz
               </Link>
-              <Link href="/billing" className="transition hover:text-[#13172b]">
+              <Link href="/transcription/billing" className="transition hover:text-[#13172b]">
                 Billing
               </Link>
               <Link href="/faq" className="transition hover:text-[#13172b]">
@@ -241,7 +241,7 @@ export default function RootLayout({
               <Link href="/dekk" className="transition hover:text-[#13172b]">
                 Dekk
               </Link>
-              <Link href="/billing" className="transition hover:text-[#13172b]">
+              <Link href="/transcription/billing" className="transition hover:text-[#13172b]">
                 Billing
               </Link>
               <Link href="/adwaz" className="transition hover:text-[#13172b]">
