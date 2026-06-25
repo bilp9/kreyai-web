@@ -32,6 +32,7 @@ export default function DekkPurchasePanel() {
   const hasValidEmail = EMAIL_PATTERN.test(normalizedEmail);
   const success = params.get("success") === "1";
   const canceled = params.get("canceled") === "1";
+  const checkoutEmail = email || params.get("email") || "the checkout email";
 
   useEffect(() => {
     if (!apiBase) {
@@ -84,12 +85,36 @@ export default function DekkPurchasePanel() {
 
   return (
     <section className="surface-panel mt-10 rounded-[30px] p-7">
+      {success ? (
+        <div className="mb-8 rounded-[26px] border border-emerald-200 bg-emerald-50 p-6 text-emerald-900">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em]">Payment complete</p>
+          <div className="mt-3 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight">Your Dekk license is on its way.</h2>
+              <p className="mt-2 text-sm leading-7">
+                We emailed the license key to {checkoutEmail}. Download Dekk, open the app, then choose{" "}
+                <span className="font-semibold">Help &gt; Activate License</span> and paste the key.
+              </p>
+            </div>
+            {downloadUrl ? (
+              <a href={downloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+                Download Dekk for macOS
+              </a>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
         <div>
           <p className="page-eyebrow !text-[0.68rem]">Download and license</p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight">Start with a 14-day free trial.</h2>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight">
+            {success ? "Download and activate Dekk." : "Start with a 14-day free trial."}
+          </h2>
           <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">
-            Download Dekk, use the local trial, then activate a one-time license when you are ready to keep using it.
+            {success
+              ? "Use the download below if the app is not installed yet. Your license key unlocks Dekk after the trial."
+              : "Download Dekk, use the local trial, then activate a one-time license when you are ready to keep using it."}
           </p>
 
           {downloadUrl ? (
@@ -119,7 +144,8 @@ export default function DekkPurchasePanel() {
 
           {success ? (
             <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-800">
-              Payment received. Your Dekk license key will be emailed to {email || "the checkout email"}.
+              Payment received. Your Dekk license key has been sent to {checkoutEmail}. Download Dekk from this page if
+              you have not installed it yet.
             </div>
           ) : null}
 

@@ -53,10 +53,52 @@ const LICENSES = [
   },
 ];
 
-export default function DekkPage() {
+type DekkPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+function getSingleParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function DekkPage({ searchParams }: DekkPageProps) {
+  const resolvedParams = await searchParams;
+  const success = getSingleParam(resolvedParams?.success) === "1";
+  const email = getSingleParam(resolvedParams?.email);
+  const downloadUrl = process.env.NEXT_PUBLIC_DEKK_DOWNLOAD_URL;
+
   return (
     <main className="page-shell text-[#13172b]">
       <section className="page-wrap">
+        {success ? (
+          <section className="surface-callout mb-8 rounded-[30px] p-7">
+            <p className="page-eyebrow !text-[0.68rem]">Payment complete</p>
+            <div className="mt-3 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight text-[var(--brand-blue-deep)]">
+                  Your Dekk license key is on its way.
+                </h1>
+                <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
+                  We emailed the license key to {email || "the checkout email"}. Download Dekk, open the app, then use{" "}
+                  <span className="font-semibold">Help &gt; Activate License</span>.
+                </p>
+              </div>
+              {downloadUrl ? (
+                <a href={downloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+                  Download Dekk for macOS
+                </a>
+              ) : (
+                <Link
+                  href="#download"
+                  className="inline-flex rounded-2xl border border-[#d6dbea] bg-white px-5 py-3 text-sm font-semibold text-[#101426] hover:border-[#bfc7de]"
+                >
+                  Go to download
+                </Link>
+              )}
+            </div>
+          </section>
+        ) : null}
+
         <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-start">
           <div className="page-header">
             <p className="page-eyebrow">Dekk</p>
