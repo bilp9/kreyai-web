@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "Review how KreyAI handles uploaded audio, generated transcripts, Adwaz writing review text, KreyAI Dekk local data, billing records, retention, and deletion.",
+  alternates: {
+    canonical: "/privacy",
+  },
+};
+
 const PRIVACY_SECTIONS = [
   {
     title: "1. Information We Collect",
@@ -5,8 +16,10 @@ const PRIVACY_SECTIONS = [
     items: [
       "User-provided information: email address for job access and delivery, audio files you upload, and optional metadata you provide.",
       "Generated data: transcripts and output files generated from your uploads, along with processing metadata such as duration, language detection, and timestamps.",
+      "Adwaz text: text you submit for writing review is processed to return corrections and is not saved by default.",
+      "KreyAI Dekk desktop data: files opened in KreyAI Dekk remain on your device. The desktop app may store local file paths, playback positions, hotkey settings, theme preferences, and diagnostic logs on your device.",
       "Billing information: transaction and purchase metadata needed to confirm credit purchases, process refunds, prevent abuse, and support billing operations.",
-      "Technical data: basic system logs like request timestamps and job IDs, plus error logs used for debugging and service reliability.",
+      "Technical data: basic system logs like request timestamps and job IDs, plus privacy-safe Adwaz review metadata such as text length, word count, issue count, latency, and optional feedback reports.",
       "We do not collect unnecessary personal data.",
     ],
   },
@@ -16,6 +29,8 @@ const PRIVACY_SECTIONS = [
     items: [
       "Process and transcribe your audio files.",
       "Generate downloadable outputs such as TXT, DOCX, and SRT files.",
+      "Review Haitian Creole writing in Adwaz and return correction suggestions.",
+      "Support local KreyAI Dekk workflows such as playback resume, hotkey preferences, and diagnostic troubleshooting.",
       "Deliver job results and notifications.",
       "Process payments, credit purchases, refunds, and fraud-prevention checks.",
       "Maintain system performance and reliability.",
@@ -30,13 +45,29 @@ const PRIVACY_SECTIONS = [
   {
     title: "3. Data Retention",
     items: [
-      "All uploaded files and generated outputs are automatically deleted after 7 days.",
+      "Uploaded files and generated outputs are retained for a 7-day availability window after job completion.",
+      "After that period, files are scheduled for automatic deletion from active storage.",
+      "KreyAI does not keep customer files for ongoing operational access after that 7-day period.",
+      "If you need access again after 7 days, you must submit a new job.",
       "Temporary processing data is deleted once jobs are completed or expired.",
+      "Adwaz review text is not stored by default; privacy-safe telemetry and optional feedback reports may be retained for quality and reliability review.",
+      "KreyAI Dekk diagnostic logs and app state are stored locally on your device and are not sent automatically.",
       "Logs may be retained longer for operational and security purposes, but do not contain your file content.",
     ],
   },
   {
-    title: "4. Data Storage & Security",
+    title: "4. KreyAI Dekk Desktop App",
+    intro: "KreyAI Dekk is designed as a local desktop playback and review tool:",
+    items: [
+      "Audio and video files opened in KreyAI Dekk stay on your device and are not uploaded to KreyAI by the desktop app.",
+      "The app may remember local file paths, track order, playback positions, hotkey settings, theme preference, and similar local state.",
+      "Diagnostic logs are stored locally and are not sent automatically.",
+      "Global hotkeys may require macOS Accessibility permission so the app can listen for configured playback shortcuts or pedal mappings.",
+      "If you choose to send logs for support, you are responsible for reviewing what you share.",
+    ],
+  },
+  {
+    title: "5. Data Storage & Security",
     intro: "We implement appropriate technical measures to protect your data:",
     items: [
       "Secure cloud storage, including encrypted storage systems.",
@@ -46,7 +77,7 @@ const PRIVACY_SECTIONS = [
     ],
   },
   {
-    title: "5. Data Sharing",
+    title: "6. Data Sharing",
     intro:
       "We do not sell, rent, or trade your data. We only share data when necessary to operate the service, such as:",
     items: [
@@ -57,7 +88,7 @@ const PRIVACY_SECTIONS = [
     ],
   },
   {
-    title: "6. Payments & Billing",
+    title: "7. Payments & Billing",
     items: [
       "Payments are processed by third-party providers such as Stripe.",
       "KreyAI does not receive or store full payment card numbers on its own systems unless explicitly stated otherwise.",
@@ -66,35 +97,35 @@ const PRIVACY_SECTIONS = [
     ],
   },
   {
-    title: "7. Your Rights & Control",
+    title: "8. Your Rights & Control",
     items: [
       "You may choose not to upload sensitive content.",
-      "You may download your files at any time within the retention period.",
+      "You may download your files at any time within the 7-day availability window.",
       "You may request early deletion of your data as a future feature.",
     ],
   },
   {
-    title: "8. Third-Party Services",
+    title: "9. Third-Party Services",
     items: [
       "KreyAI relies on trusted third-party infrastructure providers such as cloud hosting, storage, email, and payment services.",
       "These providers process data only as required to deliver the service.",
     ],
   },
   {
-    title: "9. Children's Privacy",
+    title: "10. Children's Privacy",
     items: [
       "KreyAI is not intended for use by individuals under the age of 13.",
       "We do not knowingly collect data from children.",
     ],
   },
   {
-    title: "10. Changes to This Policy",
+    title: "11. Changes to This Policy",
     items: [
       'We may update this Privacy Policy from time to time. Updates will be reflected with a revised "Effective Date."',
     ],
   },
   {
-    title: "11. Contact",
+    title: "12. Contact",
     items: [
       "If you have any questions about this Privacy Policy, you may contact us at support@kreyai.com.",
     ],
@@ -112,7 +143,7 @@ export default function PrivacyPage() {
             KreyAI is committed to protecting your privacy. This policy explains how we collect, use, store, and
             protect your information when you use our services.
           </p>
-          <p className="page-meta">Effective Date: March 26, 2026</p>
+          <p className="page-meta">Effective Date: June 19, 2026</p>
         </div>
 
         <div className="mt-14 grid gap-5">

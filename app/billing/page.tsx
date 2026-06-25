@@ -1,3 +1,37 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import BillingClient from "./billing-client";
+
+export const metadata: Metadata = {
+  title: "Billing & Credit Balance",
+  description:
+    "Buy KreyAI transcription credits, check your prepaid minute balance, and review billing terms for multilingual audio transcription.",
+  keywords: [
+    "KreyAI billing",
+    "transcription credits",
+    "prepaid transcription minutes",
+    "AI transcription billing",
+    "French transcription credits",
+    "Haitian Creole transcription credits",
+    "Spanish transcription credits",
+    "Portuguese transcription credits",
+  ],
+  alternates: {
+    canonical: "/billing",
+  },
+  openGraph: {
+    title: "KreyAI Billing & Credit Balance",
+    description:
+      "Manage prepaid transcription credits and review billing terms for KreyAI audio transcription.",
+    url: "/billing",
+    alternateLocale: ["fr_FR", "ht_HT", "es_ES", "pt_PT"],
+  },
+  other: {
+    "content-language": "en, fr, ht, es, pt",
+    "target-languages": "French, Haitian Creole, Spanish, Portuguese",
+  },
+};
+
 const BILLING_SECTIONS = [
   {
     title: "1. Pricing Model",
@@ -6,6 +40,7 @@ const BILLING_SECTIONS = [
       "Users purchase credits in advance.",
       "Credits are used to process audio files.",
       "Credits are deducted based on the duration of the audio submitted.",
+      "Haitian Creole beta jobs are charged at the same standard credit rate as other supported languages.",
     ],
   },
   {
@@ -14,6 +49,7 @@ const BILLING_SECTIONS = [
       "Credits are consumed when a transcription job is processed.",
       "The number of credits deducted corresponds to the length of the audio file.",
       "Once credits are used, they cannot be reversed.",
+      "If you request immediate file deletion after processing, download links stop working right away and a new request is required if you need the files again.",
     ],
   },
   {
@@ -36,7 +72,8 @@ const BILLING_SECTIONS = [
     items: [
       "Unused credits may be eligible for a refund, at our discretion.",
       "Used credits are non-refundable, as processing has already occurred.",
-      "In cases of technical errors or service issues, we may restore credits or issue a refund.",
+      "In cases of verified technical errors or severe service issues, including missing sections or repetition loops, we may restore credits, retry the job, or issue a refund.",
+      "Haitian Creole beta transcripts are drafts for review, so ordinary transcription imperfections are not automatic refunds.",
       "Refunds may be issued to the original payment method or as account credits.",
     ],
   },
@@ -81,6 +118,12 @@ export default function BillingPage() {
             This Billing Policy explains how payments, credits, and billing are handled when using KreyAI.
           </p>
           <p className="page-meta">Effective Date: March 26, 2026</p>
+        </div>
+
+        <div className="mt-12">
+          <Suspense fallback={<div className="surface-panel rounded-[28px] p-6 text-sm text-[var(--brand-muted)]">Loading billing…</div>}>
+            <BillingClient />
+          </Suspense>
         </div>
 
         <div className="mt-14 grid gap-5">
