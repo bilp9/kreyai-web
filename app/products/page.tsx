@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "KreyAI Products | Language Workflow Software",
   description:
-    "Explore KreyAI products for translation, transcription, media review, Haitian Creole writing support, and multilingual workflows.",
+    "Explore KreyAI products for translation, transcription playback, AI transcription, Haitian Creole writing support, and multilingual workflows.",
   alternates: {
     canonical: "/products",
   },
@@ -38,14 +38,14 @@ const PRODUCTS = [
   {
     id: "dekk",
     name: "Dekk",
-    category: "Media playback and review",
-    tagline: "Built for transcription, subtitling, and media review.",
+    category: "Transcription playback",
+    tagline: "Playback built for people who transcribe.",
     status: "Available for macOS",
     href: "/dekk",
     cta: "Download Dekk",
     description:
-      "Desktop playback software for reviewing audio and video while checking transcripts, subtitles, timing, and source media.",
-    features: ["Local playback", "Variable speed", "Timecodes", "Hotkeys", "14-day trial"],
+      "Desktop playback software that helps transcribers control audio and video while staying focused on typing.",
+    features: ["Local playback", "Variable speed", "Hotkeys", "Pause rewind", "14-day trial"],
   },
   {
     id: "adwaz",
@@ -75,7 +75,7 @@ const PRODUCTS = [
 
 const ECOSYSTEM = [
   "aTelier handles translation workspace needs.",
-  "Dekk supports playback and media review.",
+  "Dekk keeps playback control close while you transcribe.",
   "Adwaz focuses on Haitian Creole writing quality.",
   "KreyAI Transcription turns speech into usable text.",
 ];
@@ -89,7 +89,7 @@ export default function ProductsPage() {
             <p className="page-eyebrow">Products</p>
             <h1 className="page-title">Practical software for language work.</h1>
             <p className="page-lede">
-              KreyAI products support transcription, translation, media playback, writing review, and multilingual
+              KreyAI products support transcription, translation, playback control, writing review, and multilingual
               workflows without turning every task into a bloated platform.
             </p>
           </div>
@@ -99,7 +99,7 @@ export default function ProductsPage() {
               One company, focused tools.
             </h2>
             <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
-              Use the product that fits the task, whether you are translating, reviewing media, improving writing, or
+              Use the product that fits the task, whether you are translating, transcribing recordings, improving writing, or
               producing transcripts.
             </p>
           </div>

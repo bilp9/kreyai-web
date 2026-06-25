@@ -42,7 +42,7 @@ const FAQS = [
   {
     question: "What is KreyAI?",
     answer:
-      "KreyAI builds language tools for Haitian Creole and multilingual work, including transcription, Adwaz writing review, and Dekk local media review.",
+      "KreyAI builds language tools for Haitian Creole and multilingual work, including transcription, Adwaz writing review, and Dekk local transcription playback.",
   },
   {
     question: "What is Adwaz?",

@@ -131,7 +131,7 @@ export default function PricingPage() {
               Dekk is priced separately.
             </h2>
             <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
-              KreyAI Dekk is desktop software for local audio and video review. It is licensed separately from
+              KreyAI Dekk is desktop software for local transcription playback. It is licensed separately from
               transcription credits.
             </p>
             <Link href="/dekk" className="brand-button mt-5 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">

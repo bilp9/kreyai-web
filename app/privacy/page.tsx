@@ -57,7 +57,7 @@ const PRIVACY_SECTIONS = [
   },
   {
     title: "4. KreyAI Dekk Desktop App",
-    intro: "KreyAI Dekk is designed as a local desktop playback and review tool:",
+    intro: "KreyAI Dekk is designed as a local desktop playback tool for transcription:",
     items: [
       "Audio and video files opened in KreyAI Dekk stay on your device and are not uploaded to KreyAI by the desktop app.",
       "The app may remember local file paths, track order, playback positions, hotkey settings, theme preference, and similar local state.",

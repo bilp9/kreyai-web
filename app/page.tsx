@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "KreyAI | Practical Language Tools for Real Work",
   description:
-    "KreyAI builds practical software for transcription, translation, media review, writing support, and multilingual workflows.",
+    "KreyAI builds practical software for transcription, translation, playback control, writing support, and multilingual workflows.",
 };
 
 const PRODUCTS = [
@@ -16,9 +16,9 @@ const PRODUCTS = [
   },
   {
     title: "Dekk",
-    category: "Media review and playback",
+    category: "Transcription playback",
     href: "/dekk",
-    description: "Playback software for transcription, subtitling, and linguistic review.",
+    description: "Playback software that helps transcribers stay focused on typing.",
   },
   {
     title: "Adwaz",
@@ -54,8 +54,8 @@ export default function Home() {
               KreyAI builds software for language professionals.
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[var(--brand-muted)] md:text-xl">
-              Transcribe audio. Review media. Translate content. Improve writing. Built for translators, interpreters,
-              transcriptionists, reviewers, researchers, and multilingual teams.
+              Transcribe audio. Control playback. Translate content. Improve writing. Built for translators,
+              interpreters, transcriptionists, researchers, and multilingual teams.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="/products" className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
@@ -103,7 +103,7 @@ export default function Home() {
           Language work should not require a maze of disconnected tools.
         </h2>
         <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-[var(--brand-muted)]">
-          Many language professionals transcribe in one application, review media in another, translate in a third, and
+          Many language professionals transcribe in one application, control playback in another, translate in a third, and
           manage writing quality somewhere else. KreyAI builds practical software that supports the real shape of that
           work.
         </p>

@@ -14,7 +14,7 @@ const TERMS_SECTIONS = [
     title: "1. Overview",
     items: [
       "KreyAI provides transcription and language-processing services, including audio transcription and Adwaz writing assistance.",
-      "KreyAI may also provide desktop software such as KreyAI Dekk for local media playback and transcript review workflows.",
+      "KreyAI may also provide desktop software such as KreyAI Dekk for local media playback and transcription workflows.",
       "By accessing or using KreyAI, you agree to comply with these Terms of Service.",
     ],
   },
@@ -110,7 +110,7 @@ const TERMS_SECTIONS = [
     title: "10. KreyAI Dekk Desktop Software",
     items: [
       "KreyAI Dekk is licensed, not sold.",
-      "You may use KreyAI Dekk only for lawful media review workflows and only with files you have the right to access and use.",
+      "You may use KreyAI Dekk only for lawful transcription and playback workflows and only with files you have the right to access and use.",
       "The desktop app is designed for local playback and does not upload audio or video files to KreyAI.",
       "Global hotkeys and pedal workflows may require operating system permissions such as macOS Accessibility permission.",
       "KreyAI Dekk is provided as is, without a guarantee that it will be error-free, uninterrupted, or suitable for every workflow.",

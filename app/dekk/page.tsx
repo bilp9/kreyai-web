@@ -6,37 +6,37 @@ import DekkPurchasePanel from "./DekkPurchasePanel";
 export const metadata: Metadata = {
   title: "Dekk",
   description:
-    "Dekk is local desktop software from KreyAI for audio and video review, transcript verification, subtitle QA, and multilingual media workflows.",
+    "Dekk is local desktop playback software from KreyAI for transcription work, hands-on-keyboard audio control, and focused typing workflows.",
   alternates: {
     canonical: "/dekk",
   },
   openGraph: {
     title: "Dekk | KreyAI",
     description:
-      "Local audio and video review software for transcript verification, subtitle QA, and multilingual media workflows.",
+      "Local playback software for transcription work, keyboard-controlled audio, and focused typing workflows.",
     url: "/dekk",
   },
 };
 
 const AUDIENCES = [
-  "Transcribers and transcript reviewers",
-  "Translators, interpreters, and localization teams",
-  "Subtitle QA and media production workflows",
-  "Researchers, journalists, and creators reviewing source media",
+  "Professional transcribers",
+  "Interpreters and translators transcribing source media",
+  "Researchers and journalists typing interviews",
+  "Creators and teams producing transcripts from recordings",
 ];
 
 const FEATURES = [
-  "Review audio and video files locally",
-  "Use keyboard shortcuts for playback and seeking",
-  "Keep media review separate from cloud editing tools",
-  "Support transcript verification and subtitle QA workflows",
+  "Play audio and video files locally",
+  "Control playback without leaving your typing workspace",
+  "Use hotkeys for play, pause, seeking, and track changes",
+  "Adjust speed and pause rewind for transcription rhythm",
 ];
 
 const LICENSES = [
   {
     name: "Personal",
     price: "$39",
-    description: "For individual local media review and transcript QA.",
+    description: "For individual transcription work and local playback control.",
     points: ["One-time desktop license", "Use by one person", "Free updates for the current major version"],
   },
   {
@@ -60,10 +60,10 @@ export default function DekkPage() {
         <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-start">
           <div className="page-header">
             <p className="page-eyebrow">Dekk</p>
-            <h1 className="page-title">Local media review for transcript and subtitle work.</h1>
+            <h1 className="page-title">Playback built for people who transcribe.</h1>
             <p className="page-lede">
-              Dekk is desktop software for reviewing audio and video during transcript verification, subtitle quality
-              assurance, and multilingual media workflows.
+              Dekk lets transcribers control audio and video locally while staying focused on typing. Play, pause,
+              seek, and adjust speed without bouncing between windows or hunting for playback controls.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="#download" className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
@@ -84,8 +84,8 @@ export default function DekkPage() {
               Start with 14 days.
             </h2>
             <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
-              Download Dekk for macOS, review files locally, and activate a one-time license when it becomes part of
-              your regular workflow.
+              Download Dekk for macOS, use the local trial, and activate a one-time license when it becomes part of
+              your transcription workflow.
             </p>
           </aside>
         </div>
@@ -94,9 +94,9 @@ export default function DekkPage() {
           <section className="surface-panel rounded-[30px] p-7">
             <h2 className="text-2xl font-semibold tracking-tight">What Dekk is</h2>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              Dekk gives language and media professionals a focused player for checking source media while reviewing
-              transcripts, subtitles, and edits. It is built for the practical review step between raw media and a
-              finished deliverable.
+              Dekk is a focused playback app for transcription. It keeps media controls close, predictable, and
+              keyboard-friendly so you can listen, pause, rewind, and keep typing without navigating multiple pages or
+              switching between heavy production tools.
             </p>
             <div className="mt-6 grid gap-3">
               {FEATURES.map((feature) => (
@@ -110,8 +110,8 @@ export default function DekkPage() {
           <section className="surface-panel rounded-[30px] p-7">
             <h2 className="text-2xl font-semibold tracking-tight">Who it is for</h2>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
-              Dekk is for people who need to verify what was said, compare timing, check subtitles, or review media
-              without opening a heavy production suite.
+              Dekk is for people who need to produce transcripts from recordings and want playback to feel like part of
+              the typing process instead of a separate task.
             </p>
             <div className="mt-6 grid gap-3">
               {AUDIENCES.map((audience) => (

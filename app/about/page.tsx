@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About KreyAI",
   description:
-    "KreyAI builds practical software for language professionals across transcription, translation, writing review, media playback, and multilingual workflows.",
+    "KreyAI builds practical software for language professionals across transcription, translation, writing review, playback control, and multilingual workflows.",
   alternates: {
     canonical: "/about",
   },
@@ -25,7 +25,7 @@ const PRODUCT_POINTS = [
   {
     name: "Dekk",
     description:
-      "Local media playback and review software built for transcription, subtitling, timecode review, and linguistic media workflows.",
+      "Local playback software built for transcribers who need keyboard-friendly audio and video control while they type.",
   },
   {
     name: "Adwaz",
@@ -62,7 +62,7 @@ export default function AboutPage() {
           <p className="page-eyebrow">About KreyAI</p>
           <h1 className="page-title">Practical software for language professionals.</h1>
           <p className="page-lede">
-            KreyAI supports transcription, translation, writing review, media playback, and multilingual workflows.
+            KreyAI supports transcription, translation, writing review, playback control, and multilingual workflows.
           </p>
         </div>
 
@@ -107,7 +107,7 @@ export default function AboutPage() {
             <h2 className="text-2xl font-semibold tracking-tight">Why KreyAI Exists</h2>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
               Language work often crosses tools and formats. A project may begin as audio, become a transcript, move
-              into translation, require media review, and finish as polished writing. Many existing tools are either
+              into translation, require focused playback control, and finish as polished writing. Many existing tools are either
               too generic, too expensive, or too disconnected from the actual workflow.
             </p>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
