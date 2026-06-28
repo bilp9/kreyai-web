@@ -32,7 +32,7 @@ async function recordDownload(request: NextRequest, downloadUrl: URL) {
     return;
   }
 
-  const version = downloadUrl.searchParams.get("version") || process.env.NEXT_PUBLIC_DEKK_VERSION || "0.1.1";
+  const version = downloadUrl.searchParams.get("version") || process.env.NEXT_PUBLIC_DEKK_VERSION || "0.1.4";
   const platform = downloadUrl.searchParams.get("platform") || DEFAULT_PLATFORM;
   const source = downloadUrl.searchParams.get("source") || DEFAULT_SOURCE;
   const ip = getClientIp(request);
