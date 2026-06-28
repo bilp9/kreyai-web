@@ -108,14 +108,14 @@ export default function DekkPurchasePanel() {
 
       <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
         <div>
-          <p className="page-eyebrow !text-[0.68rem]">Download and license</p>
+          <p className="page-eyebrow !text-[0.68rem]">Download</p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight">
             {success ? "Download and activate Dekk." : "Start with a 14-day free trial."}
           </h2>
           <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">
             {success
               ? "Use the download below if the app is not installed yet. Your license key unlocks Dekk after the trial."
-              : "Download Dekk, use the local trial, then activate a one-time license when you are ready to keep using it."}
+              : "Download Dekk and try it free for 14 days. No email or account required."}
           </p>
 
           {downloadUrl ? (
@@ -132,7 +132,11 @@ export default function DekkPurchasePanel() {
         </div>
 
         <div>
-          <label className="block space-y-2 text-sm">
+          <p className="page-eyebrow !text-[0.68rem]">Buy a license</p>
+          <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">
+            Ready to keep using Dekk after the trial? Purchase a one-time license below.
+          </p>
+          <label className="mt-4 block space-y-2 text-sm">
             <span className="font-semibold text-[#13172b]">Email for license delivery</span>
             <input
               type="email"
