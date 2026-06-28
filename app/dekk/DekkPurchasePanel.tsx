@@ -28,6 +28,7 @@ export default function DekkPurchasePanel() {
 
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
   const downloadUrl = process.env.NEXT_PUBLIC_DEKK_DOWNLOAD_URL;
+  const trackedDownloadUrl = "/dekk/download?source=website";
   const normalizedEmail = email.trim().toLowerCase();
   const hasValidEmail = EMAIL_PATTERN.test(normalizedEmail);
   const success = params.get("success") === "1";
@@ -97,7 +98,7 @@ export default function DekkPurchasePanel() {
               </p>
             </div>
             {downloadUrl ? (
-              <a href={downloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+              <a href={trackedDownloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
                 Download Dekk for macOS
               </a>
             ) : null}
@@ -118,7 +119,7 @@ export default function DekkPurchasePanel() {
           </p>
 
           {downloadUrl ? (
-            <a href={downloadUrl} className="brand-button mt-5 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+            <a href={trackedDownloadUrl} className="brand-button mt-5 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
               Download Dekk for macOS
             </a>
           ) : (

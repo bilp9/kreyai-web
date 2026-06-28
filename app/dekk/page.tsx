@@ -66,6 +66,7 @@ export default async function DekkPage({ searchParams }: DekkPageProps) {
   const success = getSingleParam(resolvedParams?.success) === "1";
   const email = getSingleParam(resolvedParams?.email);
   const downloadUrl = process.env.NEXT_PUBLIC_DEKK_DOWNLOAD_URL;
+  const trackedDownloadUrl = "/dekk/download?source=website";
 
   return (
     <main className="page-shell text-[#13172b]">
@@ -84,7 +85,7 @@ export default async function DekkPage({ searchParams }: DekkPageProps) {
                 </p>
               </div>
               {downloadUrl ? (
-                <a href={downloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+                <a href={trackedDownloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
                   Download Dekk for macOS
                 </a>
               ) : (
