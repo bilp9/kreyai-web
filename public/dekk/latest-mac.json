@@ -1,7 +1,7 @@
 {
-  "latest_version": "0.1.4",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.4/KreyAI-Dekk-0.1.4-macOS.dmg",
+  "latest_version": "0.1.5",
+  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.5/KreyAI-Dekk-0.1.5-macOS.dmg",
   "release_url": "https://www.kreyai.com/dekk",
-  "sha256": "d6264272c1e0fa2b7aa2d456f077e3a341989f622dbfd0e8897a18f97ba406c5",
-  "notes": "Fix global hotkeys on macOS: listen-only fallback when Input Monitoring is not granted, improved permission guidance."
+  "sha256": "cd6cb49872621e8311ecf66e96ffe3b860f674eba4800cee506c9b4e136b1127",
+  "notes": "Global hotkey setup guide, listen-only fallback, curl-based update downloads."
 }
