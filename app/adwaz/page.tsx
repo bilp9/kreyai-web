@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Adwaz | Write Haitian Creole with confidence",
     description: "Asistan entèlijan pou ekri pi byen an kreyòl. Powered by KreyAI.",
-    url: "https://kreyai.com/adwaz",
+    url: "https://www.kreyai.com/adwaz",
     siteName: "KreyAI",
     type: "website",
   },

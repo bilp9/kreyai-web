@@ -8,6 +8,13 @@ export default function robots(): MetadataRoute.Robots {
         allow: [
           "/",
           "/products",
+          "/atelier",
+          "/atelier/releases/0.1.0",
+          "/atelier/releases/0.1.1",
+          "/atelier/releases/0.1.2",
+          "/atelier/releases/0.1.3",
+          "/atelier/releases/0.1.5",
+          "/atelier/releases/0.1.6",
           "/dekk",
           "/transcription",
           "/about",
@@ -21,10 +28,10 @@ export default function robots(): MetadataRoute.Robots {
           "/terms",
           "/transcription/billing",
         ],
-        disallow: ["/upload", "/verify", "/recover", "/ops", "/jobs/"],
+        disallow: ["/upload", "/verify", "/recover", "/ops", "/jobs/", "/dekk/download", "/atelier/download"],
       },
     ],
-    sitemap: "https://kreyai.com/sitemap.xml",
-    host: "https://kreyai.com",
+    sitemap: "https://www.kreyai.com/sitemap.xml",
+    host: "https://www.kreyai.com",
   };
 }

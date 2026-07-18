@@ -1,20 +1,51 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import DekkPurchasePanel from "./DekkPurchasePanel";
 
 export const metadata: Metadata = {
-  title: "Dekk",
+  title: "Dekk Transcription Playback Software",
   description:
-    "Dekk is local desktop playback software from KreyAI for transcription work, hands-on-keyboard audio control, and focused typing workflows.",
+    "Download Dekk by KreyAI, local transcription playback software for audio and video control, hotkeys, foot pedals, variable speed, and focused typing workflows.",
+  keywords: [
+    "Dekk",
+    "KreyAI Dekk",
+    "transcription playback software",
+    "audio playback for transcribers",
+    "video playback for transcription",
+    "foot pedal transcription software",
+    "transcription hotkeys",
+    "local media playback",
+    "transcription software for Mac",
+    "audio control for transcription",
+    "variable speed transcription player",
+    "pause rewind transcription",
+  ],
   alternates: {
     canonical: "/dekk",
   },
   openGraph: {
-    title: "Dekk | KreyAI",
+    title: "Dekk | Transcription Playback Software by KreyAI",
     description:
-      "Local playback software for transcription work, keyboard-controlled audio, and focused typing workflows.",
+      "Local desktop playback software for transcribers who need hotkeys, pedal-ready controls, variable speed, and focused typing workflows.",
     url: "/dekk",
+    type: "website",
+    images: [
+      {
+        url: "/og-kreyai.jpg",
+        width: 1200,
+        height: 630,
+        alt: "KreyAI Dekk transcription playback software",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dekk | Transcription Playback Software",
+    description:
+      "Local playback software for transcription work, hotkeys, pedal-ready controls, and focused typing.",
+    images: ["/og-kreyai.jpg"],
   },
 };
 
@@ -53,6 +84,110 @@ const LICENSES = [
   },
 ];
 
+const DEKK_FAQS = [
+  {
+    question: "What is Dekk used for?",
+    answer:
+      "Dekk is desktop playback software for people who transcribe audio or video. It keeps playback controls, hotkeys, speed control, and pause rewind close so transcribers can stay focused on typing.",
+  },
+  {
+    question: "Does Dekk upload my media files?",
+    answer:
+      "No. Dekk plays audio and video locally on your device. The desktop app does not upload your media files to KreyAI.",
+  },
+  {
+    question: "Does Dekk work with foot pedals?",
+    answer:
+      "Yes. Dekk is pedal-ready for pedals that send keyboard shortcuts. Map your pedal buttons to the same hotkeys you choose in Dekk settings.",
+  },
+  {
+    question: "What permissions are needed for global hotkeys on macOS?",
+    answer:
+      "Global hotkeys on macOS need both Accessibility and Input Monitoring permissions in System Settings. Hotkeys still work inside the app window without background control.",
+  },
+];
+
+const DEKK_SCHEMA = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Dekk",
+    alternateName: "KreyAI Dekk",
+    applicationCategory: "BusinessApplication",
+    applicationSubCategory: "Transcription playback software",
+    operatingSystem: "macOS",
+    url: "https://www.kreyai.com/dekk",
+    downloadUrl: "https://www.kreyai.com/dekk/download?source=seo",
+    softwareVersion: process.env.NEXT_PUBLIC_DEKK_VERSION || "0.1.6",
+    publisher: {
+      "@type": "Organization",
+      name: "KreyAI",
+      legalName: "KreyAI Technologies LLC",
+      url: "https://www.kreyai.com",
+      email: "hello@kreyai.com",
+    },
+    description:
+      "Local desktop playback software for transcription work, audio and video control, hotkeys, pedal-ready workflows, variable speed, and pause rewind.",
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Dekk Personal",
+        price: "39",
+        priceCurrency: "USD",
+        url: "https://www.kreyai.com/dekk#pricing",
+        availability: "https://schema.org/InStock",
+      },
+      {
+        "@type": "Offer",
+        name: "Dekk Business",
+        price: "89",
+        priceCurrency: "USD",
+        url: "https://www.kreyai.com/dekk#pricing",
+        availability: "https://schema.org/InStock",
+      },
+    ],
+    featureList: [
+      "Local audio and video playback",
+      "Global hotkeys",
+      "Foot pedal-ready keyboard mapping",
+      "Variable speed playback",
+      "Pause rewind",
+      "14-day free trial",
+      "One-time license",
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: DEKK_FAQS.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Products",
+        item: "https://www.kreyai.com/products",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Dekk",
+        item: "https://www.kreyai.com/dekk",
+      },
+    ],
+  },
+];
+
 type DekkPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
@@ -70,6 +205,11 @@ export default async function DekkPage({ searchParams }: DekkPageProps) {
 
   return (
     <main className="page-shell text-[#13172b]">
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(DEKK_SCHEMA) }}
+      />
       <section className="page-wrap">
         {success ? (
           <section className="surface-callout mb-8 rounded-[30px] p-7">
@@ -131,6 +271,17 @@ export default async function DekkPage({ searchParams }: DekkPageProps) {
               your transcription workflow.
             </p>
           </aside>
+        </div>
+
+        <div className="surface-panel mt-10 overflow-hidden rounded-[28px] p-2">
+          <Image
+            src="/dekk/screenshots/player.png"
+            alt="Dekk showing a multi-track playback session with hotkeys, speed control, and pause rewind"
+            width={2191}
+            height={1166}
+            className="w-full rounded-[22px]"
+            priority
+          />
         </div>
 
         <div className="mt-14 grid gap-6 lg:grid-cols-2">

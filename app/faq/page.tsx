@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Haitian Creole Transcription FAQ",
+  title: "KreyAI FAQ",
   description:
-    "Read common questions about KreyAI transcription, Adwaz Haitian Creole writing assistance, multilingual accuracy, credits, file privacy, and subtitle exports.",
+    "Read common questions about KreyAI transcription, Dekk playback software, Adwaz Haitian Creole writing assistance, credits, file privacy, and subtitle exports.",
   keywords: [
     "Haitian Creole transcription FAQ",
     "KreyAI FAQ",
@@ -21,14 +21,18 @@ export const metadata: Metadata = {
     "transcricao de audio em portugues FAQ",
     "Adwaz FAQ",
     "Haitian Creole writing assistant FAQ",
+    "Dekk FAQ",
+    "transcription playback software FAQ",
+    "foot pedal transcription software",
+    "global hotkeys transcription software",
   ],
   alternates: {
     canonical: "/faq",
   },
   openGraph: {
-    title: "KreyAI Haitian Creole Transcription FAQ",
+    title: "KreyAI FAQ",
     description:
-      "Answers about Haitian Creole transcription, Adwaz writing assistance, subtitle exports, privacy, credits, speaker labels, and mobile uploads.",
+      "Answers about KreyAI transcription, Dekk playback software, Adwaz writing assistance, subtitle exports, privacy, credits, and licensing.",
     url: "/faq",
     alternateLocale: ["fr_FR", "ht_HT", "es_ES", "pt_PT"],
   },
@@ -48,6 +52,31 @@ const FAQS = [
     question: "What is Adwaz?",
     answer:
       "Adwaz is KreyAI's Haitian Creole writing assistant. It reviews text for spelling, accents, grammar patterns, unknown words, and explainable correction suggestions.",
+  },
+  {
+    question: "What is Dekk?",
+    answer:
+      "Dekk is KreyAI's local playback app for transcription work. It helps transcribers control audio and video with hotkeys, speed control, pause rewind, and pedal-ready keyboard mappings while staying focused on typing.",
+  },
+  {
+    question: "Does Dekk upload my audio or video files?",
+    answer:
+      "No. Dekk plays media locally on your device. The desktop app does not upload your audio or video files to KreyAI.",
+  },
+  {
+    question: "How does the Dekk free trial work?",
+    answer:
+      "Dekk includes a 14-day local trial. You can download the app, try it without creating an account, and activate a one-time license if you want to keep using it after the trial.",
+  },
+  {
+    question: "What permissions does Dekk need for global hotkeys on macOS?",
+    answer:
+      "Global hotkeys on macOS need both Accessibility and Input Monitoring permissions in System Settings. Dekk's hotkeys can still work while the app window is active, but background control requires both permissions.",
+  },
+  {
+    question: "Can I use a foot pedal with Dekk?",
+    answer:
+      "Yes. Dekk is pedal-ready for pedals that send keyboard shortcuts. In your pedal software, map pedal buttons to the same hotkeys selected in Dekk settings.",
   },
   {
     question: "Is Adwaz included in transcription credits?",

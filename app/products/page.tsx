@@ -22,9 +22,9 @@ const PRODUCTS = [
     name: "aTelier",
     category: "Translation and localization",
     tagline: "Translation workbench built for modern linguists.",
-    status: "Beta",
-    href: "mailto:hello@kreyai.com?subject=aTelier%20access",
-    cta: "Ask about aTelier",
+    status: "Early access",
+    href: "/atelier",
+    cta: "Download aTelier",
     description:
       "A professional CAT environment for translators and language teams who need translation memory, terminology, QA, and a focused bilingual editor.",
     features: [
@@ -32,7 +32,7 @@ const PRODUCTS = [
       "Terminology management",
       "Side-by-side editor",
       "QA checks",
-      "AI-assisted suggestions",
+      "Local desktop workflow",
     ],
   },
   {
@@ -84,8 +84,8 @@ export default function ProductsPage() {
   return (
     <main className="page-shell text-[#13172b]">
       <section className="page-wrap">
-        <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
-          <div className="page-header">
+        <div className="border-b border-[var(--brand-border)] pb-12">
+          <div className="max-w-3xl">
             <p className="page-eyebrow">Products</p>
             <h1 className="page-title">Practical software for language work.</h1>
             <p className="page-lede">
@@ -93,50 +93,43 @@ export default function ProductsPage() {
               workflows without turning every task into a bloated platform.
             </p>
           </div>
-
-          <div className="surface-callout rounded-[30px] p-7">
-            <h2 className="text-2xl font-semibold tracking-tight text-[var(--brand-blue-deep)]">
-              One company, focused tools.
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
-              Use the product that fits the task, whether you are translating, transcribing recordings, improving writing, or
-              producing transcripts.
-            </p>
-          </div>
         </div>
 
-        <section className="mt-14 grid gap-6 lg:grid-cols-2">
+        <section className="mt-4 divide-y divide-[var(--brand-border)]">
           {PRODUCTS.map((product) => (
-            <article id={product.id} key={product.name} className="surface-panel scroll-mt-28 rounded-[30px] p-7">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
+            <article
+              id={product.id}
+              key={product.name}
+              className="grid scroll-mt-28 gap-8 py-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-start"
+            >
+              <div>
+                <div className="flex flex-wrap items-center gap-3">
                   <p className="page-eyebrow !text-[0.68rem]">{product.category}</p>
-                  <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">{product.name}</h2>
+                  <span className="text-xs font-semibold text-[var(--brand-muted)]">{product.status}</span>
                 </div>
-                <span className="rounded-full bg-[var(--brand-blue-soft)] px-3 py-1 text-xs font-semibold text-[var(--brand-blue)]">
-                  {product.status}
-                </span>
+                <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em]">{product.name}</h2>
+                <Link href={product.href} className="brand-button mt-6 inline-flex rounded-xl px-5 py-3 text-sm font-semibold">
+                  {product.cta}
+                </Link>
               </div>
 
-              <p className="mt-4 text-lg font-semibold tracking-tight text-[#13172b]">{product.tagline}</p>
-              <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">{product.description}</p>
-
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                {product.features.map((feature) => (
-                  <p key={feature} className="surface-muted rounded-2xl px-4 py-3 text-sm text-[var(--brand-muted)]">
-                    {feature}
-                  </p>
-                ))}
+              <div>
+                <p className="text-2xl font-semibold tracking-[-0.035em] text-[#13172b]">{product.tagline}</p>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--brand-muted)]">{product.description}</p>
+                <ul className="mt-7 grid gap-x-8 gap-y-3 border-t border-[var(--brand-border)] pt-5 sm:grid-cols-2">
+                  {product.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-3 text-sm font-medium text-[var(--brand-muted)]">
+                      <span className="h-px w-5 bg-[var(--brand-border-strong)]" aria-hidden="true" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
               </div>
-
-              <Link href={product.href} className="brand-button mt-6 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
-                {product.cta}
-              </Link>
             </article>
           ))}
         </section>
 
-        <section className="surface-panel mt-10 rounded-[30px] p-7 md:p-8">
+        <section className="mt-10 border-y border-[var(--brand-border)] py-10">
           <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div>
               <p className="page-eyebrow !text-[0.68rem]">Product architecture</p>
@@ -144,9 +137,9 @@ export default function ProductsPage() {
                 A software family for real multilingual workflows.
               </h2>
             </div>
-            <div className="grid gap-3">
+            <div className="divide-y divide-[var(--brand-border)]">
               {ECOSYSTEM.map((item) => (
-                <p key={item} className="surface-muted rounded-2xl px-5 py-4 text-sm text-[var(--brand-muted)]">
+                <p key={item} className="py-4 text-sm leading-7 text-[var(--brand-muted)]">
                   {item}
                 </p>
               ))}

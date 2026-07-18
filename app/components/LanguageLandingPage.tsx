@@ -47,12 +47,12 @@ function buildServiceSchema(content: LanguageLandingContent) {
     provider: {
       "@type": "Organization",
       name: "KreyAI",
-      url: "https://kreyai.com",
+      url: "https://www.kreyai.com",
     },
     areaServed: "Worldwide",
     availableChannel: {
       "@type": "ServiceChannel",
-      serviceUrl: `https://kreyai.com/${content.slug}`,
+      serviceUrl: `https://www.kreyai.com/${content.slug}`,
     },
     description: content.lede,
     inLanguage: content.code,
