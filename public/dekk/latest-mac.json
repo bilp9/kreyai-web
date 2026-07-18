@@ -1,7 +1,7 @@
 {
-  "latest_version": "0.1.5",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.5/KreyAI-Dekk-0.1.5-macOS.dmg",
+  "latest_version": "0.1.6",
+  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.6/KreyAI-Dekk-0.1.6-macOS.dmg",
   "release_url": "https://www.kreyai.com/dekk",
-  "sha256": "845757694816a406e4148e21236fa15f0615ec418c96c5ffc38f975cd552a20c",
-  "notes": "Global hotkey setup guide, listen-only fallback, curl-based update downloads."
+  "sha256": "5af92f3dc77e4a2a6ca6477e8b5da807a277125ef11ac1e8946ed5216f9a1659",
+  "notes": "Improved update recovery, license compatibility, and in-window license and update controls."
 }
