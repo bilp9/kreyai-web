@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Analytics from "./analytics";
+import SiteNavigation from "./components/SiteNavigation";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.kreyai.com"),
@@ -14,46 +15,6 @@ export const metadata: Metadata = {
   },
   description:
     "KreyAI builds practical software for transcription, translation, media review, writing support, and multilingual workflows.",
-  keywords: [
-    "haitian creole transcription",
-    "haitian creole writing assistant",
-    "haitian creole grammar checker",
-    "Adwaz",
-    "KreyAI Adwaz",
-    "kreyol transcription",
-    "kreyol audio transcription",
-    "transcription kreyol",
-    "transkripsyon kreyol",
-    "transcription audio francais",
-    "transcription francaise",
-    "transcripcion de audio en espanol",
-    "transcripcion en espanol",
-    "transcricao de audio em portugues",
-    "transcricao em portugues",
-    "French transcription",
-    "Spanish transcription",
-    "Portuguese transcription",
-    "audio transcription",
-    "speaker labeled transcription",
-    "multilingual transcription",
-    "AI transcription",
-    "speech to text",
-    "subtitle generator",
-    "SRT export",
-    "VTT export",
-    "podcast transcript",
-    "interview transcription",
-    "journalism transcription",
-    "legal transcription",
-    "research transcription",
-    "meeting transcription",
-    "translation software",
-    "CAT tool",
-    "media review software",
-    "subtitle review software",
-    "KreyAI Dekk",
-    "aTelier CAT tool",
-  ],
   alternates: {
     canonical: "/",
   },
@@ -192,44 +153,7 @@ export default function RootLayout({
               </div>
             </Link>
 
-            <nav className="hidden items-center gap-6 text-sm font-medium text-[var(--brand-muted)] md:flex">
-              <Link href="/products" className="transition hover:text-[#13172b]">
-                Products
-              </Link>
-              <Link href="/pricing" className="transition hover:text-[#13172b]">
-                Pricing
-              </Link>
-              <Link href="/about" className="transition hover:text-[#13172b]">
-                About
-              </Link>
-              <Link href="/faq" className="transition hover:text-[#13172b]">
-                FAQ
-              </Link>
-              <Link
-                href="/transcription"
-                className="rounded-xl brand-button px-4 py-2 transition"
-              >
-                Start transcription
-              </Link>
-            </nav>
-
-            <nav className="flex w-full flex-wrap gap-4 border-t border-[var(--brand-border)] pt-3 text-sm font-medium text-[var(--brand-muted)] md:hidden">
-              <Link href="/products" className="transition hover:text-[#13172b]">
-                Products
-              </Link>
-              <Link href="/pricing" className="transition hover:text-[#13172b]">
-                Pricing
-              </Link>
-              <Link href="/about" className="transition hover:text-[#13172b]">
-                About
-              </Link>
-              <Link href="/faq" className="transition hover:text-[#13172b]">
-                FAQ
-              </Link>
-              <Link href="/transcription" className="transition hover:text-[#13172b]">
-                Start transcription
-              </Link>
-            </nav>
+            <SiteNavigation />
           </div>
         </header>
 
