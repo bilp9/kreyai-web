@@ -20,7 +20,6 @@ interface ApprovedWordRecord {
   } | null;
 }
 
-const REVIEW_PASSCODE = "5414";
 const ACCESS_KEY = "adwaz.vocabReview.access.v1";
 const DEFAULT_ADWAZ_API_BASE_URL = "https://adwaz-core-engine-98057750771.us-central1.run.app";
 
@@ -65,17 +64,17 @@ export default function ApprovedWordsClient() {
     setStatus("Loading approved words...");
 
     try {
-      const response = await fetch(
-        `${apiBase}/api/v1/approved-words?passcode=${encodeURIComponent(code)}`,
-        { cache: "no-store" },
-      );
+      const response = await fetch(`${apiBase}/api/v1/approved-words`, {
+        cache: "no-store",
+        headers: { "X-Adwaz-Review-Key": code },
+      });
       if (!response.ok) throw new Error(`approved words ${response.status}`);
       const data = (await response.json()) as { words?: ApprovedWordRecord[]; word_count?: number };
       const nextRecords = data.words || [];
       setRecords(nextRecords);
       setHasAccess(true);
       try {
-        window.localStorage.setItem(ACCESS_KEY, code);
+        window.sessionStorage.setItem(ACCESS_KEY, code);
       } catch {
         // The page can still work for this session.
       }
@@ -90,8 +89,8 @@ export default function ApprovedWordsClient() {
 
   useEffect(() => {
     try {
-      const storedCode = window.localStorage.getItem(ACCESS_KEY);
-      if (storedCode === REVIEW_PASSCODE) {
+      const storedCode = window.sessionStorage.getItem(ACCESS_KEY);
+      if (storedCode) {
         void loadApprovedWords(storedCode);
       }
     } catch {
@@ -122,14 +121,16 @@ export default function ApprovedWordsClient() {
     setStatus(`Revoking ${revokeWord.word}...`);
 
     try {
-      const code = window.localStorage.getItem(ACCESS_KEY) || REVIEW_PASSCODE;
+      const code = window.sessionStorage.getItem(ACCESS_KEY) || "";
       const response = await fetch(
         `${apiBase}/api/v1/approved-words/${encodeURIComponent(revokeWord.word)}/revoke`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "X-Adwaz-Review-Key": code,
+          },
           body: JSON.stringify({
-            passcode: code,
             note: revokeNote.trim() || "Revoked from approved-word admin.",
           }),
         },
@@ -207,7 +208,7 @@ export default function ApprovedWordsClient() {
           </div>
           <button
             type="button"
-            onClick={() => void loadApprovedWords(window.localStorage.getItem(ACCESS_KEY) || REVIEW_PASSCODE)}
+            onClick={() => void loadApprovedWords(window.sessionStorage.getItem(ACCESS_KEY) || "")}
             className="rounded-lg brand-button px-4 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
             disabled={isLoading}
           >

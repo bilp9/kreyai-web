@@ -32,7 +32,6 @@ interface VocabReviewClientProps {
   exportFilenamePrefix: string;
 }
 
-const REVIEW_PASSCODE = "5414";
 const ACCESS_KEY = "adwaz.vocabReview.access.v1";
 const DEFAULT_ADWAZ_API_BASE_URL = "https://adwaz-core-engine-98057750771.us-central1.run.app";
 
@@ -114,9 +113,11 @@ export default function VocabReviewClient({
         missingRecords.map((record) =>
           fetch(`${apiBase}/api/v1/vocab-review/${storageNamespace}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "X-Adwaz-Review-Key": code,
+            },
             body: JSON.stringify({
-              passcode: code,
               namespace: storageNamespace,
               record,
             }),
@@ -130,10 +131,10 @@ export default function VocabReviewClient({
       cachedDecisions: Record<string, DecisionRecord>,
     ) => {
       try {
-        const response = await fetch(
-          `${apiBase}/api/v1/vocab-review/${storageNamespace}?passcode=${encodeURIComponent(code)}`,
-          { cache: "no-store" },
-        );
+        const response = await fetch(`${apiBase}/api/v1/vocab-review/${storageNamespace}`, {
+          cache: "no-store",
+          headers: { "X-Adwaz-Review-Key": code },
+        });
         if (!response.ok) throw new Error(`review state ${response.status}`);
         const data = (await response.json()) as { decisions?: Record<string, DecisionRecord> };
         const sharedDecisions = data.decisions || {};
@@ -154,8 +155,8 @@ export default function VocabReviewClient({
     };
 
     try {
-      const storedCode = window.localStorage.getItem(ACCESS_KEY);
-      const storedAccess = storedCode === REVIEW_PASSCODE;
+      const storedCode = window.sessionStorage.getItem(ACCESS_KEY);
+      const storedAccess = Boolean(storedCode);
       setHasAccess(storedAccess);
       const cachedDecisions = parseDecisionCache(window.localStorage.getItem(decisionsKey));
       setDecisions(cachedDecisions);
@@ -186,27 +187,27 @@ export default function VocabReviewClient({
 
   const unlock = async () => {
     const code = passcode.trim();
-    if (code !== REVIEW_PASSCODE) {
+    if (!code) {
       setAccessError("That review code is not active.");
       return;
     }
 
-    try {
-      window.localStorage.setItem(ACCESS_KEY, code);
-    } catch {
-      // Access can still work for this session if local storage is unavailable.
-    }
-    setHasAccess(true);
     setAccessError("");
     setSyncStatus("Loading shared review progress...");
 
     try {
       const cachedDecisions = parseDecisionCache(window.localStorage.getItem(decisionsKey));
-      const response = await fetch(
-        `${apiBase}/api/v1/vocab-review/${storageNamespace}?passcode=${encodeURIComponent(code)}`,
-        { cache: "no-store" },
-      );
+      const response = await fetch(`${apiBase}/api/v1/vocab-review/${storageNamespace}`, {
+        cache: "no-store",
+        headers: { "X-Adwaz-Review-Key": code },
+      });
       if (!response.ok) throw new Error(`review state ${response.status}`);
+      try {
+        window.sessionStorage.setItem(ACCESS_KEY, code);
+      } catch {
+        // Access can still work for this tab if session storage is unavailable.
+      }
+      setHasAccess(true);
       const data = (await response.json()) as { decisions?: Record<string, DecisionRecord> };
       const sharedDecisions = data.decisions || {};
       const mergedDecisions = { ...sharedDecisions, ...cachedDecisions };
@@ -222,9 +223,11 @@ export default function VocabReviewClient({
           .map((record) =>
             fetch(`${apiBase}/api/v1/vocab-review/${storageNamespace}`, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+                "X-Adwaz-Review-Key": code,
+              },
               body: JSON.stringify({
-                passcode: code,
                 namespace: storageNamespace,
                 record,
               }),
@@ -233,6 +236,8 @@ export default function VocabReviewClient({
       );
       setSyncStatus("Review progress is synced across browsers.");
     } catch {
+      setHasAccess(false);
+      setAccessError("That review code is not active.");
       setSyncStatus("Could not sync shared review progress. Using this browser's saved copy.");
     }
   };
@@ -259,12 +264,14 @@ export default function VocabReviewClient({
     });
 
     try {
-      const code = window.localStorage.getItem(ACCESS_KEY) || REVIEW_PASSCODE;
+      const code = window.sessionStorage.getItem(ACCESS_KEY) || "";
       const response = await fetch(`${apiBase}/api/v1/vocab-review/${storageNamespace}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Adwaz-Review-Key": code,
+        },
         body: JSON.stringify({
-          passcode: code,
           namespace: storageNamespace,
           record,
         }),
@@ -332,11 +339,11 @@ export default function VocabReviewClient({
     }
 
     try {
-      const code = window.localStorage.getItem(ACCESS_KEY) || REVIEW_PASSCODE;
-      const response = await fetch(
-        `${apiBase}/api/v1/vocab-review/${storageNamespace}?passcode=${encodeURIComponent(code)}`,
-        { method: "DELETE" },
-      );
+      const code = window.sessionStorage.getItem(ACCESS_KEY) || "";
+      const response = await fetch(`${apiBase}/api/v1/vocab-review/${storageNamespace}`, {
+        method: "DELETE",
+        headers: { "X-Adwaz-Review-Key": code },
+      });
       if (!response.ok) throw new Error(`review reset ${response.status}`);
       setSyncStatus("Shared review progress reset.");
     } catch {

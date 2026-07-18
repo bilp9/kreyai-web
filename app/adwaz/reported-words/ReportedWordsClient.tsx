@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import VocabReviewClient, { type WordCandidate } from "../vocab-review/VocabReviewClient";
 
-const REVIEW_PASSCODE = "5414";
 const ACCESS_KEY = "adwaz.vocabReview.access.v1";
 const DEFAULT_ADWAZ_API_BASE_URL = "https://adwaz-core-engine-98057750771.us-central1.run.app";
 
@@ -29,17 +28,17 @@ export default function ReportedWordsClient() {
     setIsLoading(true);
     setStatus("Loading reported words...");
     try {
-      const response = await fetch(
-        `${apiBase}/api/v1/reported-words?passcode=${encodeURIComponent(code)}`,
-        { cache: "no-store" },
-      );
+      const response = await fetch(`${apiBase}/api/v1/reported-words`, {
+        cache: "no-store",
+        headers: { "X-Adwaz-Review-Key": code },
+      });
       if (!response.ok) throw new Error(`reported words ${response.status}`);
       const data = (await response.json()) as { candidates?: WordCandidate[]; candidate_count?: number };
       const nextCandidates = data.candidates || [];
       setCandidates(nextCandidates);
       setHasAccess(true);
       try {
-        window.localStorage.setItem(ACCESS_KEY, code);
+        window.sessionStorage.setItem(ACCESS_KEY, code);
       } catch {
         // This session can continue even when local storage is unavailable.
       }
@@ -58,8 +57,8 @@ export default function ReportedWordsClient() {
 
   useEffect(() => {
     try {
-      const storedCode = window.localStorage.getItem(ACCESS_KEY);
-      if (storedCode === REVIEW_PASSCODE) {
+      const storedCode = window.sessionStorage.getItem(ACCESS_KEY);
+      if (storedCode) {
         void loadReportedWords(storedCode);
       }
     } catch {
