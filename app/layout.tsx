@@ -142,7 +142,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify([ORGANIZATION_SCHEMA, SOFTWARE_SCHEMA]) }}
         />
         <header className="sticky top-0 z-50 border-b border-[var(--brand-border)] bg-[rgba(255,255,255,0.9)] backdrop-blur-xl">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-3">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-6 py-3 md:gap-4">
             <Link href="/" className="flex items-center">
               <div className="logo-container">
                 <Image src="/icon.svg" alt="KreyAI logo" width={52} height={52} className="logo-icon" priority />
