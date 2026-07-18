@@ -1,0 +1,22 @@
+{
+  "version": "0.1.6",
+  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.6/aTelier-0.1.6.dmg",
+  "platforms": {
+    "macos": {
+      "status": "available",
+      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.6/aTelier-0.1.6.dmg"
+    },
+    "windows": {
+      "status": "coming_soon",
+      "download_url": null
+    }
+  },
+  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.6",
+  "sha256": "735ec65bae7bcda9aab82876c0674f6301d34e53f802bd3c916dcfaf55baed54",
+  "published_at": "2026-07-18T00:00:00Z",
+  "notes": [
+    "Download updates directly from aTelier using your default browser.",
+    "A simpler Updates section keeps the next action clear.",
+    "Technical release details stay behind the scenes."
+  ]
+}

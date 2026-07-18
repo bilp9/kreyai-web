@@ -7,7 +7,7 @@ import Link from "next/link";
 import Analytics from "./analytics";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kreyai.com"),
+  metadataBase: new URL("https://www.kreyai.com"),
   title: {
     default: "KreyAI | Practical Language Tools",
     template: "%s | KreyAI",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    url: "https://kreyai.com",
+    url: "https://www.kreyai.com",
     siteName: "KreyAI",
     title: "KreyAI | Practical Language Tools",
     description:
@@ -100,10 +100,10 @@ const ORGANIZATION_SCHEMA = {
   "@type": "Organization",
   name: "KreyAI",
   legalName: "KreyAI Technologies LLC",
-  url: "https://kreyai.com",
-  logo: "https://kreyai.com/icon.svg",
-  email: "support@kreyai.com",
-  sameAs: ["https://kreyai.com"],
+  url: "https://www.kreyai.com",
+  logo: "https://www.kreyai.com/icon.svg",
+  email: "hello@kreyai.com",
+  sameAs: ["https://www.kreyai.com"],
 };
 
 const SOFTWARE_SCHEMA = {
@@ -112,7 +112,7 @@ const SOFTWARE_SCHEMA = {
   name: "KreyAI",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
-  url: "https://kreyai.com",
+  url: "https://www.kreyai.com",
   description:
     "Language workflow software for transcription, translation, writing support, media review, and multilingual work.",
   inLanguage: ["en", "fr", "ht", "es", "pt"],
@@ -180,8 +180,8 @@ export default function RootLayout({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify([ORGANIZATION_SCHEMA, SOFTWARE_SCHEMA]) }}
         />
-        <header className="sticky top-0 z-50 border-b border-[var(--brand-border)] bg-[rgba(248,250,252,0.86)] backdrop-blur-xl">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+        <header className="sticky top-0 z-50 border-b border-[var(--brand-border)] bg-[rgba(255,255,255,0.9)] backdrop-blur-xl">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-3">
             <Link href="/" className="flex items-center">
               <div className="logo-container">
                 <Image src="/icon.svg" alt="KreyAI logo" width={52} height={52} className="logo-icon" priority />
@@ -192,37 +192,22 @@ export default function RootLayout({
               </div>
             </Link>
 
-            <nav className="hidden items-center gap-8 text-sm font-medium text-[var(--brand-muted)] md:flex">
+            <nav className="hidden items-center gap-6 text-sm font-medium text-[var(--brand-muted)] md:flex">
               <Link href="/products" className="transition hover:text-[#13172b]">
                 Products
-              </Link>
-              <Link href="/about" className="transition hover:text-[#13172b]">
-                About
               </Link>
               <Link href="/pricing" className="transition hover:text-[#13172b]">
                 Pricing
               </Link>
-              <Link href="/dekk" className="transition hover:text-[#13172b]">
-                Dekk
-              </Link>
-              <Link href="/adwaz" className="transition hover:text-[#13172b]">
-                Adwaz
-              </Link>
-              <Link href="/transcription/billing" className="transition hover:text-[#13172b]">
-                Billing
+              <Link href="/about" className="transition hover:text-[#13172b]">
+                About
               </Link>
               <Link href="/faq" className="transition hover:text-[#13172b]">
                 FAQ
               </Link>
-              <Link href="/privacy" className="transition hover:text-[#13172b]">
-                Privacy
-              </Link>
-              <Link href="/terms" className="transition hover:text-[#13172b]">
-                Terms
-              </Link>
               <Link
                 href="/transcription"
-                className="rounded-full brand-button px-4 py-2 transition"
+                className="rounded-xl brand-button px-4 py-2 transition"
               >
                 Start transcription
               </Link>
@@ -232,32 +217,17 @@ export default function RootLayout({
               <Link href="/products" className="transition hover:text-[#13172b]">
                 Products
               </Link>
+              <Link href="/pricing" className="transition hover:text-[#13172b]">
+                Pricing
+              </Link>
               <Link href="/about" className="transition hover:text-[#13172b]">
                 About
-              </Link>
-              <Link href="/transcription" className="transition hover:text-[#13172b]">
-                Transcription
-              </Link>
-              <Link href="/dekk" className="transition hover:text-[#13172b]">
-                Dekk
-              </Link>
-              <Link href="/transcription/billing" className="transition hover:text-[#13172b]">
-                Billing
-              </Link>
-              <Link href="/adwaz" className="transition hover:text-[#13172b]">
-                Adwaz
               </Link>
               <Link href="/faq" className="transition hover:text-[#13172b]">
                 FAQ
               </Link>
-              <Link href="/pricing" className="transition hover:text-[#13172b]">
-                Pricing
-              </Link>
-              <Link href="/privacy" className="transition hover:text-[#13172b]">
-                Privacy
-              </Link>
-              <Link href="/terms" className="transition hover:text-[#13172b]">
-                Terms
+              <Link href="/transcription" className="transition hover:text-[#13172b]">
+                Start transcription
               </Link>
             </nav>
           </div>

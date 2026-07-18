@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Transcription Pricing | KreyAI",
+  title: "Pricing | KreyAI",
   description:
-    "Simple prepaid transcription credits from KreyAI. Buy minutes when you need them with no subscriptions or seat licenses.",
+    "KreyAI pricing for transcription credits and desktop language workflow software, including aTelier and Dekk.",
   keywords: [
     "transcription pricing",
     "Haitian Creole transcription pricing",
@@ -68,15 +68,42 @@ const HOW_CREDITS_WORK = [
   "Adwaz and Dekk are separate from transcription credits.",
 ];
 
+const SOFTWARE_LICENSES = [
+  {
+    name: "aTelier Classic",
+    price: "$149 one-time",
+    note: "30-day free trial",
+    description: "Local-first CAT tool for professional translators who need translation memory, bilingual editing, QA, backup, and export. One-time purchase, no subscription.",
+    href: "/atelier",
+    cta: "Learn about aTelier",
+  },
+  {
+    name: "Dekk",
+    price: "Separate license",
+    note: "Local playback software",
+    description: "Desktop playback software for transcription workflows, hotkeys, speed control, and focused typing.",
+    href: "/dekk",
+    cta: "Learn about Dekk",
+  },
+  {
+    name: "Adwaz",
+    price: "Preview",
+    note: "Writing support",
+    description: "Haitian Creole writing review for spelling, grammar, style, consistency, and orthography workflows.",
+    href: "/adwaz",
+    cta: "Open Adwaz",
+  },
+];
+
 export default function PricingPage() {
   return (
     <main className="page-shell text-[#101426]">
       <section className="page-wrap">
         <div className="page-header">
           <p className="page-eyebrow">Pricing</p>
-          <h1 className="page-title">Simple prepaid credits for transcription.</h1>
+          <h1 className="page-title">Clear pricing for language work.</h1>
           <p className="page-lede">
-            Buy credits when you need them. No subscriptions, no seat licenses, and no recurring commitment.
+            Use prepaid credits for transcription. Desktop products such as aTelier and Dekk are licensed separately.
           </p>
         </div>
 
@@ -125,33 +152,32 @@ export default function PricingPage() {
           </div>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <div className="surface-callout rounded-[28px] p-7">
-            <h2 className="text-2xl font-semibold tracking-tight text-[var(--brand-blue-deep)]">
-              Dekk is priced separately.
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
-              KreyAI Dekk is desktop software for local transcription playback. It is licensed separately from
-              transcription credits.
-            </p>
-            <Link href="/dekk" className="brand-button mt-5 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
-              Learn about Dekk
-            </Link>
+        <section className="mt-14 border-y border-[var(--brand-border)] py-10">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p className="page-eyebrow !text-[0.68rem]">Desktop software</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">Licensed separately from transcription credits.</h2>
+              <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
+                KreyAI desktop tools are priced around the workflow they support, not by transcription minutes.
+              </p>
+            </div>
+            <div className="divide-y divide-[var(--brand-border)]">
+              {SOFTWARE_LICENSES.map((product) => (
+                <div key={product.name} className="grid gap-4 py-5 md:grid-cols-[0.9fr_1.4fr_auto] md:items-start">
+                  <div>
+                    <h3 className="text-xl font-semibold tracking-tight">{product.name}</h3>
+                    <p className="mt-1 text-sm font-semibold text-[var(--brand-blue)]">{product.price}</p>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--brand-muted)]">{product.note}</p>
+                  </div>
+                  <p className="text-sm leading-7 text-[var(--brand-muted)]">{product.description}</p>
+                  <Link href={product.href} className="inline-flex whitespace-nowrap text-sm font-semibold text-[var(--brand-blue)] underline underline-offset-4">
+                    {product.cta}
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
-
-          <div className="surface-callout rounded-[28px] p-7">
-            <h2 className="text-2xl font-semibold tracking-tight text-[var(--brand-blue-deep)]">
-              Adwaz is priced separately.
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
-              Adwaz is separate from transcription credits and is built for Haitian Creole writing review, spelling,
-              grammar, and orthography workflows.
-            </p>
-            <Link href="/adwaz" className="brand-button mt-5 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
-              Open Adwaz
-            </Link>
-          </div>
-        </div>
+        </section>
 
         <div className="surface-panel mt-10 rounded-[30px] p-7">
           <h2 className="text-2xl font-semibold tracking-tight">Payments & refunds</h2>

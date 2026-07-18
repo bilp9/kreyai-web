@@ -20,7 +20,7 @@ const PRODUCT_POINTS = [
   {
     name: "aTelier",
     description:
-      "A translation workbench for modern linguists, with translation memory, terminology, side-by-side editing, QA checks, and AI-assisted suggestions.",
+      "A local-first translation workbench for modern linguists, with translation memory, terminology, side-by-side editing, QA checks, and export workflows.",
   },
   {
     name: "Dekk",
@@ -67,6 +67,26 @@ export default function AboutPage() {
         </div>
 
         <div className="mt-14 grid gap-5">
+          <section className="surface-panel rounded-[28px] p-7">
+            <h2 className="text-2xl font-semibold tracking-tight">Built by a working linguist</h2>
+            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
+              KreyAI is built by someone who does this work, not just studies it. Our founder is a working
+              multilingual interpreter and has worked as an analytical linguist supporting detail-critical work for
+              federal agencies, where a single mistranslated word has real consequences.
+            </p>
+            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
+              That experience shapes how KreyAI is built: tools designed around what the work actually requires, by
+              someone who has done real-time interpreting and high-stakes linguistic analysis, not just imagined it
+              from the outside.
+            </p>
+            <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
+              That's paired with a background in business operations and continuity planning, including hands-on
+              work building AI-assisted workflows to analyze historical records and improve triage accuracy. The
+              result is software built by someone who understands the linguistic work, the operational discipline
+              behind running it, and how to build practical AI tools without overpromising what they can do.
+            </p>
+          </section>
+
           <section className="surface-panel rounded-[28px] p-7">
             <h2 className="text-2xl font-semibold tracking-tight">What KreyAI Builds</h2>
             <p className="mt-4 text-sm leading-7 text-[var(--brand-muted)]">
