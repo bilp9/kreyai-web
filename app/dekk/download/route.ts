@@ -5,9 +5,11 @@ export const runtime = "nodejs";
 
 const DEFAULT_PLATFORM = "macos";
 const DEFAULT_SOURCE = "website";
+const DEFAULT_WINDOWS_DOWNLOAD_URL =
+  "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.6/KreyAI-Dekk-0.1.6-windows-x64-setup.exe";
 const DOWNLOAD_URLS: Record<string, string | undefined> = {
   macos: process.env.NEXT_PUBLIC_DEKK_DOWNLOAD_URL,
-  windows: process.env.NEXT_PUBLIC_DEKK_WINDOWS_DOWNLOAD_URL,
+  windows: process.env.NEXT_PUBLIC_DEKK_WINDOWS_DOWNLOAD_URL || DEFAULT_WINDOWS_DOWNLOAD_URL,
 };
 
 function sha256(value: string) {

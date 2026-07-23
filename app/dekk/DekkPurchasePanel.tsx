@@ -27,8 +27,8 @@ export default function DekkPurchasePanel() {
   const [error, setError] = useState<string | null>(null);
 
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const downloadUrl = process.env.NEXT_PUBLIC_DEKK_DOWNLOAD_URL;
-  const trackedDownloadUrl = "/dekk/download?source=website";
+  const macDownloadUrl = "/dekk/download?source=website&platform=macos";
+  const windowsDownloadUrl = "/dekk/download?source=website&platform=windows";
   const normalizedEmail = email.trim().toLowerCase();
   const hasValidEmail = EMAIL_PATTERN.test(normalizedEmail);
   const success = params.get("success") === "1";
@@ -97,11 +97,14 @@ export default function DekkPurchasePanel() {
                 <span className="font-semibold">Help &gt; Activate License</span> and paste the key.
               </p>
             </div>
-            {downloadUrl ? (
-              <a href={trackedDownloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
-                Download Dekk for macOS
+            <div className="flex flex-wrap gap-3">
+              <a href={macDownloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+                Download for macOS
               </a>
-            ) : null}
+              <a href={windowsDownloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+                Download for Windows
+              </a>
+            </div>
           </div>
         </div>
       ) : null}
@@ -118,17 +121,14 @@ export default function DekkPurchasePanel() {
               : "Download Dekk and try it free for 14 days. No email or account required."}
           </p>
 
-          {downloadUrl ? (
-            <a href={trackedDownloadUrl} className="brand-button mt-5 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
-              Download Dekk for macOS
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a href={macDownloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+              Download for macOS
             </a>
-          ) : (
-            <div className="surface-callout mt-5 rounded-[22px] p-5">
-              <p className="text-sm leading-7 text-[var(--brand-blue-deep)]">
-                Download delivery is being configured for this environment.
-              </p>
-            </div>
-          )}
+            <a href={windowsDownloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+              Download for Windows
+            </a>
+          </div>
         </div>
 
         <div>

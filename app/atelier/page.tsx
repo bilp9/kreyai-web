@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import AtelierPurchasePanel from "./AtelierPurchasePanel";
 
 export const metadata: Metadata = {
-  title: "aTelier CAT Tool for macOS | Local Translation Memory Software",
+  title: "aTelier CAT Tool for macOS and Windows | Local Translation Memory Software",
   description:
     "Download aTelier by KreyAI, a local-first CAT tool for professional translators with translation memory, bilingual editing, QA, backup, and DOCX export workflows.",
   keywords: [
@@ -60,11 +60,11 @@ const DOWNLOADS = [
   },
   {
     platform: "Windows",
-    status: "Coming soon",
-    href: "mailto:hello@kreyai.com?subject=aTelier%20for%20Windows",
-    action: "Get Windows update",
-    body: "PC build is being prepared for testing.",
-    active: false,
+    status: "Available now",
+    href: "/atelier/download?source=website&platform=windows",
+    action: "Download for Windows",
+    body: "Signed 64-bit installer for Windows 10 and 11.",
+    active: true,
   },
 ];
 
@@ -85,7 +85,7 @@ const FAQ = [
   ],
   [
     "Is Windows supported?",
-    "macOS is available first. A Windows build is planned and the download flow is already prepared for it.",
+    "Yes. aTelier is available as a signed 64-bit installer for Windows 10 and 11, alongside the notarized macOS build.",
   ],
   [
     "Is aTelier a subscription?",
@@ -94,8 +94,8 @@ const FAQ = [
 ];
 
 const INSTALL_STEPS = [
-  "Download the macOS DMG.",
-  "Open the DMG and drag aTelier into Applications.",
+  "Choose the macOS DMG or signed Windows installer.",
+  "On macOS, drag aTelier into Applications. On Windows, run the signed setup file.",
   "Launch aTelier from Applications and create your first local project.",
 ];
 
@@ -108,7 +108,7 @@ const ATELIER_SCHEMA = {
   operatingSystem: ["macOS", "Windows"],
   url: "https://www.kreyai.com/atelier",
   downloadUrl: "https://www.kreyai.com/atelier/download?platform=macos",
-  softwareVersion: "0.1.2",
+  softwareVersion: "0.1.6",
   description:
     "Local-first CAT tool for professional translators with translation memory, bilingual editing, QA, backup, and export workflows.",
   offers: {
@@ -197,7 +197,7 @@ export default function AtelierPage() {
               desktop workflow.
             </p>
             <Link
-              href="/atelier/releases/0.1.2"
+              href="/atelier/releases/0.1.6"
               className="mt-5 inline-flex rounded-xl border border-[rgba(40,41,126,0.18)] bg-white/70 px-5 py-3 text-sm font-semibold text-[var(--brand-blue-deep)] hover:border-[rgba(40,41,126,0.32)]"
             >
               View release notes
