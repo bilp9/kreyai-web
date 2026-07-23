@@ -7,8 +7,9 @@
       "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.6/aTelier-0.1.6.dmg"
     },
     "windows": {
-      "status": "coming_soon",
-      "download_url": null
+      "status": "available",
+      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.6/aTelier-0.1.6-windows-x64-setup.exe",
+      "sha256": "74dc54e0af0ba914f2de5e4587f7fc8a2502329269417351253652d958098fa2"
     }
   },
   "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.6",

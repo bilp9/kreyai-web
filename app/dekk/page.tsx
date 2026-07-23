@@ -200,8 +200,6 @@ export default async function DekkPage({ searchParams }: DekkPageProps) {
   const resolvedParams = await searchParams;
   const success = getSingleParam(resolvedParams?.success) === "1";
   const email = getSingleParam(resolvedParams?.email);
-  const downloadUrl = process.env.NEXT_PUBLIC_DEKK_DOWNLOAD_URL;
-  const trackedDownloadUrl = "/dekk/download?source=website";
 
   return (
     <main className="page-shell text-[#13172b]">
@@ -224,18 +222,20 @@ export default async function DekkPage({ searchParams }: DekkPageProps) {
                   <span className="font-semibold">Help &gt; Activate License</span>.
                 </p>
               </div>
-              {downloadUrl ? (
-                <a href={trackedDownloadUrl} className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
-                  Download Dekk for macOS
-                </a>
-              ) : (
-                <Link
-                  href="#download"
-                  className="inline-flex rounded-2xl border border-[#d6dbea] bg-white px-5 py-3 text-sm font-semibold text-[#101426] hover:border-[#bfc7de]"
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="/dekk/download?source=checkout&platform=macos"
+                  className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold"
                 >
-                  Go to download
-                </Link>
-              )}
+                  Download for macOS
+                </a>
+                <a
+                  href="/dekk/download?source=checkout&platform=windows"
+                  className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold"
+                >
+                  Download for Windows
+                </a>
+              </div>
             </div>
           </section>
         ) : null}
@@ -267,7 +267,7 @@ export default async function DekkPage({ searchParams }: DekkPageProps) {
               Start with 14 days.
             </h2>
             <p className="mt-3 text-sm leading-7 text-[var(--brand-blue-deep)]">
-              Download Dekk for macOS, use the local trial, and activate a one-time license when it becomes part of
+              Download Dekk for macOS or Windows, use the local trial, and activate a one-time license when it becomes part of
               your transcription workflow.
             </p>
           </aside>
