@@ -1,6 +1,6 @@
 {
   "latest_version": "0.1.6",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.6/KreyAI-Dekk-0.1.6-macOS.dmg",
+  "download_url": "https://www.kreyai.com/dekk/download?source=updater&platform=macos&version=0.1.6",
   "release_url": "https://www.kreyai.com/dekk",
   "sha256": "5af92f3dc77e4a2a6ca6477e8b5da807a277125ef11ac1e8946ed5216f9a1659",
   "notes": "Improved update recovery, license compatibility, and in-window license and update controls."

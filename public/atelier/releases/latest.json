@@ -1,10 +1,10 @@
 {
   "version": "0.1.6",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.6/aTelier-0.1.6.dmg",
+  "download_url": "https://www.kreyai.com/atelier/download?source=updater&platform=macos&version=0.1.6",
   "platforms": {
     "macos": {
       "status": "available",
-      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.6/aTelier-0.1.6.dmg"
+      "download_url": "https://www.kreyai.com/atelier/download?source=updater&platform=macos&version=0.1.6"
     },
     "windows": {
       "status": "coming_soon",

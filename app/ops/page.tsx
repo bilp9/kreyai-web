@@ -138,6 +138,15 @@ type OpsBillingResponse = {
   ledger: OpsBillingLedgerEntry[];
 };
 
+type ProductDownloadSummary = {
+  total: number;
+  sample_limit: number;
+  by_product: Record<string, number>;
+  by_version: Record<string, number>;
+  by_platform: Record<string, number>;
+  by_source: Record<string, number>;
+};
+
 type HTReviewChunk = {
   index: number;
   raw_text: string;
@@ -617,6 +626,23 @@ async function getBillingData(email: string): Promise<{ data?: OpsBillingRespons
   }
 }
 
+async function getDownloadData(): Promise<{ data?: ProductDownloadSummary; error?: string }> {
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const apiKey = process.env.KREYAI_OPS_API_KEY;
+  if (!apiBase || !apiKey) return { error: "Product download reporting is not configured." };
+
+  try {
+    const res = await fetch(`${apiBase}/ops/product-downloads?limit=10000`, {
+      cache: "no-store",
+      headers: { "X-API-Key": apiKey },
+    });
+    if (!res.ok) return { error: `Product download request failed (${res.status}).` };
+    return { data: (await res.json()) as ProductDownloadSummary };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Unable to load product downloads." };
+  }
+}
+
 async function getHTReviewData(jobId: string): Promise<{ data?: OpsHTReviewResponse; error?: string }> {
   const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
   const apiKey = process.env.KREYAI_OPS_API_KEY;
@@ -963,6 +989,8 @@ export default async function OpsPage({
   const reviewData = reviewResult.data;
   const reviewLookupError = reviewResult.error;
   const reviewRows = buildReviewRows(reviewData);
+  const downloadResult = tab === "downloads" ? await getDownloadData() : { data: undefined, error: undefined };
+  const downloadData = downloadResult.data;
   const jobsHref = buildOpsPageHref({
     tab: "jobs",
     limit: filters.limit,
@@ -980,6 +1008,7 @@ export default async function OpsPage({
     tab: "review",
     reviewJobId,
   });
+  const downloadsHref = buildOpsPageHref({ tab: "downloads" });
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#f7f8fb] text-[#101426]">
@@ -1042,7 +1071,7 @@ export default async function OpsPage({
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <a
               href={jobsHref}
               className={`rounded-[28px] border px-5 py-5 transition ${
@@ -1087,15 +1116,70 @@ export default async function OpsPage({
                 Compare raw transcript output with deterministic clean Haitian Creole output and save an approved final.
               </p>
             </a>
+
+            <a
+              href={downloadsHref}
+              className={`rounded-[28px] border px-5 py-5 transition ${
+                tab === "downloads"
+                  ? "border-[var(--brand-border-strong)] bg-[linear-gradient(135deg,rgba(243,244,255,0.96),rgba(236,244,255,0.96))] shadow-[0_18px_50px_rgba(40,41,126,0.08)]"
+                  : "border-[var(--brand-border)] bg-white hover:bg-[#fafbff]"
+              }`}
+            >
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#5b62d6]">Tab</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#101426]">Downloads</h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
+                Privacy-conscious product download activity by product, platform, version, and source.
+              </p>
+            </a>
           </div>
 
           <a
-            href={tab === "billing" ? billingHref : tab === "review" ? reviewHref : jobsHref}
+            href={tab === "billing" ? billingHref : tab === "review" ? reviewHref : tab === "downloads" ? downloadsHref : jobsHref}
             className="inline-flex items-center justify-center rounded-full border border-[var(--brand-border)] bg-white px-5 py-3 text-sm font-medium text-[#101426] transition hover:bg-[#fafbff]"
           >
             Refresh now
           </a>
         </div>
+
+        {tab === "downloads" && downloadResult.error && (
+          <div className="rounded-[28px] border border-rose-200 bg-rose-50 px-6 py-5 text-sm text-rose-700">
+            {downloadResult.error}
+          </div>
+        )}
+
+        {tab === "downloads" && downloadData && (
+          <SectionShell
+            eyebrow="Product adoption"
+            title="Download activity"
+            description="Counts represent tracked redirect requests, not guaranteed completed installations. Historical Dekk events are included; aTelier tracking begins with this release."
+          >
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <BillingMetricCard label="All tracked requests" value={downloadData.total} />
+              <BillingMetricCard label="Dekk" value={downloadData.by_product.dekk || 0} />
+              <BillingMetricCard label="aTelier" value={downloadData.by_product.atelier || 0} />
+              <BillingMetricCard label="Updater" value={downloadData.by_source.updater || 0} />
+            </div>
+            <div className="mt-6 grid gap-5 lg:grid-cols-3">
+              {[
+                ["By source", downloadData.by_source],
+                ["By platform", downloadData.by_platform],
+                ["By version", downloadData.by_version],
+              ].map(([title, values]) => (
+                <div key={title as string} className="rounded-3xl border border-[var(--brand-border)] bg-[#fbfcff] p-5">
+                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-[#5b62d6]">{title as string}</p>
+                  <div className="mt-4 space-y-3">
+                    {Object.entries(values as Record<string, number>).map(([label, count]) => (
+                      <div key={label} className="flex items-center justify-between gap-4 text-sm">
+                        <span className="text-[var(--brand-muted)]">{label}</span>
+                        <span className="font-semibold text-[#101426]">{count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </SectionShell>
+        )}
 
         {tab === "jobs" && (
           <SectionShell

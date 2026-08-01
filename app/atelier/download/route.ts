@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { recordProductDownload } from "../../lib/product-download";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,16 @@ export async function GET(request: NextRequest) {
   if (!target) {
     const fallback = platform === "windows" ? "/atelier?windows=coming-soon#download" : "/atelier?download_error=1#download";
     return NextResponse.redirect(new URL(fallback, request.url), 302);
+  }
+
+  try {
+    await recordProductDownload(request, "atelier", {
+      version: process.env.NEXT_PUBLIC_ATELIER_VERSION || "0.1.6",
+      platform,
+      source: "website",
+    });
+  } catch (error) {
+    console.error("Unable to record aTelier download event", error);
   }
 
   return NextResponse.redirect(target, 302);
