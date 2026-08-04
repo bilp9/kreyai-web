@@ -1,22 +1,23 @@
 {
-  "version": "0.1.6",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.6/aTelier-0.1.6.dmg",
+  "version": "0.1.8",
+  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.8/aTelier-0.1.8.dmg",
   "platforms": {
     "macos": {
       "status": "available",
-      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.6/aTelier-0.1.6.dmg"
+      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.8/aTelier-0.1.8.dmg"
     },
     "windows": {
       "status": "coming_soon",
       "download_url": null
     }
   },
-  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.6",
-  "sha256": "735ec65bae7bcda9aab82876c0674f6301d34e53f802bd3c916dcfaf55baed54",
-  "published_at": "2026-07-18T00:00:00Z",
+  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.8",
+  "sha256": "70312800923d4ac2ae2c97076fd021518a22f0d2927abb86b39fd24c26763c4d",
+  "published_at": "2026-08-04T14:35:00Z",
   "notes": [
-    "Download updates directly from aTelier using your default browser.",
-    "A simpler Updates section keeps the next action clear.",
-    "Technical release details stay behind the scenes."
+    "File-wide QA, recovery history, source reimport, and review comments.",
+    "Project search, safe target replacement, and translation-memory concordance.",
+    "XLIFF 1.2 and 2.0 support plus an approximate translated-document preview.",
+    "Formatting warnings remain visible without blocking segment confirmation."
   ]
 }

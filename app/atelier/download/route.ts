@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 const DEFAULT_DOWNLOAD_URL =
-  "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.2/aTelier-0.1.2.dmg";
+  "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.8/aTelier-0.1.8.dmg";
 
 function validHttpUrl(value: string | undefined) {
   if (!value) return null;

@@ -44,9 +44,9 @@ export const metadata: Metadata = {
 };
 
 const FEATURES = [
-  ["Project workflow", "Create local jobs, add files, and keep every client project organized."],
-  ["Translation memory", "Import, search, and update one or more memories as you confirm work."],
-  ["Bilingual editor", "Translate source and target side by side with tags, QA, and export."],
+  ["Project workflow", "Create local jobs, reimport updated sources, and recover earlier file versions."],
+  ["Translation memory", "Import, search, and update one or more memories with project-wide concordance."],
+  ["Professional review", "Translate side by side with file-wide QA, comments, formatting warnings, and export."],
 ];
 
 const DOWNLOADS = [
@@ -108,7 +108,7 @@ const ATELIER_SCHEMA = {
   operatingSystem: ["macOS", "Windows"],
   url: "https://www.kreyai.com/atelier",
   downloadUrl: "https://www.kreyai.com/atelier/download?platform=macos",
-  softwareVersion: "0.1.2",
+  softwareVersion: "0.1.8",
   description:
     "Local-first CAT tool for professional translators with translation memory, bilingual editing, QA, backup, and export workflows.",
   offers: {
@@ -197,7 +197,7 @@ export default function AtelierPage() {
               desktop workflow.
             </p>
             <Link
-              href="/atelier/releases/0.1.2"
+              href="/atelier/releases/0.1.8"
               className="mt-5 inline-flex rounded-xl border border-[rgba(40,41,126,0.18)] bg-white/70 px-5 py-3 text-sm font-semibold text-[var(--brand-blue-deep)] hover:border-[rgba(40,41,126,0.32)]"
             >
               View release notes
