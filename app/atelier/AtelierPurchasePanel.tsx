@@ -107,6 +107,14 @@ export default function AtelierPurchasePanel() {
               ? "Use the download below if aTelier is not installed yet. Your license key unlocks it after the trial."
               : "Download aTelier and try it free for 30 days. No payment required to start."}
           </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href="/atelier/download?source=checkout&platform=macos"
+              className="brand-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold"
+            >
+              Download for macOS
+            </a>
+          </div>
         </div>
 
         <div>

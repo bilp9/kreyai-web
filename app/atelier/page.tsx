@@ -63,7 +63,7 @@ const DOWNLOADS = [
     status: "Coming soon",
     href: "mailto:hello@kreyai.com?subject=aTelier%20for%20Windows",
     action: "Get Windows update",
-    body: "PC build is being prepared for testing.",
+    body: "The signed PC installer is completing hands-on release testing.",
     active: false,
   },
 ];
@@ -85,7 +85,7 @@ const FAQ = [
   ],
   [
     "Is Windows supported?",
-    "macOS is available first. A Windows build is planned and the download flow is already prepared for it.",
+    "macOS is available now. The signed Windows installer will be published after hands-on release testing is complete.",
   ],
   [
     "Is aTelier a subscription?",
@@ -105,7 +105,7 @@ const ATELIER_SCHEMA = {
   name: "aTelier",
   alternateName: "KreyAI aTelier",
   applicationCategory: "BusinessApplication",
-  operatingSystem: ["macOS", "Windows"],
+  operatingSystem: "macOS",
   url: "https://www.kreyai.com/atelier",
   downloadUrl: "https://www.kreyai.com/atelier/download?platform=macos",
   softwareVersion: "0.1.8",

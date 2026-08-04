@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   const platform = request.nextUrl.searchParams.get("platform") || "macos";
   const configuredTarget =
     platform === "windows"
-      ? process.env.NEXT_PUBLIC_ATELIER_WINDOWS_DOWNLOAD_URL
+      ? undefined
       : process.env.NEXT_PUBLIC_ATELIER_DOWNLOAD_URL || DEFAULT_DOWNLOAD_URL;
   const target = validHttpUrl(configuredTarget);
 
