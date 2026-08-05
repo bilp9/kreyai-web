@@ -108,7 +108,7 @@ const ATELIER_SCHEMA = {
   operatingSystem: "macOS",
   url: "https://www.kreyai.com/atelier",
   downloadUrl: "https://www.kreyai.com/atelier/download?platform=macos",
-  softwareVersion: "0.1.8",
+  softwareVersion: "0.1.9",
   description:
     "Local-first CAT tool for professional translators with translation memory, bilingual editing, QA, backup, and export workflows.",
   offers: {
@@ -197,7 +197,7 @@ export default function AtelierPage() {
               desktop workflow.
             </p>
             <Link
-              href="/atelier/releases/0.1.8"
+              href="/atelier/releases/0.1.9"
               className="mt-5 inline-flex rounded-xl border border-[rgba(40,41,126,0.18)] bg-white/70 px-5 py-3 text-sm font-semibold text-[var(--brand-blue-deep)] hover:border-[rgba(40,41,126,0.32)]"
             >
               View release notes
