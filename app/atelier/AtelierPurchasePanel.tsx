@@ -114,6 +114,12 @@ export default function AtelierPurchasePanel() {
             >
               Download for macOS
             </a>
+            <a
+              href="/atelier/download?source=checkout&platform=windows"
+              className="inline-flex rounded-2xl border border-[var(--brand-border)] bg-white px-5 py-3 text-sm font-semibold text-[#101426] hover:border-[var(--brand-border-strong)]"
+            >
+              Download for Windows
+            </a>
           </div>
         </div>
 

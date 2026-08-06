@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import AtelierPurchasePanel from "./AtelierPurchasePanel";
 
 export const metadata: Metadata = {
-  title: "aTelier CAT Tool for macOS | Local Translation Memory Software",
+  title: "aTelier CAT Tool for macOS and Windows | Translation Memory Software",
   description:
     "Download aTelier by KreyAI, a local-first CAT tool for professional translators with translation memory, bilingual editing, QA, backup, and DOCX export workflows.",
   keywords: [
@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     "DOCX translation tool",
     "offline CAT tool",
     "translation memory software for Mac",
+    "translation memory software for Windows",
     "Trados alternative",
   ],
   alternates: {
@@ -60,11 +61,11 @@ const DOWNLOADS = [
   },
   {
     platform: "Windows",
-    status: "Coming soon",
-    href: "mailto:hello@kreyai.com?subject=aTelier%20for%20Windows",
-    action: "Get Windows update",
-    body: "The signed PC installer is completing hands-on release testing.",
-    active: false,
+    status: "Available now",
+    href: "/atelier/download?source=website&platform=windows",
+    action: "Download for Windows",
+    body: "Signed 64-bit installer for Windows 10 and Windows 11.",
+    active: true,
   },
 ];
 
@@ -85,7 +86,7 @@ const FAQ = [
   ],
   [
     "Is Windows supported?",
-    "macOS is available now. The signed Windows installer will be published after hands-on release testing is complete.",
+    "Yes. aTelier 0.1.9 is available as a signed 64-bit installer for Windows 10 and Windows 11, alongside the macOS release.",
   ],
   [
     "Is aTelier a subscription?",
@@ -94,9 +95,9 @@ const FAQ = [
 ];
 
 const INSTALL_STEPS = [
-  "Download the macOS DMG.",
-  "Open the DMG and drag aTelier into Applications.",
-  "Launch aTelier from Applications and create your first local project.",
+  "Choose the macOS DMG or signed Windows installer.",
+  "On macOS, drag aTelier into Applications. On Windows, run the installer.",
+  "Launch aTelier and create your first local project.",
 ];
 
 const ATELIER_SCHEMA = {
@@ -105,9 +106,9 @@ const ATELIER_SCHEMA = {
   name: "aTelier",
   alternateName: "KreyAI aTelier",
   applicationCategory: "BusinessApplication",
-  operatingSystem: "macOS",
+  operatingSystem: "macOS, Windows 10, Windows 11",
   url: "https://www.kreyai.com/atelier",
-  downloadUrl: "https://www.kreyai.com/atelier/download?platform=macos",
+  downloadUrl: "https://www.kreyai.com/atelier#download",
   softwareVersion: "0.1.9",
   description:
     "Local-first CAT tool for professional translators with translation memory, bilingual editing, QA, backup, and export workflows.",
