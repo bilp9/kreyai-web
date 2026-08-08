@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 const DEFAULT_DOWNLOAD_URL =
   "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10.dmg";
 const DEFAULT_WINDOWS_DOWNLOAD_URL =
-  "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.9/aTelier-0.1.9-windows-x64-setup.exe";
+  "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10-windows-x64-setup.exe";
 
 function validHttpUrl(value: string | undefined) {
   if (!value) return null;

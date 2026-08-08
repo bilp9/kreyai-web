@@ -86,7 +86,7 @@ const FAQ = [
   ],
   [
     "Is Windows supported?",
-    "Yes. aTelier 0.1.9 is available as a signed 64-bit installer for Windows 10 and Windows 11, alongside the macOS release.",
+    "Yes. aTelier 0.1.10 is available as a signed 64-bit installer for Windows 10 and Windows 11, alongside the macOS release.",
   ],
   [
     "Is aTelier a subscription?",
@@ -109,7 +109,7 @@ const ATELIER_SCHEMA = {
   operatingSystem: "macOS, Windows 10, Windows 11",
   url: "https://www.kreyai.com/atelier",
   downloadUrl: "https://www.kreyai.com/atelier#download",
-  softwareVersion: "0.1.9",
+  softwareVersion: "0.1.10",
   description:
     "Local-first CAT tool for professional translators with translation memory, bilingual editing, QA, backup, and export workflows.",
   offers: {
@@ -198,7 +198,7 @@ export default function AtelierPage() {
               desktop workflow.
             </p>
             <Link
-              href="/atelier/releases/0.1.9"
+              href="/atelier/releases/0.1.10"
               className="mt-5 inline-flex rounded-xl border border-[rgba(40,41,126,0.18)] bg-white/70 px-5 py-3 text-sm font-semibold text-[var(--brand-blue-deep)] hover:border-[rgba(40,41,126,0.32)]"
             >
               View release notes
