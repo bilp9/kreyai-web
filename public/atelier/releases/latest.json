@@ -1,10 +1,11 @@
 {
-  "version": "0.1.9",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.9/aTelier-0.1.9.dmg",
+  "version": "0.1.10",
+  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10.dmg",
   "platforms": {
     "macos": {
       "status": "available",
-      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.9/aTelier-0.1.9.dmg"
+      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10.dmg",
+      "sha256": "ccd8bf0b3f5bbceb418fc0fd35ede2cdd9553e77ae1d584a66bbf5a5e5613562"
     },
     "windows": {
       "status": "available",
@@ -12,13 +13,13 @@
       "sha256": "d65da8de1885cb37da7dbcbb367ef7b9709bcb499f1d38c7128d3f9ead232a03"
     }
   },
-  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.9",
-  "sha256": "db9fff1e028f2dabefaf835a5cc0e6227605ba987884b321fe7f96108d64293e",
-  "published_at": "2026-08-05T14:10:00Z",
+  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.10",
+  "sha256": "ccd8bf0b3f5bbceb418fc0fd35ede2cdd9553e77ae1d584a66bbf5a5e5613562",
+  "published_at": "2026-08-08T06:23:16Z",
   "notes": [
-    "Exports now use the native Save dialog on macOS.",
-    "Project backups include linked translation-memory entries for transfer to another computer.",
-    "Formatting QA, structural-tag copying, tag sizing, and editor contrast are more reliable.",
-    "Search and file-wide QA are available directly from the editor toolbar."
+    "DOCX headers, footers, formatting, and hyperlinks are preserved more reliably through translation and export.",
+    "Haitian Creole spelling assistance works locally and keeps personal dictionary entries on your computer.",
+    "Exact numbers and numeric ranges can be carried into the target automatically.",
+    "Editor navigation, file-wide QA, project progress, and inline structure handling are more reliable."
   ]
 }
