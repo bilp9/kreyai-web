@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import AtelierPurchasePanel from "./AtelierPurchasePanel";
+import { atelierRelease, atelierWindowsRelease, releaseVersionFromUrl } from "./release";
 
 export const metadata: Metadata = {
   title: "aTelier CAT Tool for macOS and Windows | Translation Memory Software",
@@ -86,11 +87,11 @@ const FAQ = [
   ],
   [
     "Is Windows supported?",
-    "Yes. aTelier 0.1.10 is available as a signed 64-bit installer for Windows 10 and Windows 11, alongside the macOS release.",
+    `Yes. aTelier ${releaseVersionFromUrl(atelierWindowsRelease.download_url)} is available as a signed 64-bit installer for Windows 10 and Windows 11, alongside the macOS release.`,
   ],
   [
     "Is aTelier a subscription?",
-    "No. aTelier Classic is a one-time purchase. Pay once, activate on one machine, and receive free updates — no recurring fees or seat licenses.",
+    "No. aTelier Classic is a one-time purchase for one computer. It includes updates for the current major version, with no recurring fee.",
   ],
 ];
 
@@ -109,7 +110,7 @@ const ATELIER_SCHEMA = {
   operatingSystem: "macOS, Windows 10, Windows 11",
   url: "https://www.kreyai.com/atelier",
   downloadUrl: "https://www.kreyai.com/atelier#download",
-  softwareVersion: "0.1.10",
+  softwareVersion: atelierRelease.version,
   description:
     "Local-first CAT tool for professional translators with translation memory, bilingual editing, QA, backup, and export workflows.",
   offers: {
@@ -198,7 +199,7 @@ export default function AtelierPage() {
               desktop workflow.
             </p>
             <Link
-              href="/atelier/releases/0.1.10"
+              href={atelierRelease.release_notes_url.replace("https://www.kreyai.com", "")}
               className="mt-5 inline-flex rounded-xl border border-[rgba(40,41,126,0.18)] bg-white/70 px-5 py-3 text-sm font-semibold text-[var(--brand-blue-deep)] hover:border-[rgba(40,41,126,0.32)]"
             >
               View release notes
@@ -236,8 +237,8 @@ export default function AtelierPage() {
           <p className="page-eyebrow !text-[0.68rem]">Pricing</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">One-time purchase. No subscription.</h2>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--brand-muted)]">
-            aTelier Classic is priced below mature enterprise CAT suites, and it stays that way: try it free for 30
-            days, then pay once, own the license, and get free updates.
+            Try aTelier free for 30 days, then continue with a one-time license for one computer. The license includes
+            updates for the current major version.
           </p>
           <Suspense
             fallback={

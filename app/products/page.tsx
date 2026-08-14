@@ -22,7 +22,7 @@ const PRODUCTS = [
     name: "aTelier",
     category: "Translation and localization",
     tagline: "Translation workbench built for modern linguists.",
-    status: "Early access",
+    status: "Available for macOS and Windows",
     href: "/atelier",
     cta: "Download aTelier",
     description:
@@ -90,7 +90,7 @@ export default function ProductsPage() {
             <h1 className="page-title">Practical software for language work.</h1>
             <p className="page-lede">
               KreyAI products support transcription, translation, playback control, writing review, and multilingual
-              workflows without turning every task into a bloated platform.
+              workflows through focused software designed around professional language work.
             </p>
           </div>
         </div>

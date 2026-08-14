@@ -36,7 +36,7 @@ const PRODUCTS = [
 ];
 
 const PRINCIPLES = [
-  "Focused tools instead of bloated platforms",
+  "Professional tools, made simple",
   "Human judgment stays in control",
   "Privacy is built into the workflow",
 ];
@@ -102,7 +102,7 @@ export default function Home() {
         <div className="text-center">
           <p className="page-eyebrow">aTelier</p>
           <h2 className="mt-4 text-4xl font-semibold tracking-[-0.04em] md:text-5xl">
-            A real translation workspace, not a mockup.
+            A focused workspace for professional translation.
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-[var(--brand-muted)]">
             Bilingual editing, translation memory, and QA checks in one local desktop app.

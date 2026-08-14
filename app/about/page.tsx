@@ -50,7 +50,7 @@ const AUDIENCES = [
 ];
 
 const APPROACH = [
-  "Focused tools instead of bloated platforms",
+  "Professional tools, made simple",
   "Practical AI that supports human expertise—not replaces it",
   "Multilingual workflows designed for real-world language use",
   "Local-first processing whenever files don’t need to leave your device",

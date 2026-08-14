@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "nodejs";
+import { atelierMacRelease, atelierWindowsRelease } from "../release";
 
-const DEFAULT_DOWNLOAD_URL =
-  "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10.dmg";
-const DEFAULT_WINDOWS_DOWNLOAD_URL =
-  "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10-windows-x64-setup.exe";
+export const runtime = "nodejs";
 
 function validHttpUrl(value: string | undefined) {
   if (!value) return null;
@@ -21,8 +18,8 @@ export async function GET(request: NextRequest) {
   const platform = request.nextUrl.searchParams.get("platform") || "macos";
   const configuredTarget =
     platform === "windows"
-      ? process.env.NEXT_PUBLIC_ATELIER_WINDOWS_DOWNLOAD_URL || DEFAULT_WINDOWS_DOWNLOAD_URL
-      : process.env.NEXT_PUBLIC_ATELIER_DOWNLOAD_URL || DEFAULT_DOWNLOAD_URL;
+      ? process.env.NEXT_PUBLIC_ATELIER_WINDOWS_DOWNLOAD_URL || atelierWindowsRelease.download_url
+      : process.env.NEXT_PUBLIC_ATELIER_DOWNLOAD_URL || atelierMacRelease.download_url;
   const target = validHttpUrl(configuredTarget);
 
   if (!target) {

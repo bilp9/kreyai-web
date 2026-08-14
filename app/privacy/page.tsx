@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Review how KreyAI handles uploaded audio, generated transcripts, Adwaz writing review text, KreyAI Dekk local data, billing records, retention, and deletion.",
+    "Review how KreyAI handles transcription uploads, aTelier and Dekk local data, Adwaz review text, billing records, retention, and deletion.",
   alternates: {
     canonical: "/privacy",
   },
@@ -18,6 +18,8 @@ const PRIVACY_SECTIONS = [
       "Generated data: transcripts and output files generated from your uploads, along with processing metadata such as duration, language detection, and timestamps.",
       "Adwaz text: text you submit for writing review is processed to return corrections and is not saved by default.",
       "KreyAI Dekk desktop data: files opened in KreyAI Dekk remain on your device. The desktop app may store local file paths, playback positions, hotkey settings, theme preferences, and diagnostic logs on your device.",
+      "aTelier desktop data: project files, source and target text, translation memories, glossaries, backups, preferences, and diagnostic logs are stored locally on your device.",
+      "Desktop licensing data: aTelier and Dekk activation may send a license key, a device identifier, app version, and limited purchase metadata needed to validate and manage a license.",
       "Billing information: transaction and purchase metadata needed to confirm credit purchases, process refunds, prevent abuse, and support billing operations.",
       "Technical data: basic system logs like request timestamps and job IDs, Dekk download event counts using hashed request metadata, plus privacy-safe Adwaz review metadata such as text length, word count, issue count, latency, and optional feedback reports.",
       "We do not collect unnecessary personal data.",
@@ -31,6 +33,7 @@ const PRIVACY_SECTIONS = [
       "Generate downloadable outputs such as TXT, DOCX, and SRT files.",
       "Review Haitian Creole writing in Adwaz and return correction suggestions.",
       "Support local KreyAI Dekk workflows such as playback resume, hotkey preferences, and diagnostic troubleshooting.",
+      "Validate desktop licenses, prevent activation abuse, and provide update availability and release notes.",
       "Deliver job results and notifications.",
       "Process payments, credit purchases, refunds, and fraud-prevention checks.",
       "Measure Dekk download activity and product adoption without storing raw IP addresses in the download event record.",
@@ -53,6 +56,7 @@ const PRIVACY_SECTIONS = [
       "Temporary processing data is deleted once jobs are completed or expired.",
       "Adwaz review text is not stored by default; privacy-safe telemetry and optional feedback reports may be retained for quality and reliability review.",
       "KreyAI Dekk diagnostic logs and app state are stored locally on your device and are not sent automatically.",
+      "aTelier projects, translation memories, glossaries, backups, preferences, and diagnostic logs remain locally stored until you remove or export them.",
       "Logs may be retained longer for operational and security purposes, but do not contain your file content.",
     ],
   },
@@ -68,7 +72,18 @@ const PRIVACY_SECTIONS = [
     ],
   },
   {
-    title: "5. Data Storage & Security",
+    title: "5. aTelier Desktop App",
+    intro: "aTelier is designed as a local-first professional translation workspace:",
+    items: [
+      "Project files, source and target text, translation memories, glossaries, and backups are not uploaded to KreyAI by the normal translation workflow.",
+      "Update checks retrieve release information and do not include project or translation content.",
+      "License activation may send the license key and a device identifier needed to validate the purchased license.",
+      "Diagnostic logs remain on your device unless you choose to send them to KreyAI for support.",
+      "You are responsible for maintaining backups of local aTelier projects and language resources.",
+    ],
+  },
+  {
+    title: "6. Data Storage & Security",
     intro: "We implement appropriate technical measures to protect your data:",
     items: [
       "Secure cloud storage, including encrypted storage systems.",
@@ -78,7 +93,7 @@ const PRIVACY_SECTIONS = [
     ],
   },
   {
-    title: "6. Data Sharing",
+    title: "7. Data Sharing",
     intro:
       "We do not sell, rent, or trade your data. We only share data when necessary to operate the service, such as:",
     items: [
@@ -89,7 +104,7 @@ const PRIVACY_SECTIONS = [
     ],
   },
   {
-    title: "7. Payments & Billing",
+    title: "8. Payments & Billing",
     items: [
       "Payments are processed by third-party providers such as Stripe.",
       "KreyAI does not receive or store full payment card numbers on its own systems unless explicitly stated otherwise.",
@@ -98,35 +113,36 @@ const PRIVACY_SECTIONS = [
     ],
   },
   {
-    title: "8. Your Rights & Control",
+    title: "9. Your Rights & Control",
     items: [
       "You may choose not to upload sensitive content.",
       "You may download your files at any time within the 7-day availability window.",
-      "You may request early deletion of your data as a future feature.",
+      "You may delete eligible transcription-job files immediately from the job page or contact support@kreyai.com for help with an early deletion request.",
+      "You can remove locally stored aTelier and Dekk data using the app or your operating system.",
     ],
   },
   {
-    title: "9. Third-Party Services",
+    title: "10. Third-Party Services",
     items: [
       "KreyAI relies on trusted third-party infrastructure providers such as cloud hosting, storage, email, and payment services.",
       "These providers process data only as required to deliver the service.",
     ],
   },
   {
-    title: "10. Children's Privacy",
+    title: "11. Children's Privacy",
     items: [
       "KreyAI is not intended for use by individuals under the age of 13.",
       "We do not knowingly collect data from children.",
     ],
   },
   {
-    title: "11. Changes to This Policy",
+    title: "12. Changes to This Policy",
     items: [
       'We may update this Privacy Policy from time to time. Updates will be reflected with a revised "Effective Date."',
     ],
   },
   {
-    title: "12. Contact",
+    title: "13. Contact",
     items: [
       "If you have any questions about this Privacy Policy, you may contact us at support@kreyai.com.",
     ],
@@ -144,7 +160,7 @@ export default function PrivacyPage() {
             KreyAI is committed to protecting your privacy. This policy explains how we collect, use, store, and
             protect your information when you use our services.
           </p>
-          <p className="page-meta">Effective Date: June 19, 2026</p>
+          <p className="page-meta">Effective Date: August 13, 2026</p>
         </div>
 
         <div className="mt-14 grid gap-5">

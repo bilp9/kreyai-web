@@ -20,10 +20,6 @@ export default function SiteNavigation() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     if (!isOpen) return;
 
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -85,6 +81,7 @@ export default function SiteNavigation() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={() => setIsOpen(false)}
                 aria-current={active ? "page" : undefined}
                 className={`rounded-lg px-3 py-2 ${active ? "bg-[var(--brand-blue-soft)] text-[#13172b]" : "transition hover:bg-slate-50 hover:text-[#13172b]"}`}
               >
@@ -94,6 +91,7 @@ export default function SiteNavigation() {
           })}
           <Link
             href="/transcription"
+            onClick={() => setIsOpen(false)}
             aria-current={isCurrentPath(pathname, "/transcription") ? "page" : undefined}
             className="rounded-lg px-3 py-2 transition hover:bg-slate-50 hover:text-[#13172b]"
           >

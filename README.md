@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KreyAI Web
 
-## Getting Started
+Public KreyAI website and customer workflows for transcription, aTelier, Dekk, Adwaz, pricing, downloads, checkout, release notes, privacy, and terms.
 
-First, run the development server:
+## Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Configuration
 
-To learn more about Next.js, take a look at the following resources:
+Runtime configuration is supplied through environment variables. Keep secrets in local environment files or the hosting provider, never in Git.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Common public configuration includes:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `NEXT_PUBLIC_API_BASE_URL`
+- `NEXT_PUBLIC_ATELIER_DOWNLOAD_URL`
+- `NEXT_PUBLIC_ATELIER_WINDOWS_DOWNLOAD_URL`
+- Dekk download and checkout configuration
 
-## Deploy on Vercel
+## aTelier Releases
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`public/atelier/releases/latest.json` is the canonical release manifest for update checks, platform downloads, hashes, and release-note links. Product pages and download routes should derive release information from this manifest rather than duplicating version numbers.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Release-note pages live in `app/atelier/releases/`.
+
+## Deployment
+
+Production is deployed through Vercel. Before deployment:
+
+1. Run lint and the production build.
+2. Verify Privacy and Terms match current product behavior.
+3. Verify desktop download URLs and checksums.
+4. Test checkout, license delivery, and mobile download layouts.
+5. Confirm canonical URLs and sitemap entries.
