@@ -168,6 +168,9 @@ export default function RootLayout({
               <Link href="/about" className="transition hover:text-[#13172b]">
                 About
               </Link>
+              <Link href="/linguist-partner" className="transition hover:text-[#13172b]">
+                Linguist Partners
+              </Link>
               <Link href="/privacy" className="transition hover:text-[#13172b]">
                 Privacy
               </Link>

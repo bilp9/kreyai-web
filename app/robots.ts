@@ -20,6 +20,7 @@ export default function robots(): MetadataRoute.Robots {
           "/dekk",
           "/transcription",
           "/about",
+          "/linguist-partner",
           "/haitian-creole-transcription",
           "/french-transcription",
           "/spanish-transcription",
