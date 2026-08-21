@@ -53,6 +53,7 @@ async function recordDownload(request: NextRequest, downloadUrl: URL) {
       referer,
     }),
     cache: "no-store",
+    signal: AbortSignal.timeout(1500),
   });
 }
 
