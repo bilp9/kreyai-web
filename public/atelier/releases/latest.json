@@ -1,25 +1,24 @@
 {
-  "version": "0.1.10",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10.dmg",
+  "version": "0.1.12",
+  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.12/aTelier-0.1.12.dmg",
   "platforms": {
     "macos": {
       "status": "available",
-      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10.dmg",
-      "sha256": "ccd8bf0b3f5bbceb418fc0fd35ede2cdd9553e77ae1d584a66bbf5a5e5613562"
+      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.12/aTelier-0.1.12.dmg",
+      "sha256": "ba50398c27f22b9849aac973b0a3dbc588eb0cbf0c43eb1ee2782fe88dea0f32"
     },
     "windows": {
       "status": "available",
-      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.10/aTelier-0.1.10-windows-x64-setup.exe",
-      "sha256": "86e57085b98b880b83b671a829643191743416e9dde9d2a7521de2c7ffa03935"
+      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.12/aTelier-0.1.12-windows-x64-setup.exe",
+      "sha256": "f9e42ba849422b783e594c7e89284665b59bcf4e8c0517762e0906c5b478dd91"
     }
   },
-  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.10",
-  "sha256": "ccd8bf0b3f5bbceb418fc0fd35ede2cdd9553e77ae1d584a66bbf5a5e5613562",
-  "published_at": "2026-08-08T06:23:16Z",
+  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.12",
+  "sha256": "ba50398c27f22b9849aac973b0a3dbc588eb0cbf0c43eb1ee2782fe88dea0f32",
+  "published_at": "2026-08-21T04:14:17Z",
   "notes": [
-    "DOCX headers, footers, formatting, and hyperlinks are preserved more reliably through translation and export.",
-    "Haitian Creole spelling assistance works locally and keeps personal dictionary entries on your computer.",
-    "Exact numbers and numeric ranges can be carried into the target automatically.",
-    "Editor navigation, file-wide QA, project progress, and inline structure handling are more reliable."
+    "License activation is more reliable across standard and Linguist Partner licenses.",
+    "Current signed installers are available for macOS and Windows.",
+    "This release includes the document fidelity, local spelling, navigation, QA, and automation improvements from recent builds."
   ]
 }

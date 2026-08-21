@@ -118,7 +118,7 @@ const DEKK_SCHEMA = [
     operatingSystem: "macOS",
     url: "https://www.kreyai.com/dekk",
     downloadUrl: "https://www.kreyai.com/dekk/download?source=seo",
-    softwareVersion: process.env.NEXT_PUBLIC_DEKK_VERSION || "0.1.6",
+    softwareVersion: process.env.NEXT_PUBLIC_DEKK_VERSION || "0.1.7",
     publisher: {
       "@type": "Organization",
       name: "KreyAI",

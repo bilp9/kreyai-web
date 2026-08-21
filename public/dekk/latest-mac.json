@@ -1,7 +1,7 @@
 {
-  "latest_version": "0.1.6",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.6/KreyAI-Dekk-0.1.6-macOS.dmg",
+  "latest_version": "0.1.7",
+  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.7/KreyAI-Dekk-0.1.7-macOS.dmg",
   "release_url": "https://www.kreyai.com/dekk",
-  "sha256": "5af92f3dc77e4a2a6ca6477e8b5da807a277125ef11ac1e8946ed5216f9a1659",
-  "notes": "Improved update recovery, license compatibility, and in-window license and update controls."
+  "sha256": "bbf923f4cb2d86ad74696ea216160eddfd70ee39cdabef7f0ef952c29e0f7c4c",
+  "notes": "Improved license compatibility, including support for Linguist Partner licenses, with current signed installers for macOS and Windows."
 }

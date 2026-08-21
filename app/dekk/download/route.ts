@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 const DEFAULT_PLATFORM = "macos";
 const DEFAULT_SOURCE = "website";
 const DEFAULT_WINDOWS_DOWNLOAD_URL =
-  "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.6/KreyAI-Dekk-0.1.6-windows-x64-setup.exe";
+  "https://storage.googleapis.com/kreyai-downloads/releases/dekk/0.1.7/KreyAI-Dekk-0.1.7-windows-x64-setup.exe";
 const DOWNLOAD_URLS: Record<string, string | undefined> = {
   macos: process.env.NEXT_PUBLIC_DEKK_DOWNLOAD_URL,
   windows: process.env.NEXT_PUBLIC_DEKK_WINDOWS_DOWNLOAD_URL || DEFAULT_WINDOWS_DOWNLOAD_URL,
@@ -34,7 +34,7 @@ async function recordDownload(request: NextRequest, downloadUrl: URL) {
     return;
   }
 
-  const version = downloadUrl.searchParams.get("version") || process.env.NEXT_PUBLIC_DEKK_VERSION || "0.1.6";
+  const version = downloadUrl.searchParams.get("version") || process.env.NEXT_PUBLIC_DEKK_VERSION || "0.1.7";
   const platform = downloadUrl.searchParams.get("platform") || DEFAULT_PLATFORM;
   const source = downloadUrl.searchParams.get("source") || DEFAULT_SOURCE;
   const ip = getClientIp(request);
