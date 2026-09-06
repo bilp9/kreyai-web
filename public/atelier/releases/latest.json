@@ -4,8 +4,8 @@
   "platforms": {
     "macos": {
       "status": "available",
-      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.12/aTelier-0.1.12.dmg",
-      "sha256": "ba50398c27f22b9849aac973b0a3dbc588eb0cbf0c43eb1ee2782fe88dea0f32"
+      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.13/aTelier-0.1.13.dmg",
+      "sha256": "dec960d5cdbaa1eda097f495dd6203b198e870e35c2ef032b48732fa3b892ebb"
     },
     "windows": {
       "status": "available",
