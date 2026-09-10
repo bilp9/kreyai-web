@@ -17,6 +17,7 @@ export default function robots(): MetadataRoute.Robots {
           "/atelier/releases/0.1.6",
           "/atelier/releases/0.1.8",
           "/atelier/releases/0.1.12",
+          "/atelier/releases/0.1.13",
           "/dekk",
           "/transcription",
           "/about",

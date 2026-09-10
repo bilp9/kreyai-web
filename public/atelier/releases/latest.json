@@ -1,6 +1,6 @@
 {
-  "version": "0.1.12",
-  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.12/aTelier-0.1.12.dmg",
+  "version": "0.1.13",
+  "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.13/aTelier-0.1.13.dmg",
   "platforms": {
     "macos": {
       "status": "available",
@@ -9,16 +9,17 @@
     },
     "windows": {
       "status": "available",
-      "download_url": "https://storage.googleapis.com/kreyai-downloads/releases/atelier/0.1.12/aTelier-0.1.12-windows-x64-setup.exe",
-      "sha256": "f9e42ba849422b783e594c7e89284665b59bcf4e8c0517762e0906c5b478dd91"
+      "download_url": "https://www.kreyai.com/atelier/releases/0.1.13/download",
+      "sha256": "5178016c3bc21e1ec116265ab29a373b59ada6a63644186e8207191257b1eb45"
     }
   },
-  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.12",
-  "sha256": "ba50398c27f22b9849aac973b0a3dbc588eb0cbf0c43eb1ee2782fe88dea0f32",
-  "published_at": "2026-08-21T04:14:17Z",
+  "release_notes_url": "https://www.kreyai.com/atelier/releases/0.1.13",
+  "sha256": "dec960d5cdbaa1eda097f495dd6203b198e870e35c2ef032b48732fa3b892ebb",
+  "published_at": "2026-09-10T00:15:32Z",
   "notes": [
-    "License activation is more reliable across standard and Linguist Partner licenses.",
-    "Current signed installers are available for macOS and Windows.",
-    "This release includes the document fidelity, local spelling, navigation, QA, and automation improvements from recent builds."
+    "Translation memory suggestions are more relevant, with weak shared-word matches suppressed.",
+    "Protected shapes and formatting are preserved when exact translation memory matches are reused.",
+    "Underlined Word fill-in fields remain visible during translation and survive export.",
+    "Consistently styled segments produce fewer unnecessary visual-formatting QA findings."
   ]
 }
